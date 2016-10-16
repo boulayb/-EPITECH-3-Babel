@@ -1,0 +1,8 @@
+PROJECT
+https://intra.epitech.eu/module/2016/B-PAV-450/PAR-5-1/acti-226436/project/#!/group
+
+UML
+https://cacoo.com/diagrams/YuweSkpSqlLt3SDn
+
+RFC
+(insert google doc link here)
