@@ -1,6 +1,8 @@
 #ifndef BABEL_PROTOCOL_HPP_
 # define BABEL_PROTOCOL_HPP_
 
+#include <string>
+
 # define MAGIC_NUMBER   0xDEAD
 
 namespace Protocol
@@ -37,7 +39,22 @@ namespace Protocol
     ReturnValue   returnValue;
     Request       requestType;
     unsigned      dataLength;
-    char          data[0];
+    unsigned char          data[0];
+  };
+
+  class      PacketUtils
+  {
+  public:
+    static std::string *extractData(BabelPacket const &packet)
+    {
+      unsigned size = packet.dataLength;
+      std::string *data = new std::string;
+      for (unsigned i = 0; i < size; ++i)
+      {
+        data += packet.data[i];
+      }
+      return data;
+    }
   };
 }
 

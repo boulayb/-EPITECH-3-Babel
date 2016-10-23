@@ -20,21 +20,25 @@ void TCPServer::shutDown()
 
 }
 
-bool TCPServer::sendBabelPacket(Protocol::BabelPacket &)
+bool TCPServer::sendBabelPacket(Protocol::BabelPacket &packet)
 {
+  for (Session *user : this->users)
+  {
+    if (user->getUserId() == packet.receiverId)
+    {
+      user->writeToClient(packet);
+    }
+  }
   return (true);
 }
 
-Protocol::BabelPacket *TCPServer::getBabelPacket()
-{
-  return nullptr;
-}
 
 void TCPServer::handle_accept(Session *newSession, const boost::system::error_code &error)
 {
   if (!error)
   {
     newSession->start();
+    this->users.push_back(newSession);
   }
   else
   {

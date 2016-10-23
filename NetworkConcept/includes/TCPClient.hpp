@@ -19,7 +19,6 @@ public:
   bool initiateService();
   void shutDown();
   bool sendBabelPacket(Protocol::BabelPacket &);
-  Protocol::BabelPacket *getBabelPacket();
 private slots:
   void readMessage();
 private:

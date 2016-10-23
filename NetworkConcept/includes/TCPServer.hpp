@@ -3,6 +3,7 @@
 
 #include "Session.hpp"
 #include "INetwork.hpp"
+#include <vector>
 
 class TCPServer : public INetwork
 {
@@ -12,13 +13,14 @@ public:
   bool initiateService();
   void shutDown();
   bool sendBabelPacket(Protocol::BabelPacket &);
-  Protocol::BabelPacket *getBabelPacket();
 private:
   void handle_accept(Session* new_session,
       const boost::system::error_code& error);
   void startAccept();
+
   boost::asio::io_service ioService;
   boost::asio::ip::tcp::acceptor acceptor;
+  std::vector<Session *> users;
 };
 
 #endif // TCPSERVER_HPP

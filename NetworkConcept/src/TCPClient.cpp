@@ -1,5 +1,6 @@
 #include "TCPClient.hpp"
-
+#include <iostream>
+#include <cstring>
 
 TCPClient::TCPClient(const std::string &hostname, unsigned short port, QObject *parent) : hostName(hostname), port(port), QObject(parent)
 {
@@ -19,24 +20,18 @@ bool TCPClient::initiateService()
   return this->tcpSocket->waitForConnected();
 }
 
-#include <iostream>
-
 bool TCPClient::sendBabelPacket(Protocol::BabelPacket &packet)
 {
   if(this->tcpSocket->state() == QAbstractSocket::ConnectedState)
   {
-      std::cout << sizeof(Protocol::BabelPacket) + packet.dataLength << std::endl;
-      this->tcpSocket->write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
-      return this->tcpSocket->waitForBytesWritten();
+    std::cout << sizeof(Protocol::BabelPacket) + packet.dataLength << std::endl;
+    this->tcpSocket->write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
+    return this->tcpSocket->waitForBytesWritten();
   }
   else
     return false;
 }
 
-Protocol::BabelPacket *TCPClient::getBabelPacket()
-{
-
-}
 
 void TCPClient::shutDown()
 {
@@ -46,7 +41,17 @@ void TCPClient::shutDown()
 
 void TCPClient::readMessage()
 {
-  while (!this->tcpSocket->atEnd()) {
-      QByteArray data = this->tcpSocket->read(100);
-  }
+    char buffer[sizeof(Protocol::BabelPacket)];
+    this->tcpSocket->read(buffer, sizeof(Protocol::BabelPacket));
+    Protocol::BabelPacket *packet = reinterpret_cast<Protocol::BabelPacket *>(buffer);
+    std::cout << packet->senderId << std::endl;
+    std::cout << packet->dataLength << std::endl;
+
+    Protocol::BabelPacket *fullPacket = reinterpret_cast<Protocol::BabelPacket *>(
+          new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
+    std::memcpy(fullPacket, packet, sizeof(Protocol::BabelPacket));
+    char *packetData = new char[packet->dataLength + 1];
+    this->tcpSocket->read(packetData, packet->dataLength);
+    std::memcpy(fullPacket, packetData, packet->dataLength);
+    //send to protocol
 }

@@ -17,15 +17,19 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp \
-    TCPClient.cpp \
-    TCPServer.cpp \
-    Session.cpp
+SOURCES += src/main.cpp \
+    src/Session.cpp \
+    src/TCPClient.cpp \
+    src/TCPServer.cpp \
+    src/UDPClient.cpp
+
+INCLUDEPATH += includes
 
 HEADERS += \
-    Protocol.hpp \
-    INetwork.hpp \
-    TCPClient.hpp \
-    TCPServer.hpp \
-    Session.hpp
+    includes/INetwork.hpp \
+    includes/Protocol.hpp \
+    includes/Session.hpp \
+    includes/TCPClient.hpp \
+    includes/TCPServer.hpp \
+    includes/UDPClient.hpp
 
