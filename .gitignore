@@ -1,7 +1,26 @@
+// IDE CONFIG FOLDERS
 .idea
-Makefile
+.vs
+
+// VISUAL STUDIO GARBAGE
+x64
+Debug
+*.dir
+*.vc
+*.vcxproj
+*.filters
+*.sln
+*.db
+*.opendb
+
+// CMAKE GARBAGE
+*.cmake
 cmake*
 CMake*
-!CMakeLists.txt
+Makefile
+!CMakeLists.txt // EXCEPT THIS ONE
+
+// TMP FILES
 *~
 *#
+*.o
