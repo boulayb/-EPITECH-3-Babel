@@ -1,0 +1,7 @@
+.idea
+Makefile
+cmake*
+CMake*
+!CMakeLists.txt
+*~
+*#
