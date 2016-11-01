@@ -26,8 +26,8 @@ public:
     ~User();
     std::string const& getLogin();
     std::string const& getPassword();
-    const std::vector<std::string> & getFriends();
-    std::vector<std::string> & getFriendsNoConst();
+    //const std::vector<std::string> & getFriends(); TODO:Overload this function
+    std::vector<std::string> & getFriends();
 private:
     std::string _login;
     std::string _password;

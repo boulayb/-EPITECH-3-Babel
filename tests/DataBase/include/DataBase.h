@@ -11,14 +11,16 @@
 #include <map>
 #include <iterator>
 #include "User.h"
+#include "Protocol.h"
 
 class DataBase {
 public:
     DataBase();
     ~DataBase();
-    bool registerUser(std::string const& login, std::string const& password);
-    bool login(std::string const& login, std::string const& password);
-    bool addFriend(std::string const& login, std::string const& newFriend);
+    Protocol::BabelPacket::Code registerUser(std::string const& login, std::string const& password);
+    Protocol::BabelPacket::Code login(std::string const& login, std::string const& password);
+    Protocol::BabelPacket::Code addFriend(std::string const& login, std::string const& newFriend);
+    Protocol::BabelPacket::Code deleteFriend(std::string const &login, std::string const &newFriend);
     const std::vector<std::string>& getFriendsList(std::string const& login);
 private:
     bool checkIfUserExist(std::string const& login);

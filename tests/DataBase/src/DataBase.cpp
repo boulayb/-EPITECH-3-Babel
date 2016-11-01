@@ -5,26 +5,49 @@
 
 #include "DataBase.h"
 
-bool DataBase::registerUser(std::string const &login, std::string const &password)
+Protocol::BabelPacket::Code DataBase::registerUser(std::string const &login, std::string const &password)
 {
-    if (!this->checkIfUserExist(login))
-        return (this->addNewUser(login, password));
-    return false;
+    if (this->checkIfUserExist(login))
+      return (Protocol::BabelPacket::Code::USER_ALREADY_EXIST);
+    this->addNewUser(login, password);
+    return (Protocol::BabelPacket::Code::SIGN_UP_SUCCESS);
 }
 
-bool DataBase::login(std::string const &login, std::string const &password)
+Protocol::BabelPacket::Code DataBase::login(std::string const &login, std::string const &password)
 {
-    return (this->checkUserInfo(login, password));
+    if (this->_map[login].getLogin() != login)
+      return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
+    if (this->_map[login].getPassword() != password)
+      return (Protocol::BabelPacket::Code::WRONG_PASSWORD);
+    return (Protocol::BabelPacket::Code::LOGIN_SUCCESS);
 }
 
-bool DataBase::addFriend(std::string const &login, std::string const &newFriend) {
-    for (std::vector<std::string>::iterator it = this->_map[login].getFriendsNoConst().begin(); it != this->_map[login].getFriends().end(); ++it)
+Protocol::BabelPacket::Code DataBase::addFriend(std::string const &login, std::string const &newFriend)
+{
+    if (this->_map[login].getLogin() != login)
+      return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
+    for (std::vector<std::string>::iterator it = this->_map[login].getFriends().begin(); it != this->_map[login].getFriends().end(); ++it)
     {
         if (newFriend == *it)
-            return false;
+            return (Protocol::BabelPacket::Code::ALREADY_A_FRIEND);
     }
-    this->_map[login].getFriendsNoConst().push_back(newFriend);
-    return true;
+    this->_map[login].getFriends().push_back(newFriend);
+    return (Protocol::BabelPacket::Code::CONTACT_ADDED);
+}
+
+Protocol::BabelPacket::Code DataBase::deleteFriend(std::string const &login, std::string const &newFriend)
+{
+    if (this->_map[login].getLogin() != login)
+      return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
+    for (std::vector<std::string>::iterator it = this->_map[login].getFriends().begin(); it != this->_map[login].getFriends().end(); ++it)
+    {
+        if (newFriend == *it)
+        {
+            this->_map[login].getFriends().erase(it);
+            return (Protocol::BabelPacket::Code::CONTACT_DELETED);
+        }
+    }
+    return (Protocol::BabelPacket::Code::FRIEND_NOT_FOUND);
 }
 
 const std::vector<std::string> &DataBase::getFriendsList(std::string const &login)
