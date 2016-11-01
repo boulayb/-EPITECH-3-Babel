@@ -6,10 +6,10 @@
 namespace Protocol
 {
 
-  struct		BabelPacket
+  struct          BabelPacket
   {
     // Code enum
-    enum class	Code : unsigned int
+    enum class Code : unsigned int
       {
 	NONE = 00,
 	// Requests
@@ -39,19 +39,19 @@ namespace Protocol
       };
 
     // Infos
-    unsigned int	magicNbr;
-    unsigned int	date;
+    unsigned int        magicNbr;
+    unsigned int        date;
 
     // Data
-    Code		code;
-    unsigned int	dataLength;
-    unsigned char	data[0];
+    Code                code;
+    unsigned int        dataLength;
+    unsigned char       data[0];
   };
 
   class Protocol
   {
   public:
-    virtual static struct BabelPacket *createPacket(Protocol::BabelPacket::Code const code, unsigned int const &length = 0, unsigned char *data = "\0");
+    virtual static struct BabelPacket          *createPacket(Protocol::BabelPacket::Code const code, unsigned int const &length = 0, unsigned char *data = "\0");
   };
 }
 
