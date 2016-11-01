@@ -6,12 +6,12 @@
 
 int main(int argc, char *argv[])
 {
-  Protocol::BabelPacket *packet = reinterpret_cast<Protocol::BabelPacket *>(new char[sizeof(Protocol::BabelPacket) + 5]);
-  packet->senderId = 1;
-  strcpy(packet->data, "kappa");
-  packet->dataLength = 5;
-  INetwork *socket = new TCPClient("127.0.0.1", 4000);
+  BabelPacket *packet = reinterpret_cast<BabelPacket *>(new char[sizeof(BabelPacket) + strlen(argv[1])]);
+  memcpy(packet->data, argv[1], strlen(argv[1]));
+  packet->dataLength = strlen(argv[1]);
+  INetwork *socket = new TCPClient("127.0.0.1", 4001);
   socket->initiateService();
   socket->sendBabelPacket(*packet);
+  sleep(10);
 }
 

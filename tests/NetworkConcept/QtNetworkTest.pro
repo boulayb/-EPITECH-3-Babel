@@ -17,11 +17,12 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += src/main.cpp \
+SOURCES += mainClient.cpp \
     src/Session.cpp \
     src/TCPClient.cpp \
     src/TCPServer.cpp \
-    src/UDPClient.cpp
+    src/UDPClient.cpp \
+    src/TaskManager.cpp
 
 INCLUDEPATH += includes
 
@@ -31,5 +32,7 @@ HEADERS += \
     includes/Session.hpp \
     includes/TCPClient.hpp \
     includes/TCPServer.hpp \
-    includes/UDPClient.hpp
+    includes/UDPClient.hpp \
+    includes/ThreadPool.hpp \
+    includes/TaskManager.hpp
 

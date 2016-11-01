@@ -1,61 +1,62 @@
+//
+// Protocol.hpp for Babel_Protocol
+//
+// Made by Nicolas Zordan
+// Login   <zordan_n@epitech.net>
+//
+// Started on  Sat Oct 15 15:46:54 2016 Nicolas Zordan
+// Last update Thu Oct 27 16:26:31 2016 Victor Schuchmann
+//
+
 #ifndef BABEL_PROTOCOL_HPP_
 # define BABEL_PROTOCOL_HPP_
 
-#include <string>
+# ifdef WIN32
+#  pragma warning(disable : 4200)
+# endif // WIN32
 
 # define MAGIC_NUMBER   0xDEAD
 
-namespace Protocol
+struct		BabelPacket
 {
-  enum class      Request : int
+  // Code enum
+  enum Code : unsigned int
   {
-    ERROR = -1,
-    CONNECT = 0,
-    DISCONNECT,
-    PING,
-    PONG,
-    CONTACT_LIST,
-    UPDATE_CONTACT_STATUS,
-    CALL,
-    PICK_UP,
-    HANG_UP,
-    ADD_CONTACT,
-    DEL_CONTACT
+    NONE = 00,
+    // Requests
+    SIGN_IN = 100,
+    SIGN_UP = 101,
+    SIGN_OUT = 102,
+    CONTACT_LIST_REQUEST = 103,
+    CALL = 104,
+    ADD_CONTACT = 105,
+    DEL_CONTACT = 106,
+    UPDATE_CONTACT_STATUS = 107,
+    // Errors
+    INVALID_REQUEST = 001,
+    USER_NOT_FOUND = 002,
+    WRONG_PASSWORD = 003,
+    USER_ALREADY_EXIST = 004,
+    NOT_LOGGED_IN = 005,
+    USER_DOES_NOT_EXIST = 006,
+    DECLINE_CALL = 007,
+    // Success
+    LOGIN_SUCCESS = 200,
+    SIGN_UP_SUCCESS = 201,
+    DISCONNECT_SUCCESS = 202,
+    CONTACT_LIST = 203,
+    ACCEPT_CALL = 204,
+    CONTACT_ADDED = 205,
   };
 
-  enum class    ReturnValue : int
-  {
-    FAILURE = -1,
-    NONE = 0,
-    SUCCESS = 1
-  };
+  // Infos
+  unsigned int	magicNbr;
+  unsigned int	date;
 
-  struct          __attribute__((packed)) BabelPacket
-  {
-    unsigned      magicNbr = MAGIC_NUMBER;
-    unsigned      senderId;
-    unsigned      receiverId;
-    unsigned      date;
-    ReturnValue   returnValue;
-    Request       requestType;
-    unsigned      dataLength;
-    unsigned char          data[0];
-  };
-
-  class      PacketUtils
-  {
-  public:
-    static std::string *extractData(BabelPacket const &packet)
-    {
-      unsigned size = packet.dataLength;
-      std::string *data = new std::string;
-      for (unsigned i = 0; i < size; ++i)
-      {
-        data += packet.data[i];
-      }
-      return data;
-    }
-  };
-}
+  // Data
+  Code		code;
+  unsigned int	dataLength;
+  unsigned char	data[0];
+};
 
 #endif // !BABEL_PROTOCOL_HPP_

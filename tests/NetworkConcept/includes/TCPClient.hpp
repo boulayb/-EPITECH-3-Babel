@@ -18,7 +18,7 @@ public:
   ~TCPClient();
   bool initiateService();
   void shutDown();
-  bool sendBabelPacket(Protocol::BabelPacket &);
+  bool sendBabelPacket(BabelPacket &);
 private slots:
   void readMessage();
 private:

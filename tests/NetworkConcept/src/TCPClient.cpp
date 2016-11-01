@@ -20,12 +20,12 @@ bool TCPClient::initiateService()
   return this->tcpSocket->waitForConnected();
 }
 
-bool TCPClient::sendBabelPacket(Protocol::BabelPacket &packet)
+bool TCPClient::sendBabelPacket(BabelPacket &packet)
 {
   if(this->tcpSocket->state() == QAbstractSocket::ConnectedState)
   {
-    std::cout << sizeof(Protocol::BabelPacket) + packet.dataLength << std::endl;
-    this->tcpSocket->write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
+    std::cout << sizeof(BabelPacket) + packet.dataLength << std::endl;
+    this->tcpSocket->write((const char *)&packet, sizeof(BabelPacket) + packet.dataLength);
     return this->tcpSocket->waitForBytesWritten();
   }
   else
@@ -41,15 +41,14 @@ void TCPClient::shutDown()
 
 void TCPClient::readMessage()
 {
-    char buffer[sizeof(Protocol::BabelPacket)];
-    this->tcpSocket->read(buffer, sizeof(Protocol::BabelPacket));
-    Protocol::BabelPacket *packet = reinterpret_cast<Protocol::BabelPacket *>(buffer);
-    std::cout << packet->senderId << std::endl;
+    char buffer[sizeof(BabelPacket)];
+    this->tcpSocket->read(buffer, sizeof(BabelPacket));
+    BabelPacket *packet = reinterpret_cast<BabelPacket *>(buffer);
     std::cout << packet->dataLength << std::endl;
 
-    Protocol::BabelPacket *fullPacket = reinterpret_cast<Protocol::BabelPacket *>(
-          new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
-    std::memcpy(fullPacket, packet, sizeof(Protocol::BabelPacket));
+    BabelPacket *fullPacket = reinterpret_cast<BabelPacket *>(
+          new unsigned char[sizeof(BabelPacket) + packet->dataLength + 1]);
+    std::memcpy(fullPacket, packet, sizeof(BabelPacket));
     char *packetData = new char[packet->dataLength + 1];
     this->tcpSocket->read(packetData, packet->dataLength);
     std::memcpy(fullPacket, packetData, packet->dataLength);

@@ -1,5 +1,4 @@
 #include "Session.hpp"
-#include "PacketFormater.hpp"
 #include <iostream>
 
 Session::Session(boost::asio::io_service &io_service) : socket(io_service), packetData(nullptr), currentPacket(nullptr), userID(-1)
@@ -15,9 +14,12 @@ Session::~Session()
    delete this->packetData;
 }
 
-void Session::start()
+void Session::start(ThreadPool<TaskManager::Task> *threadPool, TaskManager *taskManager, unsigned int userId)
 {
-  socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(Protocol::BabelPacket)),
+  this->threadPool = threadPool;
+  this->taskManager = taskManager;
+  this->userID = userId;
+  socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(BabelPacket)),
       boost::bind(&Session::handleRead, this,
         boost::asio::placeholders::error,
         boost::asio::placeholders::bytes_transferred));
@@ -36,26 +38,27 @@ int Session::getUserId() const
 void Session::handleReadData(const boost::system::error_code &error, size_t bytes_transferred)
 {
   std::cout << bytes_transferred << std::endl;
-  for (int i = 0; this->packetData[i] != '\0' ; ++i)
+  for (int i = 0; i != bytes_transferred ; ++i)
   {
     std::cout << this->packetData[i] << std::endl;
   }
   std::memcpy(this->currentPacket->data, this->packetData, bytes_transferred);
-  // packet ready, send to protocol here
+  TaskManager::Task *newTask = new TaskManager::Task;
+  newTask->packet = this->currentPacket;
+  newTask->clientID = this->userID;
+  this->threadPool->putTaskInQueue(std::bind(&TaskManager::executeTask, this->taskManager, *newTask),
+                                   *newTask);
 }
 
 void Session::handleRead(const boost::system::error_code &error, size_t bytes_transferred)
 {
-  Protocol::BabelPacket *packet;
-  packet = reinterpret_cast<Protocol::BabelPacket *>(this->buffer);
-  std::cout << packet->senderId << std::endl;
-  std::cout << packet->dataLength << std::endl;
-  this->userID = packet->senderId;
-  this->currentPacket = reinterpret_cast<Protocol::BabelPacket *>(
-        new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
-  std::memcpy(this->currentPacket, packet, sizeof(Protocol::BabelPacket));
-  this->packetData = new unsigned char[packet->dataLength + 2];
-  this->currentPacket = packet;
+  BabelPacket *packet;
+  packet = reinterpret_cast<BabelPacket *>(this->buffer);
+  std::cout << "total size : " << sizeof(BabelPacket) << " " << sizeof(BabelPacket) + packet->dataLength + 1 << std::endl;
+  this->currentPacket = reinterpret_cast<BabelPacket *>(
+        new unsigned char[sizeof(BabelPacket) + packet->dataLength + 1]);
+  std::memcpy(this->currentPacket, packet, sizeof(BabelPacket));
+  this->packetData = new unsigned char[this->currentPacket->dataLength + 1];
   this->socket.async_read_some(boost::asio::buffer(this->packetData, packet->dataLength),
                                boost::bind(&Session::handleReadData, this,
                                boost::asio::placeholders::error,
@@ -66,7 +69,7 @@ void Session::handleWrite(const boost::system::error_code &error)
 {
   if (!error)
   {
-    this->socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(Protocol::BabelPacket)),
+    this->socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(BabelPacket)),
                                  boost::bind(&Session::handleRead, this,
                                  boost::asio::placeholders::error,
                                  boost::asio::placeholders::bytes_transferred
@@ -83,9 +86,9 @@ void Session::handleWrited(const boost::system::error_code &error, size_t bytes_
 
 }
 
-void Session::writeToClient(const Protocol::BabelPacket &packet)
+void Session::writeToClient(const BabelPacket &packet)
 {
-  this->socket.async_write_some(boost::asio::buffer(&packet, sizeof(Protocol::BabelPacket) + packet.dataLength),
+  this->socket.async_write_some(boost::asio::buffer(&packet, sizeof(BabelPacket) + packet.dataLength),
                                 boost::bind(&Session::handleWrited, this,
                                 boost::asio::placeholders::error,
                                 boost::asio::placeholders::bytes_transferred
