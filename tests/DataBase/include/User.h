@@ -19,19 +19,22 @@ public:
     template<class Archive>
     void serialize(Archive& ar, const unsigned int version)
     {
-        ar & _login & _password & _friends;
+        ar & _login & _password & _friends & _id;
     }
     User();
     User(std::string const& login, std::string const& password);
     ~User();
     std::string const& getLogin();
     std::string const& getPassword();
+    int getId();
+    void setId(int id);
     //const std::vector<std::string> & getFriends(); TODO:Overload this function
     std::vector<std::string> & getFriends();
 private:
     std::string _login;
     std::string _password;
     std::vector<std::string> _friends;
+    int _id;
 };
 
 

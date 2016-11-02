@@ -6,12 +6,17 @@ int main()
 {
     std::vector<std::string> save;
     DataBase *base = new DataBase;
-    /*if (Protocol::BabelPacket::Code::USER_ALREADY_EXIST == base->registerUser("bocque", "passowrd"))
+    base->registerUser("blld", "passowrd");
+    std::cout << base->getId("blld") << std::endl;
+    std::cout << base->getId("bocque") << std::endl;
+    base->setId("bocque", 12);
+    std::cout << base->getId("bocque") << std::endl;
+    if (Protocol::BabelPacket::Code::USER_ALREADY_EXIST == base->registerUser("bocque", "passowrd"))
         std::cout << "true" << std::endl;
     else
         std::cout << "false" << std::endl;
 
-    if (base->login("bocque", "passowrd"))
+    /*if (base->login("bocque", "passowrd"))
         std::cout << "true" << std::endl;
     else
         std::cout << "false" << std::endl;*/
@@ -21,8 +26,8 @@ int main()
     {
         std::cout << *it << std::endl;
     }
-    //base->addFriend("bocque", "dimitri");
-    base->deleteFriend("bocque", "arnaud");
+    base->addFriend("bocque", "dimitri");
+    //base->deleteFriend("bocque", "arnaud");
     std::cout << std::endl;
     save = base->getFriendsList("bocque");
 

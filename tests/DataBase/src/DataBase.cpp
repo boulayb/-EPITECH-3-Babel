@@ -22,6 +22,21 @@ Protocol::BabelPacket::Code DataBase::login(std::string const &login, std::strin
     return (Protocol::BabelPacket::Code::LOGIN_SUCCESS);
 }
 
+Protocol::BabelPacket::Code DataBase::setId(std::string const &login, int id)
+{
+    if (this->_map[login].getLogin() != login)
+      return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
+    this->_map[login].setId(id);
+    return (Protocol::BabelPacket::Code::ID_ADDED);
+}
+
+int DataBase::getId(std::string const &login)
+{
+    if (this->_map[login].getLogin() != login)
+      return (-1);
+    return (this->_map[login].getId());
+}
+
 Protocol::BabelPacket::Code DataBase::addFriend(std::string const &login, std::string const &newFriend)
 {
     if (this->_map[login].getLogin() != login)
@@ -60,19 +75,17 @@ DataBase::DataBase()
 {
     bool continueRead = true;
     User user;
-
-    std::ifstream ifile("/home/bocque_c/cpp_babel/tests/DataBase/rsc/database.txt"); //TODO : Fix relative Path
-    boost::archive::binary_iarchive iTextArchive(ifile);
-    while (continueRead)
-    {
-        try {
+    std::ifstream ifile("/home/bocque_c/rendu/cpp_babel/tests/DataBase/rsc/database.txt");
+    try{
+        boost::archive::binary_iarchive iTextArchive(ifile);
+        while (true)
+        {
             iTextArchive >> user;
-        }
-        catch (boost::archive::archive_exception e) {
-            continueRead = false;
-        }
-        if (continueRead)
             this->_map.insert(std::pair<std::string, User>(user.getLogin(), user));
+        }
+    }
+    catch (boost::archive::archive_exception e)
+    {
     }
     ifile.close();
 }
@@ -102,7 +115,7 @@ bool DataBase::addNewUser(std::string const &login, std::string const &password)
 
 bool DataBase::writeMap()
 {
-    std::ofstream ofile("/home/bocque_c/cpp_babel/tests/DataBase/rsc/database.txt"); //TODO : Fix relative Path
+    std::ofstream ofile("/home/bocque_c/rendu/cpp_babel/tests/DataBase/rsc/database.txt"); //TODO : Fix relative Path
     boost::archive::binary_oarchive oTextArchive(ofile);
     for(std::map<std::string, User>::const_iterator it = this->_map.begin(); it != this->_map.end(); ++it)
         oTextArchive << it->second;
