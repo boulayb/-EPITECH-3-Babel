@@ -1,11 +1,12 @@
 #include <iostream>
 #include "DataBase.h"
+#include "Protocol.h"
 
 int main()
 {
     std::vector<std::string> save;
     DataBase *base = new DataBase;
-    if (base->registerUser("bocque", "passowrd"))
+    /*if (Protocol::BabelPacket::Code::USER_ALREADY_EXIST == base->registerUser("bocque", "passowrd"))
         std::cout << "true" << std::endl;
     else
         std::cout << "false" << std::endl;
@@ -13,16 +14,16 @@ int main()
     if (base->login("bocque", "passowrd"))
         std::cout << "true" << std::endl;
     else
-        std::cout << "false" << std::endl;
+        std::cout << "false" << std::endl;*/
 
     save = base->getFriendsList("bocque");
     for (std::vector<std::string>::iterator it = save.begin(); it != save.end(); ++it)
     {
         std::cout << *it << std::endl;
     }
-    base->addFriend("bocque", "dimitri");
-    base->addFriend("bocque", "arnaud");
-
+    //base->addFriend("bocque", "dimitri");
+    base->deleteFriend("bocque", "arnaud");
+    std::cout << std::endl;
     save = base->getFriendsList("bocque");
 
     for (std::vector<std::string>::iterator it = save.begin(); it != save.end(); ++it)

@@ -28,12 +28,12 @@ std::string const &User::getPassword()
     return (this->_password);
 }
 
-const std::vector<std::string> & User::getFriends()
+/*const std::vector<std::string> & User::getFriends()
 {
     return (this->_friends);
-}
+}*/
 
-std::vector<std::string> & User::getFriendsNoConst()
+std::vector<std::string> & User::getFriends()
 {
     return (this->_friends);
 }
