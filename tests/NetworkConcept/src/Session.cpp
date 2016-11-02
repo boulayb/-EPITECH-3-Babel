@@ -1,5 +1,6 @@
-#include "Session.hpp"
 #include <iostream>
+#include "Session.hpp"
+#include "Server.hpp"
 
 Session::Session(boost::asio::io_service &io_service) : socket(io_service), packetData(nullptr), currentPacket(nullptr), userID(-1)
 {
@@ -14,10 +15,9 @@ Session::~Session()
    delete this->packetData;
 }
 
-void Session::start(ThreadPool<TaskManager::Task> *threadPool, TaskManager *taskManager, unsigned int userId)
+void Session::start(Server *server, unsigned int userId)
 {
-  this->threadPool = threadPool;
-  this->taskManager = taskManager;
+  this->server = server;
   this->userID = userId;
   socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(BabelPacket)),
       boost::bind(&Session::handleRead, this,
@@ -43,11 +43,7 @@ void Session::handleReadData(const boost::system::error_code &error, size_t byte
     std::cout << this->packetData[i] << std::endl;
   }
   std::memcpy(this->currentPacket->data, this->packetData, bytes_transferred);
-  TaskManager::Task *newTask = new TaskManager::Task;
-  newTask->packet = this->currentPacket;
-  newTask->clientID = this->userID;
-  this->threadPool->putTaskInQueue(std::bind(&TaskManager::executeTask, this->taskManager, *newTask),
-                                   *newTask);
+  this->server->addTask(*this->currentPacket, this->userID);
 }
 
 void Session::handleRead(const boost::system::error_code &error, size_t bytes_transferred)

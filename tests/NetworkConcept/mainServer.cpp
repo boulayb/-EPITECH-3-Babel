@@ -1,10 +1,9 @@
-#include "TCPServer.hpp"
-#include <unistd.h>
+#include "Server.hpp"
 
 int main(int argc, char *argv[])
 {
-  INetwork *socket = new TCPServer(4001);
-  socket->initiateService();
+  Server babelServer;
+  babelServer.startServer();
 //  socket->sendBabelPacket(packet);
 }
 

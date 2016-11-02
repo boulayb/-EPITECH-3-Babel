@@ -18,7 +18,6 @@ class ThreadPool
     {
       this->_finished = false;
       this->_shutDown = false;
-      this->_functionMutexes = new std::vector<std::mutex>(numberOfThreads);
       this->_currentTasks = 0;
       for(int i = 0; i < numberOfThreads; ++i)
       {
@@ -58,7 +57,6 @@ class ThreadPool
       }
       this->_threadList.clear();
       this->_finished = true;
-      delete this->_functionMutexes;
     }
 
     int getCurrentTasks() const
@@ -97,7 +95,6 @@ class ThreadPool
     }
 
     std::vector<std::thread>            _threadList;
-    std::vector<std::mutex>             *_functionMutexes;
     std::mutex                          _mutex;
     std::queue<std::pair<T, std::function<void(ThreadPool &, T)>>> _tasks;
     std::condition_variable              _cond;

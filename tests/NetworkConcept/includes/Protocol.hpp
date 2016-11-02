@@ -59,4 +59,19 @@ struct		BabelPacket
   unsigned char	data[0];
 };
 
+class      PacketUtils
+{
+public:
+  static std::string *extractData(BabelPacket const &packet)
+  {
+    unsigned size = packet.dataLength;
+    std::string *data = new std::string;
+    for (unsigned i = 0; i < size; ++i)
+    {
+      data += packet.data[i];
+    }
+  return data;
+  }
+};
+
 #endif // !BABEL_PROTOCOL_HPP_

@@ -1,12 +1,12 @@
 #ifndef TCPCLIENT_HHP
 #define TCPCLIENT_HHP
 
-#include "INetwork.hpp"
 #include <QObject>
 #include <QTcpSocket>
 #include <QAbstractSocket>
 #include <QDebug>
 #include <QIODevice>
+#include "INetwork.hpp"
 
 
 class TCPClient : public  QObject, public INetwork

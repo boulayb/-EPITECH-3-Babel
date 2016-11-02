@@ -1,6 +1,6 @@
-#include "TCPClient.hpp"
 #include <iostream>
 #include <cstring>
+#include "TCPClient.hpp"
 
 TCPClient::TCPClient(const std::string &hostname, unsigned short port, QObject *parent) : hostName(hostname), port(port), QObject(parent)
 {

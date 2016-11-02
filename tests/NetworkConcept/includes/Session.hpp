@@ -1,18 +1,18 @@
 #ifndef SESSION_HPP
 #define SESSION_HPP
 
-#include "Protocol.hpp"
-#include "TaskManager.hpp"
-#include "ThreadPool.hpp"
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include "Protocol.hpp"
+
+class Server;
 
 class Session
 {
 public:
   Session(boost::asio::io_service& io_service);
   ~Session();
-  void start(ThreadPool<TaskManager::Task> *, TaskManager *, unsigned int);
+  void start(Server *, unsigned int);
   boost::asio::ip::tcp::socket &getSocket();
   int getUserId() const;
   void writeToClient(BabelPacket const&);
@@ -30,8 +30,7 @@ private:
   unsigned char *packetData;
   BabelPacket *currentPacket;
   unsigned int userID;
-  ThreadPool<TaskManager::Task> *threadPool;
-  TaskManager *taskManager;
+  Server *server;
 };
 
 #endif // SESSION_HPP

@@ -1,8 +1,8 @@
 #ifndef INETWORK_HPP
 #define INETWORK_HPP
 
-#include "Protocol.hpp"
 #include <string>
+#include "Protocol.hpp"
 
 class INetwork
 {

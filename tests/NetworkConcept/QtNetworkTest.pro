@@ -22,7 +22,8 @@ SOURCES += mainClient.cpp \
     src/TCPClient.cpp \
     src/TCPServer.cpp \
     src/UDPClient.cpp \
-    src/TaskManager.cpp
+    src/TaskManager.cpp \
+    src/Server.cpp
 
 INCLUDEPATH += includes
 
@@ -34,5 +35,6 @@ HEADERS += \
     includes/TCPServer.hpp \
     includes/UDPClient.hpp \
     includes/ThreadPool.hpp \
-    includes/TaskManager.hpp
+    includes/TaskManager.hpp \
+    includes/Server.hpp
 

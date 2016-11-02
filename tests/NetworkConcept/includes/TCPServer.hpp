@@ -1,20 +1,17 @@
 #ifndef TCPSERVER_HPP
 #define TCPSERVER_HPP
 
-#include "Session.hpp"
-#include "INetwork.hpp"
-#include "TaskManager.hpp"
-#include "ThreadPool.hpp"
 #include <vector>
+#include "Session.hpp"
 
-class TCPServer : public INetwork
+class TCPServer
 {
 public:
-  TCPServer(unsigned short port);
+  TCPServer(Server *, unsigned short port);
   ~TCPServer();
   bool initiateService();
   void shutDown();
-  bool sendBabelPacket(BabelPacket &);
+  bool sendBabelPacket(BabelPacket &, unsigned int);
 private:
   void handle_accept(Session* new_session,
       const boost::system::error_code& error);
@@ -23,9 +20,8 @@ private:
   boost::asio::io_service ioService;
   boost::asio::ip::tcp::acceptor acceptor;
   std::vector<Session *> users;
-  TaskManager taskManager;
-  ThreadPool<TaskManager::Task>  threadPool;
   unsigned int maxUserId;
+  Server *server;
 };
 
 #endif // TCPSERVER_HPP

@@ -2,8 +2,8 @@
 #define TASKMANAGER_HPP
 
 #include <map>
+#include "TCPServer.hpp"
 #include "Protocol.hpp"
-#include "INetwork.hpp"
 
 class TaskManager
 {
@@ -15,16 +15,16 @@ public:
   };
   TaskManager();
   ~TaskManager();
-  using taskFunction = void (TaskManager::*)(BabelPacket const &);
+  using taskFunction = void (TaskManager::*)(Task const &);
   void executeTask(Task const &task);
-  void signInTask(BabelPacket const &);
-  void signUpTask(BabelPacket const &);
-  void signOutTask(BabelPacket const &);
-  void getContactTask(BabelPacket const &);
-  void callTask(BabelPacket const &);
-  void delContactTask(BabelPacket const &);
-  void addContactTask(BabelPacket const &);
-  void updateContactStatusTask(BabelPacket const &);
+  void signInTask(Task const &);
+  void signUpTask(Task const &);
+  void signOutTask(Task const &);
+  void getContactTask(Task const &);
+  void callTask(Task const &);
+  void delContactTask(Task const &);
+  void addContactTask(Task const &);
+  void updateContactStatusTask(Task const &);
 
   std::map<unsigned int, taskFunction> actions =
    {
@@ -40,7 +40,7 @@ public:
 
 private:
 //  Database *database;
-  INetwork *network;
+  TCPServer *network;
 };
 
 #endif // TASKMANAGER_HPP

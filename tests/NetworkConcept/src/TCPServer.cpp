@@ -1,6 +1,9 @@
 #include "TCPServer.hpp"
 
-TCPServer::TCPServer(unsigned short port): acceptor(ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)), maxUserId(0)
+TCPServer::TCPServer(Server *babelServer, unsigned short port):
+  acceptor(ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
+  maxUserId(0),
+  server(babelServer)
 {
 }
 
@@ -20,15 +23,15 @@ void TCPServer::shutDown()
 
 }
 
-bool TCPServer::sendBabelPacket(BabelPacket &packet)
+bool TCPServer::sendBabelPacket(BabelPacket &packet, unsigned int id)
 {
-//  for (Session *user : this->users)
-//  {
-//    if (user->getUserId() == packet.receiverId)
-//    {
-//      user->writeToClient(packet);
-//    }
-//  }
+  for (Session *user : this->users)
+  {
+    if (user->getUserId() == id)
+    {
+      user->writeToClient(packet);
+    }
+  }
   return (true);
 }
 
@@ -37,7 +40,7 @@ void TCPServer::handle_accept(Session *newSession, const boost::system::error_co
 {
   if (!error)
   {
-    newSession->start(&threadPool, &taskManager, this->maxUserId++);
+    newSession->start(server, this->maxUserId++);
     this->users.push_back(newSession);
   }
   else
