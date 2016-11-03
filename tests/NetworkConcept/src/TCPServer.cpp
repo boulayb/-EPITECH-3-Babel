@@ -30,9 +30,26 @@ bool TCPServer::sendBabelPacket(BabelPacket &packet, unsigned int id)
     if (user->getUserId() == id)
     {
       user->writeToClient(packet);
+      return true;
     }
   }
-  return (true);
+  return false;
+}
+
+void TCPServer::disconnectUser(int id)
+{
+
+  for (auto it = this->users.begin(); it != this->users.end(); ++it)
+  {
+    if ((*it).getUserId() == id)
+    {
+      (*it).socket.close();
+      this->users.erase(it);
+      delete *it;
+      return true;
+    }
+  }
+  return false;
 }
 
 

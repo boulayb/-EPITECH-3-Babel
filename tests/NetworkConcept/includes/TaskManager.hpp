@@ -39,8 +39,11 @@ public:
   };
 
 private:
-//  Database *database;
+  std::vector<std::string> &splitDataByDelimiter(char delimiter, char *data, int size);
+  Database *database;
   TCPServer *network;
+  const int LOGIN_INDEX = 0;
+  const int PASSWORD_INDEX = 0;
 };
 
 #endif // TASKMANAGER_HPP

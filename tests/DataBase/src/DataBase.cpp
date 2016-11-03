@@ -22,6 +22,15 @@ Protocol::BabelPacket::Code DataBase::login(std::string const &login, std::strin
     return (Protocol::BabelPacket::Code::LOGIN_SUCCESS);
 }
 
+std::string &DataBase::::getLoginById(int id)
+{
+  for (User user : this->_map)
+  {
+    if (user.getId() == id)
+      return user.getLogin();
+  }
+}
+
 Protocol::BabelPacket::Code DataBase::setId(std::string const &login, int id)
 {
     if (this->_map[login].getLogin() != login)
