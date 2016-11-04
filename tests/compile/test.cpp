@@ -6,7 +6,17 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/serialization/vector.hpp>
 
+// Ignore Warning
+#ifdef _MSC_VER
+#pragma warning(disable: 4127) // disable warning 4345
+#endif
+
 #include <QtGui>
+
+// Enable Warning
+#ifdef _MSC_VER
+#pragma warning(default: 4127) // disable warning 4345
+#endif
 
 #include <fstream>
 #include <cstdlib>
