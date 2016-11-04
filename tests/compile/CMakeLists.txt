@@ -3,6 +3,16 @@ project(babel_test)
 
 set(TEST_NAME "babel_test")
 
+set(TEST_SOURCE_FILES
+    test.cpp)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+find_package(Qt4 4.4.3 REQUIRED QtCore QtGui)
+
+## components needed from boost
+find_package(Boost 1.47 COMPONENTS system serialization REQUIRED)
+
 ## make sure that boost is dyn linked
 set(Boost_USE_STATIC_LIBS OFF CACHE BOOL "use static libraries from Boost")
 set(Boost_USE_MULTITHREADED ON)
@@ -22,13 +32,5 @@ elseif(UNIX)
   include_directories(.)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
-## components needed from boost
-find_package(Boost 1.47 COMPONENTS system REQUIRED)
-
-set(TEST_SOURCE_FILES
-    test.cpp)
-
 add_executable(${TEST_NAME} ${TEST_SOURCE_FILES})
-target_link_libraries(${TEST_NAME} ${Boost_LIBRARIES})
+target_link_libraries(${TEST_NAME} ${Boost_LIBRARIES} Qt4::QtCore Qt4::QtGui)
