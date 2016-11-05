@@ -1,7 +1,9 @@
 #ifndef _CODEC_HH_
 # define _CODEC_HH_
 
-class			Codec
+# include "ACodec.hh"
+
+class			Codec : public ACodec
 {
 
 private:
