@@ -23,7 +23,7 @@ void TCPServer::shutDown()
 
 }
 
-bool TCPServer::sendBabelPacket(BabelPacket &packet, unsigned int id)
+bool TCPServer::sendBabelPacket(Protocol::BabelPacket &packet, unsigned int id)
 {
   for (Session *user : this->users)
   {
@@ -36,14 +36,14 @@ bool TCPServer::sendBabelPacket(BabelPacket &packet, unsigned int id)
   return false;
 }
 
-void TCPServer::disconnectUser(int id)
+bool TCPServer::disconnectUser(int id)
 {
 
   for (auto it = this->users.begin(); it != this->users.end(); ++it)
   {
-    if ((*it).getUserId() == id)
+    if ((*it)->getUserId() == id)
     {
-      (*it).socket.close();
+      (*it)->socket.close();
       this->users.erase(it);
       delete *it;
       return true;

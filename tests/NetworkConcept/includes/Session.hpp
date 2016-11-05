@@ -15,7 +15,10 @@ public:
   void start(Server *, unsigned int);
   boost::asio::ip::tcp::socket &getSocket();
   int getUserId() const;
-  void writeToClient(BabelPacket const&);
+  void writeToClient(Protocol::BabelPacket const&);
+  //const boost::asio::ip::tcp::socket& getSocket() const;
+
+  boost::asio::ip::tcp::socket socket;
 private:
   void handleRead(const boost::system::error_code& error,
       size_t bytes_transferred);
@@ -25,10 +28,10 @@ private:
   void handleWrited(const boost::system::error_code &error, size_t bytes_transferred);
 
 
-  boost::asio::ip::tcp::socket socket;
-  unsigned char buffer[sizeof(BabelPacket)];
+  //boost::asio::ip::tcp::socket socket;
+  unsigned char buffer[sizeof(Protocol::BabelPacket)];
   unsigned char *packetData;
-  BabelPacket *currentPacket;
+  Protocol::BabelPacket *currentPacket;
   unsigned int userID;
   Server *server;
 };

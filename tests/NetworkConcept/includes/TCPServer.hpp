@@ -11,8 +11,8 @@ public:
   ~TCPServer();
   bool initiateService();
   void shutDown();
-  bool sendBabelPacket(BabelPacket &, unsigned int);
-  void disconnectUser(int userID);
+  bool sendBabelPacket(Protocol::BabelPacket &, unsigned int);
+  bool disconnectUser(int userID);
 private:
   void handle_accept(Session* new_session,
       const boost::system::error_code& error);

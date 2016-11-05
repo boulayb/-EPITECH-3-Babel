@@ -11,7 +11,7 @@ public:
   Server();
   ~Server();
   void startServer();
-  void addTask(BabelPacket &, int clientId);
+  void addTask(Protocol::BabelPacket &, int clientId);
 private:
   TCPServer *tcpServer;
   TaskManager taskManager;

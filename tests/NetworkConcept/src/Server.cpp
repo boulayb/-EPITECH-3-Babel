@@ -15,7 +15,7 @@ void Server::startServer()
   this->tcpServer->initiateService();
 }
 
-void Server::addTask(BabelPacket &packet, int clientId)
+void Server::addTask(Protocol::BabelPacket &packet, int clientId)
 {
   TaskManager::Task *newTask = new TaskManager::Task;
   newTask->packet = &packet;

@@ -1,21 +1,22 @@
 #ifndef TASKMANAGER_HPP
-#define TASKMANAGER_HPP
+# define TASKMANAGER_HPP
 
-#include <map>
-#include "TCPServer.hpp"
-#include "Protocol.hpp"
+# include <map>
+# include "DataBase.hpp"
+# include "TCPServer.hpp"
+# include "Protocol.hpp"
 
 class TaskManager
 {
 public:
   struct Task
   {
-    BabelPacket *packet;
+    Protocol::BabelPacket *packet;
     unsigned int clientID;
   };
   TaskManager();
   ~TaskManager();
-  using taskFunction = void (TaskManager::*)(Task const &);
+  typedef void (TaskManager::*taskFunction)(Task const &);
   void executeTask(Task const &task);
   void signInTask(Task const &);
   void signUpTask(Task const &);
@@ -26,21 +27,21 @@ public:
   void addContactTask(Task const &);
   void updateContactStatusTask(Task const &);
 
-  std::map<unsigned int, taskFunction> actions =
+  std::map<Protocol::BabelPacket::Code, taskFunction> actions =
    {
-     {BabelPacket::Code::SIGN_IN, &TaskManager::signInTask},
-     {BabelPacket::Code::SIGN_UP, &TaskManager::signUpTask},
-     {BabelPacket::Code::SIGN_OUT, &TaskManager::signOutTask},
-     {BabelPacket::Code::CONTACT_LIST_REQUEST, &TaskManager::getContactTask},
-     {BabelPacket::Code::CALL, &TaskManager::callTask},
-     {BabelPacket::Code::DEL_CONTACT, &TaskManager::delContactTask},
-     {BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask},
-     {BabelPacket::Code::UPDATE_CONTACT_STATUS, &TaskManager::updateContactStatusTask},
+     {Protocol::BabelPacket::Code::SIGN_IN, &TaskManager::signInTask},
+     {Protocol::BabelPacket::Code::SIGN_UP, &TaskManager::signUpTask},
+     {Protocol::BabelPacket::Code::SIGN_OUT, &TaskManager::signOutTask},
+     {Protocol::BabelPacket::Code::CONTACT_LIST_REQUEST, &TaskManager::getContactTask},
+     {Protocol::BabelPacket::Code::CALL, &TaskManager::callTask},
+     {Protocol::BabelPacket::Code::DEL_CONTACT, &TaskManager::delContactTask},
+     {Protocol::BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask},
+     {Protocol::BabelPacket::Code::UPDATE_CONTACT_STATUS, &TaskManager::updateContactStatusTask}
   };
 
 private:
   std::vector<std::string> &splitDataByDelimiter(char delimiter, char *data, int size);
-  Database *database;
+  DataBase *database;
   TCPServer *network;
   const int LOGIN_INDEX = 0;
   const int PASSWORD_INDEX = 0;

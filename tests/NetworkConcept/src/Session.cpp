@@ -19,7 +19,7 @@ void Session::start(Server *server, unsigned int userId)
 {
   this->server = server;
   this->userID = userId;
-  socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(BabelPacket)),
+  socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(Protocol::BabelPacket)),
       boost::bind(&Session::handleRead, this,
         boost::asio::placeholders::error,
         boost::asio::placeholders::bytes_transferred));
@@ -48,12 +48,12 @@ void Session::handleReadData(const boost::system::error_code &error, size_t byte
 
 void Session::handleRead(const boost::system::error_code &error, size_t bytes_transferred)
 {
-  BabelPacket *packet;
-  packet = reinterpret_cast<BabelPacket *>(this->buffer);
-  std::cout << "total size : " << sizeof(BabelPacket) << " " << sizeof(BabelPacket) + packet->dataLength + 1 << std::endl;
-  this->currentPacket = reinterpret_cast<BabelPacket *>(
-        new unsigned char[sizeof(BabelPacket) + packet->dataLength + 1]);
-  std::memcpy(this->currentPacket, packet, sizeof(BabelPacket));
+  Protocol::BabelPacket *packet;
+  packet = reinterpret_cast<Protocol::BabelPacket *>(this->buffer);
+  std::cout << "total size : " << sizeof(Protocol::BabelPacket) << " " << sizeof(Protocol::BabelPacket) + packet->dataLength + 1 << std::endl;
+  this->currentPacket = reinterpret_cast<Protocol::BabelPacket *>(
+        new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
+  std::memcpy(this->currentPacket, packet, sizeof(Protocol::BabelPacket));
   this->packetData = new unsigned char[this->currentPacket->dataLength + 1];
   this->socket.async_read_some(boost::asio::buffer(this->packetData, packet->dataLength),
                                boost::bind(&Session::handleReadData, this,
@@ -65,7 +65,7 @@ void Session::handleWrite(const boost::system::error_code &error)
 {
   if (!error)
   {
-    this->socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(BabelPacket)),
+    this->socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(Protocol::BabelPacket)),
                                  boost::bind(&Session::handleRead, this,
                                  boost::asio::placeholders::error,
                                  boost::asio::placeholders::bytes_transferred
@@ -82,11 +82,17 @@ void Session::handleWrited(const boost::system::error_code &error, size_t bytes_
 
 }
 
-void Session::writeToClient(const BabelPacket &packet)
+void Session::writeToClient(const Protocol::BabelPacket &packet)
 {
-  this->socket.async_write_some(boost::asio::buffer(&packet, sizeof(BabelPacket) + packet.dataLength),
+  this->socket.async_write_some(boost::asio::buffer(&packet, sizeof(Protocol::BabelPacket) + packet.dataLength),
                                 boost::bind(&Session::handleWrited, this,
                                 boost::asio::placeholders::error,
                                 boost::asio::placeholders::bytes_transferred
                                 ));
 }
+/*
+const boost::asio::ip::tcp::socket& Session::getSocket() const
+{
+  return this->socket;
+}
+*/
