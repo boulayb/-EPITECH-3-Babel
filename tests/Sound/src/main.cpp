@@ -9,6 +9,6 @@ int			main()
 {
     SoundControler	asound;
 
-    asound.AudioIn();
+    asound.testAudio();
     return (0);
 }

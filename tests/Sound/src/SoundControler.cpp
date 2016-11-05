@@ -5,16 +5,17 @@
 #include "Codec.hh"
 #include "SoundControler.hh"
 
-SoundControler::SoundControler() : inputStream(NULL), outputStream(NULL), paError(paNoError)
+SoundControler::SoundControler() : inputStream(NULL), outputStream(NULL), paError(paNoError), running(false)
 {
     this->paError = Pa_Initialize();
     if (this->checkPaError())
         std::cerr << "Error: can't initialize portaudio." << std::endl;
+    this->buffer.size = 0;    
     this->initInputParam();
-    this->initOutputParam();
     this->openInputStream();
-    this->openOutputStream();
     this->startInputStream();
+    this->initOutputParam();
+    this->openOutputStream();
     this->startOutputStream();
 }
 
@@ -87,7 +88,7 @@ void			SoundControler::initOutputParam()
     this->outputParam.hostApiSpecificStreamInfo = NULL;
 }
 
-int			SoundControler::openInputStream()
+void			SoundControler::openInputStream()
 {
     this->paError = Pa_OpenStream(&this->inputStream,
 				  &this->inputParam,
@@ -97,124 +98,100 @@ int			SoundControler::openInputStream()
 				  paClipOff,
 				  SoundControler::recordCallback,
 				  this);
-    if (this->checkPaError())
-	return (1);
-    return (0);
+    this->checkPaError();
 }
 
-int			SoundControler::openOutputStream()
+void			SoundControler::openOutputStream()
 {
     this->paError = Pa_OpenStream(&this->outputStream,
+				  NULL,
     				  &this->outputParam,
-    				  NULL,
     				  SAMPLE_RATE,
     				  FRAMES_PER_BUFFER,
     				  paClipOff,
     				  SoundControler::playCallback,
     				  this);
-    if (this->checkPaError())
-	return (1);
-    return (0);
+    this->checkPaError();
 }
 
-int			SoundControler::startInputStream()
+void			SoundControler::startInputStream()
 {
     this->paError = Pa_StartStream(this->inputStream);
-    if (this->checkPaError())
-	return (1);
-    return (0);
+    this->running = true;
+    this->checkPaError();
 }
 
-int			SoundControler::startOutputStream()
+void			SoundControler::startOutputStream()
 {
     this->paError = Pa_StartStream(this->outputStream);
-    if (this->checkPaError())
-	return (1);
-    return (0);
+    this->checkPaError();
 }
 
-int			SoundControler::stopInputStream()
+void			SoundControler::stopInputStream()
 {
     this->paError = Pa_StopStream(this->inputStream);
-    if (this->checkPaError())
-	return (1);
-    return (0);
+    this->running = false;
+    this->checkPaError();
 }
 
-int			SoundControler::stopOutputStream()
+void			SoundControler::stopOutputStream()
 {
     this->paError = Pa_StopStream(this->outputStream);
-    if (this->checkPaError())
-	return (1);
-    return (0);
+    this->checkPaError();
 }
 
 int			SoundControler::recordCallback(const void *inputBuffer,
-						       void *outputBuffer,
+						       void *,
 						       unsigned long framesPerBuffer,
-						       const PaStreamCallbackTimeInfo* timeInfo,
-						       PaStreamCallbackFlags statusFlags,
+						       const PaStreamCallbackTimeInfo *,
+						       PaStreamCallbackFlags,
 						       void *userData)
 {
-    SoundControler	*data;
-    const SAMPLE	*rptr;
-    const SAMPLE	*wptr;
-    
-    std::cout << "this->recordCallback();" << std::endl;
-    data = (SoundControler *)userData;
-    rptr = (const SAMPLE *)inputBuffer;
+    SoundControler	*soundControler = reinterpret_cast<SoundControler *>(userData);
+    DecPack		inSound;
 
-    // CALL data->codec.encodeData();
-    
-    (void)data;
-    (void)rptr;
-    (void)wptr;
-    (void)inputBuffer;
-    (void)outputBuffer;
-    (void)framesPerBuffer;
-    (void)timeInfo;
-    (void)statusFlags;
+    inSound.size = framesPerBuffer * CHANNEL;
+    inSound.sample.assign(reinterpret_cast<const float *>(inputBuffer), reinterpret_cast<const float *>(inputBuffer) + framesPerBuffer * CHANNEL);
+    soundControler->setBuffer(inSound);
     return (paContinue);
 }
 
-int			SoundControler::playCallback(const void *inputBuffer,
+int			SoundControler::playCallback(const void *,
 						     void *outputBuffer,
-						     unsigned long framesPerBuffer,
-						     const PaStreamCallbackTimeInfo* timeInfo,
-						     PaStreamCallbackFlags statusFlags,
+						     unsigned long,
+						     const PaStreamCallbackTimeInfo *,
+						     PaStreamCallbackFlags,
 						     void *userData)
 {
-    SoundControler	*data;
-    const SAMPLE	*rptr;
-    
-    std::cout << "this->playCallback();" << std::endl;
-    
-    data = (SoundControler *)userData;
-    rptr = (const SAMPLE *)outputBuffer;
+    SoundControler	*soundControler = reinterpret_cast<SoundControler *>(userData);
+    DecPack		inSound = soundControler->getBuffer();
+    SAMPLE		*tmp = inSound.sample.data();
+    SAMPLE		*outputPtr = static_cast<SAMPLE *>(outputBuffer);
 
-    // CALL data->codec.decodeData();
-    
-    (void)data;
-    (void)rptr;    
-    (void)inputBuffer;
-    (void)outputBuffer;
-    (void)framesPerBuffer;
-    (void)timeInfo;
-    (void)statusFlags;
+    if (soundControler->running)
+	{
+	    for (int i = 0; i < inSound.size; i++)
+		*outputPtr++ = tmp[i];
+	}
     return (paContinue);
 }
 
-void			SoundControler::AudioIn()
+void			SoundControler::setBuffer(DecPack const &buff)
 {
-    while ((this->paError = Pa_IsStreamActive(this->outputStream)) == 1)
-	{
-	    Pa_Sleep(1);
-	}
-    this->stopOutputStream();
-    this->stopInputStream();
+    this->buffer = buff;
 }
 
-void			SoundControler::AudioOut()
+const DecPack		&SoundControler::getBuffer()
 {
-    
+    return (this->buffer);
+}
+
+void			SoundControler::testAudio()
+{
+    while ((this->paError = Pa_IsStreamActive(this->inputStream)) == 1)
+    	{
+    	    Pa_Sleep(100);
+    	}
+    this->stopOutputStream();
+    this->stopInputStream();
 }
