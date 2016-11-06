@@ -1,9 +1,8 @@
 #include <iostream>
 #include "TaskManager.hpp"
 
-TaskManager::TaskManager()
+TaskManager::TaskManager(TCPServer *server) : network(server)
 {
-
 }
 
 TaskManager::~TaskManager()
@@ -13,12 +12,15 @@ TaskManager::~TaskManager()
 
 void TaskManager::executeTask(Task const &task)
 {
+  std::cout << "Trying to execute task " <<(int)task.packet->code <<  std::endl;
+  std::cout << task.packet->magicNbr << std::endl;
   if (task.packet->magicNbr == MAGIC_NUMBER)
   {
     auto it = this->actions.find(task.packet->code);
 
     if (it != this->actions.end())
     {
+      std::cout << "Executing task: " << (int)task.packet->code << "with data: " << task.packet->data << std::endl;
       (this->*(it->second))(task);
       return;
     }
@@ -29,7 +31,9 @@ void TaskManager::signInTask(Task const &task)
 {
   std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
   Protocol::BabelPacket::Code returnCode = this->database.login(dataSplited[LOGIN_INDEX], dataSplited[PASSWORD_INDEX]);
+  std::cout << (int)returnCode << std::endl;
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(returnCode, nullptr, 0);
+  std::cout << "good ? " << std::endl;
   this->network->sendBabelPacket(*packet, task.clientID);
 }
 
@@ -151,5 +155,6 @@ std::vector<std::__cxx11::string> &TaskManager::splitDataByDelimiter(char delimi
     else
       word += data[i];
   }
+  dataSplited->push_back(word);
   return *dataSplited;
 }

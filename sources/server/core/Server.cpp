@@ -5,6 +5,7 @@ Server::Server(int port)
   try
   {
     this->tcpServer = new TCPServer(this, port);
+    this->taskManager = new TaskManager(this->tcpServer);
   }
   catch (std::exception &e)
   {
@@ -15,7 +16,8 @@ Server::Server(int port)
 
 Server::~Server()
 {
-
+  delete this->taskManager;
+  delete this->tcpServer;
 }
 
 void Server::startServer()
@@ -34,5 +36,5 @@ void Server::addTask(Protocol::BabelPacket &packet, int clientId)
 
 const TaskManager &Server::getTaskManager() const
 {
-  return this->taskManager;
+  return *this->taskManager;
 }

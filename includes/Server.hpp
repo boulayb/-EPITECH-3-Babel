@@ -15,7 +15,7 @@ public:
   const TaskManager &getTaskManager() const;
 private:
   TCPServer *tcpServer;
-  TaskManager taskManager;
+  TaskManager *taskManager;
   ThreadPool<TaskManager::Task>  threadPool;
 };
 

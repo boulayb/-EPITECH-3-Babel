@@ -14,7 +14,7 @@ public:
     Protocol::BabelPacket *packet;
     unsigned int clientID;
   };
-  TaskManager();
+  TaskManager(TCPServer *);
   ~TaskManager();
   typedef void (TaskManager::*taskFunction)(Task const &);
   void executeTask(Task const &task);
