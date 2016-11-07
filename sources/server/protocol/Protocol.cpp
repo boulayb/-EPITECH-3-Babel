@@ -9,7 +9,6 @@ struct Protocol::BabelPacket          *Protocol::Protocol::createPacket(BabelPac
   packet->magicNbr = MAGIC_NUMBER;
   packet->code = code;
   packet->dataLength = length;
-  //packet->data[0] = *data; Alors Cooodie, on ne sait pas ce que c'est un pointeur ? belle ligne de code
   std::memcpy(packet->data, data, length);
   return packet;
 }

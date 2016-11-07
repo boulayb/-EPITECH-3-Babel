@@ -12,7 +12,7 @@ TaskManager::~TaskManager()
 
 void TaskManager::executeTask(Task const &task)
 {
-  std::cout << "Trying to execute task " <<(int)task.packet->code <<  std::endl;
+  std::cout << "Trying to execute task " << (int)task.packet->code <<  std::endl;
   std::cout << task.packet->magicNbr << std::endl;
   if (task.packet->magicNbr == MAGIC_NUMBER)
   {

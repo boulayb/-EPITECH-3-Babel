@@ -40,7 +40,7 @@ private:
      {Protocol::BabelPacket::Code::CONTACT_LIST_REQUEST, &TaskManager::getContactTask},
      {Protocol::BabelPacket::Code::CALL, &TaskManager::callTask},
      {Protocol::BabelPacket::Code::DEL_CONTACT, &TaskManager::delContactTask},
-     {Protocol::BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask},
+     {Protocol::BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask}
   };
 
   std::vector<std::string> &splitDataByDelimiter(char delimiter, unsigned char *data, int size);
