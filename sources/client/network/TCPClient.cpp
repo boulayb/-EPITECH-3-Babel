@@ -6,9 +6,8 @@ TCPClient::TCPClient(const std::string &hostname, unsigned short port, QObject *
 {
   this->tcpSocket = new QTcpSocket(this);
   connect(this->tcpSocket, SIGNAL(readyRead()),this, SLOT(readMessage()));
-  typedef void (QAbstractSocket::*QAbstractSocketErrorSignal)(QAbstractSocket::SocketError);
-  connect(tcpSocket, static_cast<QAbstractSocketErrorSignal>(&QAbstractSocket::error),
-           this, &TCPClient::displayError);
+  connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+          this, SLOT(displayError(QAbstractSocket::SocketError)));
 }
 
 TCPClient::~TCPClient()

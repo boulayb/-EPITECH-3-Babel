@@ -18,9 +18,12 @@ public:
   ~TCPClient();
   bool initiateService();
   void shutDown();
-  bool sendBabelPacket(BabelPacket &);
+  bool sendBabelPacket(Protocol::BabelPacket &);
+private:
+  void displayError(QAbstractSocket::SocketError socketError);
 private slots:
   void readMessage();
+
 private:
   std::string hostName;
   unsigned short port;

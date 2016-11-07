@@ -21,7 +21,6 @@ set(CLIENT_SOURCE_FILES
   ${CLIENT_SRCDIR}gui/mainwindow.cpp
   ${CLIENT_SRCDIR}gui/mycontactlistitem.cpp
   ${CLIENT_SRCDIR}network/TCPClient.cpp
-  ${CLIENT_SRCDIR}network/UDPClient.cpp
   ${CLIENT_SRCDIR}sound/Codec.cpp
   ${CLIENT_SRCDIR}sound/SoundControler.cpp
   ${CLIENT_SRCDIR}sound/sound.cpp)

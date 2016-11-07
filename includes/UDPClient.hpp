@@ -16,7 +16,7 @@ public:
   ~UDPClient();
   bool initiateService();
   void shutDown();
-  bool sendBabelPacket(BabelPacket &);
+  bool sendBabelPacket(Protocol::BabelPacket &);
 private slots:
   void readMessage();
 private:
