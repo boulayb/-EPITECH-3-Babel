@@ -20,6 +20,8 @@ CMake*
 Makefile
 !CMakeLists.txt // EXCEPT THIS ONE
 !tests/compile/CMakeLists.txt
+moc_mainwindow.cxx_parameters
+moc_UIS_CPP.cxx_parameters
 
 // TMP FILES
 *~
