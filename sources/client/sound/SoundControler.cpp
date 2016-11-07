@@ -190,7 +190,7 @@ void			SoundControler::testAudio()
 {
     while ((this->paError = Pa_IsStreamActive(this->inputStream)) == 1)
     	{
-    	    Pa_Sleep(100);
+    	    Pa_Sleep(1);
     	}
     this->stopOutputStream();
     this->stopInputStream();
