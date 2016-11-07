@@ -47,10 +47,10 @@ Protocol::BabelPacket::Code DataBase::registerUser(std::string const &login, std
 Protocol::BabelPacket::Code DataBase::login(std::string const &login, std::string const &password)
 {
   if (this->_map[login].getLogin() != login)
-    return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
+    return (Protocol::BabelPacket::Code::SIGN_IN_FAILED);
   if (this->_map[login].getPassword() != password)
-    return (Protocol::BabelPacket::Code::WRONG_PASSWORD);
-  return (Protocol::BabelPacket::Code::LOGIN_SUCCESS);
+    return (Protocol::BabelPacket::Code::SIGN_IN_FAILED);
+  return (Protocol::BabelPacket::Code::SIGN_IN_SUCCESS);
 }
 
 std::string const &DataBase::getLoginById(int id) const
@@ -70,7 +70,7 @@ Protocol::BabelPacket::Code DataBase::setId(std::string const &login, int id)
   if (this->_map[login].getLogin() != login)
     return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
   this->_map[login].setId(id);
-  return (Protocol::BabelPacket::Code::ID_ADDED);
+  return (Protocol::BabelPacket::Code::SIGN_UP_SUCCESS);
 }
 
 int DataBase::getId(std::string const &login) const
@@ -88,11 +88,11 @@ Protocol::BabelPacket::Code DataBase::addFriend(std::string const &login, std::s
   for (std::vector<std::string>::iterator it = this->_map[login].getFriends().begin(); it != this->_map[login].getFriends().end(); ++it)
   {
       if (newFriend == *it)
-          return (Protocol::BabelPacket::Code::ALREADY_A_FRIEND);
+          return (Protocol::BabelPacket::Code::USER_ALREADY_FRIEND);
   }
   this->_map[login].getFriends().push_back(newFriend);
   this->writeMap();
-  return (Protocol::BabelPacket::Code::CONTACT_ADDED);
+  return (Protocol::BabelPacket::Code::CONTACT_ADD_SUCCESS);
 }
 
 Protocol::BabelPacket::Code DataBase::deleteFriend(std::string const &login, std::string const &newFriend)
@@ -105,10 +105,10 @@ Protocol::BabelPacket::Code DataBase::deleteFriend(std::string const &login, std
     {
         this->_map[login].getFriends().erase(it);
       this->writeMap();
-      return (Protocol::BabelPacket::Code::CONTACT_DELETED);
+      return (Protocol::BabelPacket::Code::CONTACT_DEL_SUCCESS);
     }
   }
-  return (Protocol::BabelPacket::Code::FRIEND_NOT_FOUND);
+  return (Protocol::BabelPacket::Code::USER_NOT_FRIEND);
 }
 
 const std::vector<std::string> &DataBase::getFriendsList(std::string const &login) const
