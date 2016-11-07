@@ -22,6 +22,7 @@ public:
 
 private:
 
+  void handShakeTask(Task const &);
   void signInTask(Task const &);
   void signUpTask(Task const &);
   void signOutTask(Task const &);
@@ -32,6 +33,7 @@ private:
 
   std::map<Protocol::BabelPacket::Code, taskFunction> actions =
    {
+     {Protocol::BabelPacket::Code::HANDSHAKE, &TaskManager::handShakeTask},
      {Protocol::BabelPacket::Code::SIGN_IN, &TaskManager::signInTask},
      {Protocol::BabelPacket::Code::SIGN_UP, &TaskManager::signUpTask},
      {Protocol::BabelPacket::Code::SIGN_OUT, &TaskManager::signOutTask},

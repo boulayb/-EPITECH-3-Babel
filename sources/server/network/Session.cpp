@@ -2,7 +2,7 @@
 #include "Session.hpp"
 #include "Server.hpp"
 
-Session::Session(boost::asio::io_service &io_service) : socket(io_service), packetData(nullptr), currentPacket(nullptr), userID(-1)
+Session::Session(boost::asio::io_service &io_service) : socket(io_service), packetData(nullptr), currentPacket(nullptr), userID(-1), handShaked(false)
 {
 
 }
@@ -19,10 +19,12 @@ void Session::start(Server *server, unsigned int userId)
 {
   this->server = server;
   this->userID = userId;
-  socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(Protocol::BabelPacket)),
+  this->socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(Protocol::BabelPacket)),
       boost::bind(&Session::handleRead, this,
-        boost::asio::placeholders::error,
-        boost::asio::placeholders::bytes_transferred));
+      boost::asio::placeholders::error,
+      boost::asio::placeholders::bytes_transferred));
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HANDSHAKE, nullptr, 0);
+  this->writeToClient(*packet);
 }
 
 boost::asio::ip::tcp::socket &Session::getSocket()

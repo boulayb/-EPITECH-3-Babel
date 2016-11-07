@@ -22,6 +22,7 @@ namespace Protocol
         ADD_CONTACT = 105,
         DEL_CONTACT = 106,
         UPDATE_CONTACT_STATUS = 107,
+        HANDSHAKE = 300,
         // Errors
         INVALID_REQUEST = 1,
         USER_NOT_FOUND = 2,

@@ -27,6 +27,12 @@ void TaskManager::executeTask(Task const &task)
   }
 }
 
+void TaskManager::handShakeTask(Task const &task)
+{
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HANDSHAKE, nullptr, 0);
+  this->network->sendBabelPacket(*packet, task.clientID);
+}
+
 void TaskManager::signInTask(Task const &task)
 {
   std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
