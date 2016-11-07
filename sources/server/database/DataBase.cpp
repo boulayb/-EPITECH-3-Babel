@@ -8,7 +8,7 @@ DataBase::DataBase()
 {
   User user;
 
-  std::ifstream file(DATABASE_PATH, std::ios::in);
+  std::ifstream file(DATABASE_PATH, std::fstream::in | std::fstream::out | std::fstream::trunc);
   if (file.is_open())
   {
     try {
