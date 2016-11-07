@@ -20,6 +20,8 @@ set(CLIENT_SOURCE_FILES
   ${CLIENT_SRCDIR}gui/gui.cpp
   ${CLIENT_SRCDIR}gui/mainwindow.cpp
   ${CLIENT_SRCDIR}gui/mycontactlistitem.cpp
+  ${CLIENT_SRCDIR}network/TCPClient.cpp
+  ${CLIENT_SRCDIR}network/UDPClient.cpp
   ${CLIENT_SRCDIR}sound/Codec.cpp
   ${CLIENT_SRCDIR}sound/SoundControler.cpp
   ${CLIENT_SRCDIR}sound/sound.cpp)
@@ -35,7 +37,7 @@ set(SERVER_SOURCE_FILES
   ${SERVER_SRCDIR}protocol/Protocol.cpp)
 
 ## libs needed
-find_package(Qt4 4.4.3 REQUIRED QtCore QtGui)
+find_package(Qt4 4.4.3 REQUIRED QtCore QtGui QtNetwork)
 find_package(Boost 1.47 COMPONENTS system serialization REQUIRED)
 
 ## make sure that boost is dyn linked
