@@ -33,6 +33,7 @@ private:
   unsigned char *packetData;
   Protocol::BabelPacket *currentPacket;
   unsigned int userID;
+  bool handShaked;
   Server *server;
 };
 
