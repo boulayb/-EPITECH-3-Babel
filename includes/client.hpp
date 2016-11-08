@@ -20,6 +20,8 @@ private:
       {Protocol::BabelPacket::Code::SIGN_UP_SUCCESS, &Client::login},
       {Protocol::BabelPacket::Code::SIGN_OUT_SUCCESS, &Client::logout},
       {Protocol::BabelPacket::Code::CONTACT_LIST_SUCCESS, &Client::updateContactList},
+      {Protocol::BabelPacket::Code::UPDATE_CONTACT_STATUS, &Client::updateContactStatus},
+      {Protocol::BabelPacket::Code::CALL, &Client::incomingCall},
       {Protocol::BabelPacket::Code::CALL_ACCEPTED, &Client::callAccepted},
       {Protocol::BabelPacket::Code::CALL_DECLINED, &Client::callDeclined},
       {Protocol::BabelPacket::Code::CONTACT_ADD_SUCCESS, &Client::contactAdded},
@@ -41,6 +43,8 @@ private:
   void       login(Protocol::BabelPacket const &packet);
   void       logout(Protocol::BabelPacket const &packet);
   void       updateContactList(Protocol::BabelPacket const &packet);
+  void       updateContactStatus(Protocol::BabelPacket const &packet);
+  void       incomingCall(Protocol::BabelPacket const &packet);
   void       callAccepted(Protocol::BabelPacket const &packet);
   void       callDeclined(Protocol::BabelPacket const &packet);
   void       contactAdded(Protocol::BabelPacket const &packet);

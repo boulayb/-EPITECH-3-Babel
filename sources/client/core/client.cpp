@@ -57,6 +57,28 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
   //this->gui->updateContactList(contactList);
 }
 
+void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
+{
+  std::pair<std::string, bool> contactStatus;
+  std::string data(const_cast<char *>(reinterpret_cast<const char *>(packet.data)));
+  std::string name = "";
+
+  if ((name = data.substr(0, data.find(":"))) != "")
+    {
+      std::string status = data.substr(0, data.find(";"));
+      if (status == "1")
+	contactStatus = std::make_pair(name, true);
+      else
+	contactStatus = std::make_pair(name, false);
+      //this->gui->updateContactStatus(contactStatus);
+    }
+}
+
+void       Client::incomingCall(Protocol::BabelPacket const &packet)
+{
+  //this->gui->incomingCall();
+}
+
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
 {
   //this->gui->callAccepted();
