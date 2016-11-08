@@ -127,7 +127,7 @@ void        MainWindow::UpdateContactList(std::vector<std::pair<std::string, boo
 void    MainWindow::updateContact(std::pair<std::string, bool> contact)
 {
     MyContactListItem *item;
-    item = ui->ContactList->findItems(contact.first.c_str(), Qt::MatchExactly);
+    item = static_cast<MyContactListItem *>(ui->ContactList->findItems(contact.first.c_str(), Qt::MatchExactly).at(0));
 
     if (contact.second)
       {
@@ -203,12 +203,12 @@ void    MainWindow::newError(const std::string &error)
 bool    MainWindow::incommingCall(const std::__cxx11::string &userName)
 {
      QMessageBox::StandardButton reply;
-
-     reply = QMessageBox::question(this, "Incomming Call", "Accept call from" + userName + " ?",
+     (void) userName;
+     reply = QMessageBox::question(this, "Incomming Call", "Accept call from ?",
                                     QMessageBox::Yes|QMessageBox::No);
      if (reply == QMessageBox::Yes)
      {
-         this->setIncall(true);
+         this->setInCall(true);
          return true;
      }
      else
