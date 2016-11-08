@@ -2,8 +2,8 @@
 #define TCPCLIENT_HHP
 
 #include <QObject>
-#include <QTcpSocket>
-#include <QAbstractSocket>
+#include <QtNetwork/QAbstractSocket>
+#include <QtNetwork/QTcpSocket>
 #include <QDebug>
 #include <QIODevice>
 #include "INetwork.hpp"
@@ -11,8 +11,6 @@
 
 class TCPClient : public  QObject, public INetwork
 {
-  Q_OBJECT
-
 public:
   TCPClient(std::string const &hostname, unsigned short port, QObject *parent = 0);
   ~TCPClient();
