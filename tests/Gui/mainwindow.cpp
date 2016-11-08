@@ -4,10 +4,13 @@
 #include <iostream>
 #include <QListWidget>
 #include "mycontactlistitem.h"
+#include "Protocol.hpp"
 
 MainWindow::MainWindow(Gui *gui, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     this->gui = gui;
+    this->network = new TCPClient("127.0.0.1", 4001);
+    this->network->initiateService();
     ui->setupUi(this);
     ui->Stack->setCurrentIndex(0);
     ui->ErrorLogin->setVisible(false);
@@ -95,6 +98,9 @@ void        MainWindow::LogoutButton()
 
 void    MainWindow::AddContactButton()
 {
+  unsigned char data[500] = "kappa;mdp";
+  Protocol::BabelPacket *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::SIGN_IN, data, 9);
+  this->network->sendBabelPacket(*newPacket);
     if (!inCall)
     {
         if (ui->AddContactButton->text().isEmpty())
