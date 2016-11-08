@@ -55,22 +55,18 @@ Protocol::BabelPacket::Code DataBase::login(std::string const &login, std::strin
 
 std::string const &DataBase::getLoginById(int id) const
 {
-  std::cout << "wtf" << this->_map.size() <<std::endl;
   for (std::pair<std::string, User> p : this->_map)
   {
-    std::cout << "wtf" << std::endl;
     if (p.second.getId() == id)
       return p.second.getLogin();
   }
   throw std::exception();
 }
 
-Protocol::BabelPacket::Code DataBase::setId(std::string const &login, int id)
+void DataBase::setId(std::string const &login, int id)
 {
-  if (this->_map[login].getLogin() != login)
-    return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
-  this->_map[login].setId(id);
-  return (Protocol::BabelPacket::Code::SIGN_UP_SUCCESS);
+  if (this->_map[login].getLogin() == login)
+    this->_map[login].setId(id);
 }
 
 int DataBase::getId(std::string const &login) const

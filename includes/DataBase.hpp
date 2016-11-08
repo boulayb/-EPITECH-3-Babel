@@ -23,7 +23,7 @@ public:
     Protocol::BabelPacket::Code addFriend(std::string const& login, std::string const& newFriend);
     Protocol::BabelPacket::Code deleteFriend(std::string const &login, std::string const &newFriend);
     const std::vector<std::string>& getFriendsList(std::string const& login) const;
-    Protocol::BabelPacket::Code setId(std::string const &login, int id);
+    void setId(std::string const &login, int id);
     int getId(std::string const &login) const;
     std::string const &getLoginById(int id) const;
 private:

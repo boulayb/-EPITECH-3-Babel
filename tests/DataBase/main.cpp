@@ -6,7 +6,7 @@ int main()
 {
     std::vector<std::string> save;
     DataBase *base = new DataBase;
-    base->registerUser("blld", "passowrd");
+    base->registerUser("bocque", "passowrd");
     std::cout << base->getId("blld") << std::endl;
     std::cout << base->getId("bocque") << std::endl;
     base->setId("bocque", 12);
