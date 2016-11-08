@@ -5,6 +5,7 @@
 # include <vector>
 # include "INetwork.hpp"
 # include "Protocol.hpp"
+#include "TCPClient.hpp"
 
 class Gui;
 
