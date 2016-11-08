@@ -2,8 +2,8 @@
 #define UDPCLIENT_H
 
 #include <QObject>
-#include <QUdpSocket>
-#include <QAbstractSocket>
+#include <QtNetwork/QAbstractSocket>
+#include <QtNetwork/QUdpSocket>
 #include <QDebug>
 #include <QIODevice>
 #include "INetwork.hpp"
@@ -11,7 +11,8 @@
 class UDPClient : public  QObject, public INetwork
 {
   Q_OBJECT
-public:
+
+ public:
   UDPClient(std::string const &hostname, unsigned short port, QObject *parent = 0);
   ~UDPClient();
   bool initiateService();
