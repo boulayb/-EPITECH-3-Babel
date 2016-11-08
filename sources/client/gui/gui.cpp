@@ -1,18 +1,14 @@
 #include "gui.hh"
-#include <QApplication>
 #include <iostream>
 #include "Protocol.hpp"
 #include "client.hpp"
 
-Gui::Gui(int ac, char **av, Client *client)
+Gui::Gui(int ac, char **av, Client *client) : app(ac, av)
 {
-    QApplication  app(ac, av);
     MainWindow *w = new MainWindow(this);
     this->mainWindow = w;
     this->client = client;
     w->show();
-
-    app.exec();
 }
 
 void    Gui::AddContact(std::string contactName)
@@ -73,9 +69,9 @@ void    Gui::UpdateContact(std::pair<std::__cxx11::string, bool>    contact)
 void    Gui::incommingCall(const std::string &userName)
 {
     if (mainWindow->incommingCall(userName))
-        client->sendBabelPacket(Protocol::BabelPacket::Code::ACCEPT_CALL);
+        client->sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED);
     else
-        client->sendBabelPacket(Protocol::BabelPacket::Code::DECLINE_CALL);
+        client->sendBabelPacket(Protocol::BabelPacket::Code::CALL_DECLINED);
 
 }
 
@@ -84,3 +80,7 @@ void    Gui::endCall()
     this->mainWindow->setInCall(false);
 }
 
+void    Gui::start()
+{
+    this->app.exec();
+}

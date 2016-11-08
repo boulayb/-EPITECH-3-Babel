@@ -16,7 +16,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(INC_DIR "includes" "libs/include/")
 
 set(CLIENT_SOURCE_FILES
-  ${CLIENT_SRCDIR}gui/main.cpp
+  ${CLIENT_SRCDIR}core/main.cpp
   ${CLIENT_SRCDIR}gui/gui.cpp
   ${CLIENT_SRCDIR}gui/mainwindow.cpp
   ${CLIENT_SRCDIR}gui/mycontactlistitem.cpp

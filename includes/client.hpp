@@ -6,11 +6,13 @@
 # include "INetwork.hpp"
 # include "Protocol.hpp"
 
+class Gui;
+
 class Client
 {
 private:
   INetwork  *tcpClient;
-  //Gui       *gui;
+  Gui       *gui;
 
   typedef void (Client::*fptr)(Protocol::BabelPacket const &);
   std::map<Protocol::BabelPacket::Code, fptr>      readFunctions =
@@ -56,6 +58,7 @@ private:
  public:
   Client();
   ~Client();
+  void       setGUI(Gui *) const;
   void       readBabelPacket(Protocol::BabelPacket const &packet);
   void       sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user = "", std::string const &passwd = "");
 };

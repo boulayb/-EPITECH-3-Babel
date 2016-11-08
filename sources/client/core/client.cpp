@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include "client.hpp"
+#include "gui.hh"
 
 Client::Client()
 {
@@ -8,6 +9,11 @@ Client::Client()
 
 Client::~Client()
 {
+}
+
+void       Client::setGUI(Gui *) const
+{
+  this->gui = gui;
 }
 
 void       Client::readBabelPacket(Protocol::BabelPacket const &packet)

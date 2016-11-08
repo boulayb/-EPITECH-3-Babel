@@ -9,8 +9,6 @@
 MainWindow::MainWindow(Gui *gui, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     this->gui = gui;
-    this->network = new TCPClient("127.0.0.1", 4001);
-    this->network->initiateService();
     ui->setupUi(this);
     ui->Stack->setCurrentIndex(0);
     ui->ErrorLogin->setVisible(false);
@@ -67,8 +65,7 @@ void        MainWindow::RegisterRegisterButton()
          QMessageBox::information(this,"Error","Passwords are differents");
     else
     {
-        QCryptographicHash* hash;
-        QByteArray password = hash->hash(ui->PasswordLogInput->text().toUtf8(),QCryptographicHash::Md5);
+        QByteArray password = this->hash->hash(ui->PasswordLogInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
         this->gui->askRegister(ui->UsernameRegisterInput->text().toUtf8().constData(), passwordHash.toUtf8().constData());
         QMessageBox::information(this, "Succes", "Sent registering request");
@@ -97,9 +94,6 @@ void        MainWindow::Logout()
 
 void    MainWindow::AddContactButton()
 {
-  unsigned char data[500] = "kappa;mdp";
-  Protocol::BabelPacket *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::SIGN_IN, data, 9);
-  this->network->sendBabelPacket(*newPacket);
     if (!inCall)
     {
         if (ui->AddContactButton->text().isEmpty())
@@ -133,9 +127,9 @@ void        MainWindow::UpdateContactList(std::vector<std::pair<std::string, boo
 void    MainWindow::updateContact(std::pair<std::string, bool> contact)
 {
     MyContactListItem *item;
-    item = ui->ContactList->findItems(contact->first, Qt::MatchExactly);
+    item = ui->ContactList->findItems(contact.first.c_str(), Qt::MatchExactly);
 
-    if (contact->second)
+    if (contact.second)
       {
          item->setIcon(QIcon("ressources/online.png"));
          item->setOnline(true);
