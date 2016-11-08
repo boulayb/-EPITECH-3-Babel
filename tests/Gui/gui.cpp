@@ -1,58 +1,86 @@
 #include "gui.hh"
 #include <QApplication>
 #include <iostream>
+#include "Protocol.hpp"
+#include "client.hpp"
 
-Gui::Gui(int ac, char **av)
+Gui::Gui(int ac, char **av, Client *client)
 {
     QApplication  app(ac, av);
     MainWindow *w = new MainWindow(this);
     this->mainWindow = w;
+    this->client = client;
     w->show();
 
     app.exec();
 }
 
-bool    Gui::AddContact(std::string contactName)
+void    Gui::AddContact(std::string contactName)
 {
-    (void) contactName;
-    return true;
+    client->sendBabelPacket(Protocol::BabelPacket::Code::ADD_CONTACT, contactName);
 }
 
-bool    Gui::askRegister(std::string username, std::string password)
+void    Gui::askRegister(std::string username, std::string password)
 {
-    (void) username;
-    (void) password;
-    return true;
+    client->sendBabelPacket(Protocol::BabelPacket::Code::SIGN_UP, username, password);
 }
 
-bool    Gui::askLogin(std::string username, std::string password)
+void    Gui::askLogin(std::string username, std::string password)
 {
-    (void) username;
-    (void) password;
-    return true;
+    client->sendBabelPacket(Protocol::BabelPacket::Code::SIGN_IN, username, password);
 }
 
-void    Gui::logout()
+void    Gui::askLogout()
 {
+    client->sendBabelPacket(Protocol::BabelPacket::Code::SIGN_OUT);
 }
 
-bool    Gui::call(std::string    contactName)
+void    Gui::call(std::string    contactName)
 {
-    (void) contactName;
-    return (true);
-}
-
-void    Gui::endCall()
-{
-
+    client->sendBabelPacket(Protocol::BabelPacket::Code::CALL, contactName);
 }
 
 void    Gui::removeContact(std::string contactName)
 {
-    (void) contactName;
+    client->sendBabelPacket(Protocol::BabelPacket::Code::DEL_CONTACT, contactName);
 }
 
 void    Gui::newError(const std::string &error)
 {
     this->mainWindow->newError(error);
 }
+
+void    Gui::Login()
+{
+    this->mainWindow->Login();
+}
+
+void    Gui::Logout()
+{
+    this->mainWindow->Logout();
+}
+
+void    Gui::UpdateContactList(std::vector<std::pair<std::string, bool>>    contactList)
+{
+    this->mainWindow->UpdateContactList(contactList);
+}
+
+void    Gui::UpdateContact(std::pair<std::__cxx11::string, bool>    contact)
+{
+    this->mainWindow->updateContact(contact);
+}
+
+void    Gui::incommingCall(const std::string &userName)
+{
+    if (mainWindow->incommingCall(userName))
+        client->sendBabelPacket(Protocol::BabelPacket::Code::ACCEPT_CALL);
+    else
+        client->sendBabelPacket(Protocol::BabelPacket::Code::DECLINE_CALL);
+
+}
+
+void    Gui::endCall()
+{
+    this->mainWindow->setInCall(false);
+}
+

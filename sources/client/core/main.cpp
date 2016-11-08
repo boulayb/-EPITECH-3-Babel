@@ -3,7 +3,7 @@
 
 int             main(void)
 {
-  client        test;
+  Client        test;
 
   return (EXIT_SUCCESS);
 }

@@ -5,12 +5,13 @@
 #include "Codec.hh"
 #include "SoundControler.hh"
 
-SoundControler::SoundControler() : inputStream(NULL), outputStream(NULL), paError(paNoError), running(false)
+SoundControler::SoundControler() : inputStream(NULL), outputStream(NULL), paError(paNoError), isRunning(false)
 {
     this->paError = Pa_Initialize();
     if (this->checkPaError())
         std::cerr << "Error: can't initialize portaudio." << std::endl;
-    this->buffer.size = 0;    
+    this->encPack.size = 0;    
+    this->decPack.size = 0;    
     this->initInputParam();
     this->openInputStream();
     this->startInputStream();
@@ -117,7 +118,7 @@ void			SoundControler::openOutputStream()
 void			SoundControler::startInputStream()
 {
     this->paError = Pa_StartStream(this->inputStream);
-    this->running = true;
+    this->isRunning = true;
     this->checkPaError();
 }
 
@@ -130,7 +131,7 @@ void			SoundControler::startOutputStream()
 void			SoundControler::stopInputStream()
 {
     this->paError = Pa_StopStream(this->inputStream);
-    this->running = false;
+    this->isRunning = false;
     this->checkPaError();
 }
 
@@ -141,18 +142,20 @@ void			SoundControler::stopOutputStream()
 }
 
 int			SoundControler::recordCallback(const void *inputBuffer,
-						       void *,
-						       unsigned long framesPerBuffer,
-						       const PaStreamCallbackTimeInfo *,
-						       PaStreamCallbackFlags,
-						       void *userData)
+						                   void *,
+                                           unsigned long framesPerBuffer,
+						                   const PaStreamCallbackTimeInfo *,
+                                           PaStreamCallbackFlags,
+						                   void *userData)
 {
     SoundControler	*soundControler = reinterpret_cast<SoundControler *>(userData);
-    DecPack		inSound;
+    DecPack		decPack;
 
-    inSound.size = framesPerBuffer * CHANNEL;
-    inSound.sample.assign(reinterpret_cast<const float *>(inputBuffer), reinterpret_cast<const float *>(inputBuffer) + framesPerBuffer * CHANNEL);
-    soundControler->setBuffer(inSound);
+    decPack.size = framesPerBuffer * CHANNEL;
+    decPack.sample.assign(reinterpret_cast<const float *>(inputBuffer), reinterpret_cast<const float *>(inputBuffer) + framesPerBuffer * CHANNEL);
+    soundControler->setDecPack(decPack);
+    soundControler->setEncPack(soundControler->codec.encodePack(decPack));
+    // soundControler->setDecPack(soundControler->codec.decodePack(soundControler->getEncPack()));
     return (paContinue);
 }
 
@@ -164,26 +167,37 @@ int			SoundControler::playCallback(const void *,
 						     void *userData)
 {
     SoundControler	*soundControler = reinterpret_cast<SoundControler *>(userData);
-    DecPack		inSound = soundControler->getBuffer();
-    SAMPLE		*tmp = inSound.sample.data();
+    DecPack		decPack = soundControler->getDecPack();
+    // DecPack		decPack = soundControler->codec.decodePack(soundControler->getEncPack());
+    SAMPLE		*tmp = decPack.sample.data();
     SAMPLE		*outputPtr = static_cast<SAMPLE *>(outputBuffer);
 
-    if (soundControler->running)
-	{
-	    for (int i = 0; i < inSound.size; i++)
-		*outputPtr++ = tmp[i];
-	}
+    if (soundControler->isRunning)
+    	{
+    	    for (int i = 0; i < decPack.size; i++)
+    		*outputPtr++ = tmp[i];
+    	}
     return (paContinue);
 }
 
-void			SoundControler::setBuffer(DecPack const &buff)
+void			SoundControler::setDecPack(DecPack const &pack)
 {
-    this->buffer = buff;
+    this->decPack = pack;
 }
 
-const DecPack		&SoundControler::getBuffer()
+const DecPack		&SoundControler::getDecPack()
+{   
+    return (this->decPack);
+}
+
+void			SoundControler::setEncPack(EncPack const &pack)
 {
-    return (this->buffer);
+    this->encPack = pack;
+}
+
+const EncPack		&SoundControler::getEncPack()
+{
+    return (this->encPack);
 }
 
 void			SoundControler::testAudio()

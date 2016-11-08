@@ -33,14 +33,14 @@ private:
 
   std::map<Protocol::BabelPacket::Code, taskFunction> actions =
    {
-     {Protocol::BabelPacket::Code::HANDSHAKE, &TaskManager::handShakeTask},
+     {Protocol::BabelPacket::Code::HAND_SHAKE, &TaskManager::handShakeTask},
      {Protocol::BabelPacket::Code::SIGN_IN, &TaskManager::signInTask},
      {Protocol::BabelPacket::Code::SIGN_UP, &TaskManager::signUpTask},
      {Protocol::BabelPacket::Code::SIGN_OUT, &TaskManager::signOutTask},
-     {Protocol::BabelPacket::Code::CONTACT_LIST_REQUEST, &TaskManager::getContactTask},
+     {Protocol::BabelPacket::Code::CONTACT_LIST, &TaskManager::getContactTask},
      {Protocol::BabelPacket::Code::CALL, &TaskManager::callTask},
      {Protocol::BabelPacket::Code::DEL_CONTACT, &TaskManager::delContactTask},
-     {Protocol::BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask},
+     {Protocol::BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask}
   };
 
   std::vector<std::string> &splitDataByDelimiter(char delimiter, unsigned char *data, int size);

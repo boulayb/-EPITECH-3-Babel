@@ -22,21 +22,14 @@ Protocol::BabelPacket::Code DataBase::login(std::string const &login, std::strin
     return (Protocol::BabelPacket::Code::LOGIN_SUCCESS);
 }
 
-std::string &DataBase::::getLoginById(int id)
+std::string &DataBase::getLoginById(int id)
 {
-  for (User user : this->_map)
-  {
-    if (user.getId() == id)
-      return user.getLogin();
-  }
 }
 
-Protocol::BabelPacket::Code DataBase::setId(std::string const &login, int id)
+void DataBase::setId(std::string const &login, int id)
 {
-    if (this->_map[login].getLogin() != login)
-      return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
-    this->_map[login].setId(id);
-    return (Protocol::BabelPacket::Code::ID_ADDED);
+    if (this->_map[login].getLogin() == login)
+      this->_map[login].setId(id);
 }
 
 int DataBase::getId(std::string const &login)
@@ -84,7 +77,24 @@ DataBase::DataBase()
 {
     bool continueRead = true;
     User user;
-    std::ifstream ifile("/home/bocque_c/rendu/cpp_babel/tests/DataBase/rsc/database.txt");
+    std::ifstream ifile("/home/bocque_c/rendu/cpp_babel/tests/DataBase/rsc/database55.txt", std::fstream::in);
+
+    /*if (!ifile.is_open())
+    {
+      std::cout << "not open" << std::endl;
+      ifile.close();
+      std::ofstream o("/home/bocque_c/rendu/cpp_babel/tests/DataBase/rsc/database3.txt");
+      o << "pepe" << std::endl;
+      o << fflush;
+      o.close();
+      std::ifstream ifile("/home/bocque_c/rendu/cpp_babel/tests/DataBase/rsc/database3.txt");
+    }*/
+
+    if (!ifile.is_open())
+    {
+      std::cout << "still not open again" << std::endl;
+    }
+
     try{
         boost::archive::binary_iarchive iTextArchive(ifile);
         while (true)
@@ -124,7 +134,7 @@ bool DataBase::addNewUser(std::string const &login, std::string const &password)
 
 bool DataBase::writeMap()
 {
-    std::ofstream ofile("/home/bocque_c/rendu/cpp_babel/tests/DataBase/rsc/database.txt"); //TODO : Fix relative Path
+    std::ofstream ofile("/home/bocque_c/rendu/cpp_babel/tests/DataBase/rsc/database55.txt"); //TODO : Fix relative Path
     boost::archive::binary_oarchive oTextArchive(ofile);
     for(std::map<std::string, User>::const_iterator it = this->_map.begin(); it != this->_map.end(); ++it)
         oTextArchive << it->second;

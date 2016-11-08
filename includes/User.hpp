@@ -20,7 +20,7 @@ public:
     void serialize(Archive& ar, const unsigned int version)
     {
         (void)version;
-        ar & _login & _password & _friends & _id;
+        ar & _login & _password & _friends;
     }
     User();
     User(std::string const& login, std::string const& password);

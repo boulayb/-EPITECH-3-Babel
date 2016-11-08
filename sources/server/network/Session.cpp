@@ -23,7 +23,7 @@ void Session::start(Server *server, unsigned int userId)
       boost::bind(&Session::handleRead, this,
       boost::asio::placeholders::error,
       boost::asio::placeholders::bytes_transferred));
-  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HANDSHAKE, nullptr, 0);
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE, nullptr, 0);
   this->writeToClient(*packet);
 }
 

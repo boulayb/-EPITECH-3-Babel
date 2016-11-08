@@ -12,7 +12,7 @@ TaskManager::~TaskManager()
 
 void TaskManager::executeTask(Task const &task)
 {
-  std::cout << "Trying to execute task " <<(int)task.packet->code <<  std::endl;
+  std::cout << "Trying to execute task " << (int)task.packet->code <<  std::endl;
   std::cout << task.packet->magicNbr << std::endl;
   if (task.packet->magicNbr == MAGIC_NUMBER)
   {
@@ -29,7 +29,7 @@ void TaskManager::executeTask(Task const &task)
 
 void TaskManager::handShakeTask(Task const &task)
 {
-  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HANDSHAKE, nullptr, 0);
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
 }
 
@@ -57,7 +57,7 @@ void TaskManager::signOutTask(Task const &task)
 {
   std::string login = this->database.getLoginById(task.clientID);
   this->database.setId(login, -1);
-  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::DISCONNECT_SUCCESS, nullptr, 0);
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::SIGN_OUT_SUCCESS, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
   this->network->disconnectUser(task.clientID);
 }
@@ -95,7 +95,7 @@ void TaskManager::callTask(Task const &task)
   }
   else
   {
-    Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::FRIEND_NOT_FOUND,
+    Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::USER_NOT_FRIEND,
                                                                      nullptr, 0);
     this->network->sendBabelPacket(*packet, task.clientID);
   }

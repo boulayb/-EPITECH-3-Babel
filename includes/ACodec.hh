@@ -7,10 +7,10 @@ class		ACodec
 public:
     virtual ~ACodec() {};
     
-    virtual EncPack	encodePack(DecPack const &) = 0;
-    virtual DecPack	decodePack(EncPack const &) = 0;
-    virtual int		initEncoder() = 0;
-    virtual int		initDecoder() = 0;
+    virtual const EncPack	encodePack(DecPack const &) = 0;
+    virtual const DecPack	decodePack(EncPack const &) = 0;
+    virtual int			initEncoder() = 0;
+    virtual int			initDecoder() = 0;
 
 };
 
