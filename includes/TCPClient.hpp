@@ -12,6 +12,8 @@ class Client;
 
 class TCPClient : public  QObject, public INetwork
 {
+  Q_OBJECT
+
 public:
   TCPClient(Client *, std::string const &hostname, unsigned short port, QObject *parent = 0);
   ~TCPClient();
