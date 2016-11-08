@@ -13,16 +13,16 @@
 
 typedef float SAMPLE;
 
-struct			EncPack
+struct				EncPack
 {
-    int			size;
-    unsigned char	*data;
+    int				size;
+    std::vector<unsigned char>	data;
 };
 
-struct			DecPack
+struct				DecPack
 {
-    int			size;
-    std::vector<SAMPLE>	sample;
+    int				size;
+    std::vector<SAMPLE>		sample;
 };
 
 # endif // _SOUNDPROPERTIES_HH_

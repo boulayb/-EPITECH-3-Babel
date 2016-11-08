@@ -17,9 +17,10 @@ private:
     
     PaError             paError;
 
-    bool		running;
+    bool		isRunning;
     
-    DecPack		buffer;
+    DecPack		decPack;
+    EncPack		encPack;
     
 public:
     SoundControler();
@@ -52,14 +53,15 @@ private:
 				     PaStreamCallbackFlags statusFlags,
 				     void *userData);
     
-    void		setBuffer(DecPack const &buff);
-    const DecPack	&getBuffer();
+public:
+    void		setDecPack(DecPack const &pack);
+    const DecPack	&getDecPack();
 
+    void		setEncPack(EncPack const &pack);
+    const EncPack	&getEncPack();
 
     // TEMPORARY ~ use this method to test audio in/out
-public:
     void		testAudio();
-
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 };
