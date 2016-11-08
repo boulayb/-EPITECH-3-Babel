@@ -46,13 +46,13 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(Boost_ALL_DYN_LINK ON)
 
-## QT UI precompilation
-set(UIS ${CLIENT_SRCDIR}gui/mainwindow.ui)
-set(UIS_CPP ${CLIENT_SRCDIR}gui/mainwindow.cpp)
-set(UIS_INC includes/mainwindow.h)
-QT4_WRAP_CPP(MOC_SRC ${UIS_INC} ${UIS_CPP})
-QT4_WRAP_UI(UIC_SRC ${UIS})
-list(APPEND CLIENT_SOURCE_FILES ${UIC_SRC} ${MOC_SRC})
+## QT MOC precompilation
+set(UI_FILE ${CLIENT_SRCDIR}gui/mainwindow.ui)
+set(MOC_CPP ${CLIENT_SRCDIR}gui/mainwindow.cpp ${CLIENT_SRCDIR}network/TCPClient.cpp)
+set(MOC_INC includes/mainwindow.h includes/TCPClient.hpp)
+QT4_WRAP_CPP(MOC_SRC ${MOC_INC} ${MOC_CPP})
+QT4_WRAP_UI(UI_SRC ${UI_FILE})
+list(APPEND CLIENT_SOURCE_FILES ${UI_SRC} ${MOC_SRC})
 
 set(CLIENT_LIBS_LINK Qt4::QtCore Qt4::QtGui Qt4::QtNetwork opus)
 set(SERVER_LIBS_LINK ${Boost_LIBRARIES})
