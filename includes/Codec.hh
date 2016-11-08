@@ -19,8 +19,8 @@ public:
 
     Codec& operator=(Codec const&);
     
-    EncPack		encodePack(DecPack const &);
-    DecPack		decodePack(EncPack const &);
+    const EncPack	encodePack(DecPack const &);
+    const DecPack	decodePack(EncPack const &);
 
 private:
     int			initEncoder();

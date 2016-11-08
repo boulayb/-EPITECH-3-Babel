@@ -51,23 +51,21 @@ int			Codec::initDecoder()
 const EncPack		Codec::encodePack(const DecPack &decPack)
 {
     EncPack		encPack;
-    
-    encPack.data = new unsigned char[FRAMES_PER_BUFFER * CHANNEL];
-    if ((encPack.size = opus_encode_float(this->encoder, decPack.sample.data(), FRAMES_PER_BUFFER * CHANNEL, encPack.data, decPack.size)) < 0)
+
+    encPack.data.resize(FRAMES_PER_BUFFER * CHANNEL);
+    if ((encPack.size = opus_encode_float(this->encoder, decPack.sample.data(), FRAMES_PER_BUFFER * CHANNEL, encPack.data.data(), decPack.size)) < 0)
 	{
 	    std::cerr << "error while encoding" << std::endl;
 	}
     return (encPack);
 }
 
-const DecPack			Codec::decodePack(const EncPack &encPack)
+const DecPack		Codec::decodePack(const EncPack &encPack)
 {
     DecPack		decPack;
 
-    // decPack.sample.reserve(FRAMES_PER_BUFFER * CHANNEL);
-    // if ((decPack.size = opus_decode_float(this->decoder, encPack.data, encPack.size, decPack.sample.data(), FRAMES_PER_BUFFER * CHANNEL, DECODE_FEC)) < 0)
-    decPack.sample.resize(FRAMES_PER_BUFFER * CHANNEL);
-    if ((decPack.size = opus_decode_float(this->decoder, encPack.data, encPack.size, decPack.sample.data(), FRAMES_PER_BUFFER, DECODE_FEC) * CHANNEL) < 0)
+    decPack.sample.resize(FRAMES_PER_BUFFER * CHANNEL);    
+    if ((decPack.size = opus_decode_float(this->decoder, encPack.data.data(), encPack.size, decPack.sample.data(), FRAMES_PER_BUFFER, DECODE_FEC) * CHANNEL) < 0)
 	{
             std::cerr << "error while decoding" << std::endl;
         }

@@ -48,31 +48,24 @@ int			Codec::initDecoder()
     return (0);
 }
 
-EncPack			Codec::encodePack(DecPack const &decPack)
+const EncPack		Codec::encodePack(const DecPack &decPack)
 {
     EncPack		encPack;
-    
-    encPack.data = new unsigned char[FRAMES_PER_BUFFER * CHANNEL];
-    if ((encPack.size = opus_encode_float(this->encoder, decPack.sample.data(), FRAMES_PER_BUFFER * CHANNEL, encPack.data, decPack.size)) < 0)
+
+    encPack.data.resize(FRAMES_PER_BUFFER * CHANNEL);
+    if ((encPack.size = opus_encode_float(this->encoder, decPack.sample.data(), FRAMES_PER_BUFFER * CHANNEL, encPack.data.data(), decPack.size)) < 0)
 	{
 	    std::cerr << "error while encoding" << std::endl;
 	}
     return (encPack);
 }
 
-DecPack			Codec::decodePack(EncPack const &encPack)
+const DecPack		Codec::decodePack(const EncPack &encPack)
 {
     DecPack		decPack;
-    SAMPLE		*tmp;
-    int			i = 0;
 
-    tmp = new SAMPLE[FRAMES_PER_BUFFER * CHANNEL];
-    while (tmp[i])
-	{
-	    decPack.sample.push_back(tmp[i]);
-	    i++;
-	}
-    if ((decPack.size = opus_decode_float(this->decoder, encPack.data, encPack.size, decPack.sample.data(), FRAMES_PER_BUFFER * CHANNEL, DECODE_FEC)) < 0)
+    decPack.sample.resize(FRAMES_PER_BUFFER * CHANNEL);    
+    if ((decPack.size = opus_decode_float(this->decoder, encPack.data.data(), encPack.size, decPack.sample.data(), FRAMES_PER_BUFFER, DECODE_FEC) * CHANNEL) < 0)
 	{
             std::cerr << "error while decoding" << std::endl;
         }
