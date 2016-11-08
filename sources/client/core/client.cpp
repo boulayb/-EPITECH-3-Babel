@@ -11,7 +11,7 @@ Client::~Client()
 {
 }
 
-void       Client::setGUI(Gui *) const
+void       Client::setGUI(Gui *gui)
 {
   this->gui = gui;
 }

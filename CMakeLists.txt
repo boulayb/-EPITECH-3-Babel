@@ -17,13 +17,14 @@ set(INC_DIR "includes" "libs/include/")
 
 set(CLIENT_SOURCE_FILES
   ${CLIENT_SRCDIR}core/main.cpp
+  ${CLIENT_SRCDIR}core/client.cpp
   ${CLIENT_SRCDIR}gui/gui.cpp
   ${CLIENT_SRCDIR}gui/mainwindow.cpp
   ${CLIENT_SRCDIR}gui/mycontactlistitem.cpp
   ${CLIENT_SRCDIR}network/TCPClient.cpp
   ${CLIENT_SRCDIR}sound/Codec.cpp
   ${CLIENT_SRCDIR}sound/SoundControler.cpp
-  ${CLIENT_SRCDIR}sound/sound.cpp)
+  ${CLIENT_SRCDIR}protocol/Protocol.cpp)
 
 set(SERVER_SOURCE_FILES
   ${SERVER_SRCDIR}core/main.cpp

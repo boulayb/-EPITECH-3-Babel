@@ -58,7 +58,7 @@ private:
  public:
   Client();
   ~Client();
-  void       setGUI(Gui *) const;
+  void       setGUI(Gui *);
   void       readBabelPacket(Protocol::BabelPacket const &packet);
   void       sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user = "", std::string const &passwd = "");
 };
