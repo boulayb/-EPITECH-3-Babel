@@ -2,14 +2,10 @@
 #include <cstring>
 #include "TCPClient.hpp"
 #include "client.hpp"
+#include <QApplication>
 
-TCPClient::TCPClient(Client *babel , const std::string &hostname, unsigned short port, QObject *parent) : QObject(parent), client(babel),  hostName(hostname), port(port)
+TCPClient::TCPClient(Client *babel , const std::string &hostname, unsigned short port, QObject *parent) : QObject(parent), client(babel),  hostName(hostname), port(port), is_connected(false)
 {
-
-  this->tcpSocket = new QTcpSocket(this);
-  connect(this->tcpSocket, SIGNAL(readyRead()),this, SLOT(readMessage()));
-  connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
-          this, SLOT(displayError(QAbstractSocket::SocketError)));
 }
 
 TCPClient::~TCPClient()
@@ -19,26 +15,53 @@ TCPClient::~TCPClient()
 
 bool TCPClient::initiateService()
 {
-  this->tcpSocket->connectToHost(this->hostName.c_str(), this->port);
-  return this->tcpSocket->waitForConnected();
+  connect(&this->tcpSocket, SIGNAL(readyRead()),this, SLOT(readMessage()));
+  connect(&this->tcpSocket, SIGNAL(bytesWritten(qint64)),this, SLOT(writeMessage(qint64)));
+  connect(&this->tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
+  connect(&this->tcpSocket, SIGNAL(connected()), this, SLOT(connectReady()));
+  connect(&this->tcpSocket, SIGNAL(disconnected()), this, SLOT(disconnectedReady()));
+  this->tcpSocket.connectToHost(this->hostName.c_str(), this->port);
+  this->tcpSocket.waitForConnected(5000);
 }
+
+void TCPClient::connectReady()
+{
+  this->is_connected = true;
+}
+
+void TCPClient::writeMessage(qint64 bytes)
+{
+  std::cout << "writted ! " << std::endl;
+}
+
+void TCPClient::disconnectedReady()
+{
+
+}
+
 
 bool TCPClient::sendBabelPacket(Protocol::BabelPacket &packet)
 {
-  if(this->tcpSocket->state() == QAbstractSocket::ConnectedState)
+  if(this->tcpSocket.state() == QAbstractSocket::ConnectedState && is_connected)
   {
-    std::cout << sizeof(Protocol::BabelPacket) + packet.dataLength << std::endl;
-    this->tcpSocket->write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
-    return this->tcpSocket->waitForBytesWritten();
+    std::cout << "writing ... size : " << sizeof(Protocol::BabelPacket) + packet.dataLength<<std::endl;
+    int ret = this->tcpSocket.write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
+    std::cout << ret << std::endl;
+    this->tcpSocket.flush();
+    QApplication::processEvents();
+    return true;
   }
   else
+  {
+    std::cout << "socket close" << std::endl;
     return false;
+  }
 }
 
 
 void TCPClient::shutDown()
 {
-  this->tcpSocket->abort();
+  this->tcpSocket.abort();
 }
 
 void TCPClient::displayError(QAbstractSocket::SocketError socketError)
@@ -62,18 +85,19 @@ void TCPClient::displayError(QAbstractSocket::SocketError socketError)
 
 void TCPClient::readMessage()
 {
-  std::cout << "nice" << std::endl;
+  std::cout << "read message tcp server" << std::endl;
   char buffer[sizeof(Protocol::BabelPacket)];
-  this->tcpSocket->read(buffer, sizeof(Protocol::BabelPacket));
+  this->tcpSocket.read(buffer, sizeof(Protocol::BabelPacket));
   Protocol::BabelPacket *packet = reinterpret_cast<Protocol::BabelPacket *>(buffer);
-  std::cout << "Receiving packet of size" << packet->dataLength << " " << (int)packet->code <<std::endl;
+  std::cout << "Receiving packet of size" << packet->dataLength << " " << (int) packet->code << std::endl;
 
   Protocol::BabelPacket *fullPacket = reinterpret_cast<Protocol::BabelPacket *>(
-        new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
+          new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
   std::memcpy(fullPacket, packet, sizeof(Protocol::BabelPacket));
   char *packetData = new char[packet->dataLength + 1];
-  this->tcpSocket->read(packetData, packet->dataLength);
+  this->tcpSocket.read(packetData, packet->dataLength);
   std::memcpy(fullPacket, packetData, packet->dataLength);
   client->readBabelPacket(*fullPacket);
+  std::cout << this->tcpSocket.isOpen() << std::endl;
   //send to protocol
 }

@@ -3,8 +3,9 @@
 #include "client.hpp"
 #include "gui.hh"
 
-Client::Client()
+Client::Client(Gui *)
 {
+  this->gui = gui;
   this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
   this->tcpClient->initiateService();
 }
@@ -13,10 +14,9 @@ Client::~Client()
 {
 }
 
-void       Client::setGUI(Gui *gui)
+void       Client::startGUI()
 {
-  this->gui = gui;
-  gui->start();
+  this->gui->start();
 }
 
 void       Client::readBabelPacket(Protocol::BabelPacket const &packet)
@@ -30,6 +30,7 @@ void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::
   unsigned int length = strlen(reinterpret_cast<char *>(data));
   Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(code, data, length);
   this->tcpClient->sendBabelPacket(*packet);
+  std::cout << "packet send" << std::endl;
 }
 
 void       Client::handshake(Protocol::BabelPacket const &packet)
@@ -40,12 +41,13 @@ void       Client::handshake(Protocol::BabelPacket const &packet)
 
 void       Client::login(Protocol::BabelPacket const &packet)
 {
-  //this->gui->login();
+  std::cout << "login" << std::endl;
+  this->gui->Login();
 }
 
 void       Client::logout(Protocol::BabelPacket const &packet)
 {
-  //this->gui->logout();
+  this->gui->Logout();
 }
 
 void       Client::updateContactList(Protocol::BabelPacket const &packet)

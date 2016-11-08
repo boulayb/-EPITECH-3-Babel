@@ -59,6 +59,7 @@ void TCPServer::handle_accept(Session *newSession, const boost::system::error_co
 {
   if (!error)
   {
+    std::cout << "Accepting new user ! " << std::endl;
     this->server->getTaskManager().updateContactStatusTask(this->maxUserId++);
     newSession->start(server, this->maxUserId);
     this->users.push_back(newSession);

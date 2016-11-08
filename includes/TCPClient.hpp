@@ -20,16 +20,19 @@ public:
   bool initiateService();
   void shutDown();
   bool sendBabelPacket(Protocol::BabelPacket &);
-private:
-  void displayError(QAbstractSocket::SocketError socketError);
+  private:
 private slots:
   void readMessage();
-
+  void connectReady();
+  void disconnectedReady();
+  void writeMessage(qint64 bytes);
+  void displayError(QAbstractSocket::SocketError socketError);
 private:
   Client *client;
   std::string hostName;
   unsigned short port;
-  QTcpSocket *tcpSocket;
+  QTcpSocket tcpSocket;
+  bool is_connected;
 };
 
 #endif // TCPCLIENT_HHP

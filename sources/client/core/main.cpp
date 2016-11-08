@@ -4,9 +4,10 @@
 
 int             main(int argc, char **argv)
 {
-  Client        client;
-  Gui gui(argc, argv, &client);
+  Gui gui(argc, argv);
+  Client        client(&gui);
 
-  client.setGUI(&gui);
+  gui.setClient(&client);
+  client.startGUI();
   return (EXIT_SUCCESS);
 }

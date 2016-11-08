@@ -3,12 +3,16 @@
 #include "Protocol.hpp"
 #include "client.hpp"
 
-Gui::Gui(int ac, char **av, Client *client) : app(ac, av)
+Gui::Gui(int ac, char **av) : app(ac, av)
 {
     MainWindow *w = new MainWindow(this);
     this->mainWindow = w;
-    this->client = client;
     w->show();
+}
+
+void   Gui::setClient(Client *client)
+{
+  this->client = client;
 }
 
 void    Gui::AddContact(std::string contactName)
@@ -48,6 +52,7 @@ void    Gui::newError(const std::string &error)
 
 void    Gui::Login()
 {
+    std::cout << "login qt" << std::endl;
     this->mainWindow->Login();
 }
 
@@ -82,5 +87,5 @@ void    Gui::endCall()
 
 void    Gui::start()
 {
-    this->app.exec();
+  this->app.exec();
 }

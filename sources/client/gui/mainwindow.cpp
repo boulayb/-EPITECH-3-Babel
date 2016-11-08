@@ -46,13 +46,15 @@ void        MainWindow::LoginButton()
         QByteArray password = this->hash->hash(ui->PasswordLogInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
 
-        this->gui->askLogin(ui->UsernameLogInput->text().toUtf8().constData(), passwordHash.toUtf8().constData());
+        this->gui->askLogin(ui->UsernameLogInput->text().toUtf8().constData(), ui->PasswordLogInput->text().toUtf8().constData());
     }
 }
 
 void        MainWindow::Login()
 {
+    std::cout << ":pepe:" << std::endl;
     ui->Stack->setCurrentIndex(2);
+    std::cout << ":pepe2:" << std::endl;
 }
 
 void        MainWindow::RegisterRegisterButton()
@@ -65,9 +67,9 @@ void        MainWindow::RegisterRegisterButton()
          QMessageBox::information(this,"Error","Passwords are differents");
     else
     {
-        QByteArray password = this->hash->hash(ui->PasswordLogInput->text().toUtf8(),QCryptographicHash::Md5);
+        QByteArray password = this->hash->hash(ui->PasswordRegisterFirstInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
-        this->gui->askRegister(ui->UsernameRegisterInput->text().toUtf8().constData(), passwordHash.toUtf8().constData());
+        this->gui->askRegister(ui->UsernameRegisterInput->text().toUtf8().constData(), ui->PasswordRegisterFirstInput->text().toUtf8().constData());
         QMessageBox::information(this, "Succes", "Sent registering request");
     }
 }

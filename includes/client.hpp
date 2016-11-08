@@ -57,9 +57,9 @@ private:
   void       errorEncountered(Protocol::BabelPacket const &packet);
 
  public:
-  Client();
+  Client(Gui *);
   ~Client();
-  void       setGUI(Gui *);
+  void       startGUI();
   void       readBabelPacket(Protocol::BabelPacket const &packet);
   void       sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user = "", std::string const &passwd = "");
 };

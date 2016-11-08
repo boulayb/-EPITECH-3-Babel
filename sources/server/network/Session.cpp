@@ -9,6 +9,7 @@ Session::Session(boost::asio::io_service &io_service) : socket(io_service), pack
 
 Session::~Session()
 {
+  std::cout << "close session" << std::endl;
  if (this->currentPacket != nullptr)
    delete this->currentPacket;
  if (this->currentPacket != nullptr)
@@ -19,12 +20,12 @@ void Session::start(Server *server, unsigned int userId)
 {
   this->server = server;
   this->userID = userId;
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE, nullptr, 0);
+  this->writeToClient(*packet);
   this->socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(Protocol::BabelPacket)),
       boost::bind(&Session::handleRead, this,
       boost::asio::placeholders::error,
       boost::asio::placeholders::bytes_transferred));
-  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE, nullptr, 0);
-  this->writeToClient(*packet);
 }
 
 boost::asio::ip::tcp::socket &Session::getSocket()
@@ -48,6 +49,10 @@ void Session::handleReadData(const boost::system::error_code &error, size_t byte
   {
     std::memcpy(this->currentPacket->data, this->packetData, bytes_transferred);
     this->server->addTask(*this->currentPacket, this->userID);
+    this->socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(Protocol::BabelPacket)),
+                                 boost::bind(&Session::handleRead, this,
+                                             boost::asio::placeholders::error,
+                                             boost::asio::placeholders::bytes_transferred));
   }
 }
 
@@ -104,6 +109,7 @@ void Session::writeToClient(const Protocol::BabelPacket &packet)
                                 boost::asio::placeholders::error,
                                 boost::asio::placeholders::bytes_transferred
                                 ));
+  std::cout << "writing " << (int)packet.code << std::endl;
 }
 /*
 const boost::asio::ip::tcp::socket& Session::getSocket() const
