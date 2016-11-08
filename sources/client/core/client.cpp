@@ -5,7 +5,8 @@
 
 Client::Client()
 {
-    this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
+  this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
+  this->tcpClient->initiateService();
 }
 
 Client::~Client()
@@ -25,7 +26,7 @@ void       Client::readBabelPacket(Protocol::BabelPacket const &packet)
 
 void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user, std::string const &passwd)
 {
-  unsigned char *data = Protocol::Protocol::stringToPointer(user + passwd);
+  unsigned char *data = Protocol::Protocol::stringToPointer(user + ':' + passwd);
   unsigned int length = strlen(reinterpret_cast<char *>(data));
   Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(code, data, length);
   this->tcpClient->sendBabelPacket(*packet);

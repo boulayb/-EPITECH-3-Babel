@@ -64,6 +64,7 @@ void Session::handleRead(const boost::system::error_code &error, size_t bytes_tr
   this->currentPacket = reinterpret_cast<Protocol::BabelPacket *>(
         new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
   std::memcpy(this->currentPacket, packet, sizeof(Protocol::BabelPacket));
+  std::cout << "Receinving packet of size" << bytes_transferred << " and code " << (int)packet->code << std::endl;
   this->packetData = new unsigned char[this->currentPacket->dataLength + 1];
   this->socket.async_read_some(boost::asio::buffer(this->packetData, packet->dataLength),
                                boost::bind(&Session::handleReadData, this,

@@ -48,7 +48,12 @@ void TaskManager::signInTask(Task const &task)
 void TaskManager::signUpTask(Task const &task)
 {
   std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
+  std::cout << dataSplited[LOGIN_INDEX] << " " << std::endl;
+  std::cout << "pepe ? " << std::endl;
+  std::cout << dataSplited[PASSWORD_INDEX] << std::endl;
+  std::cout << "here" << std::endl;
   Protocol::BabelPacket::Code returnCode = this->database.registerUser(dataSplited[LOGIN_INDEX], dataSplited[PASSWORD_INDEX]);
+  std::cout << "here2" << std::endl;
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(returnCode, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
 }
