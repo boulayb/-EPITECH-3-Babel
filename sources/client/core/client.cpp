@@ -14,6 +14,7 @@ Client::~Client()
 void       Client::setGUI(Gui *gui)
 {
   this->gui = gui;
+  gui->start();
 }
 
 void       Client::readBabelPacket(Protocol::BabelPacket const &packet)
