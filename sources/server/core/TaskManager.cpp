@@ -37,7 +37,7 @@ void TaskManager::signInTask(Task const &task)
 {
   std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
   Protocol::BabelPacket::Code returnCode = this->database.login(dataSplited[LOGIN_INDEX], dataSplited[PASSWORD_INDEX]);
-  if (returnCode == Protocol::BabelPacket::Code::LOGIN_SUCCESS)
+  if (returnCode == Protocol::BabelPacket::Code::SIGN_IN_SUCCESS)
   {
     this->database.setId(dataSplited[LOGIN_INDEX], task.clientID);
   }
