@@ -4,10 +4,13 @@
 #include <iostream>
 #include <QListWidget>
 #include "mycontactlistitem.h"
+#include "Protocol.hpp"
 
 MainWindow::MainWindow(Gui *gui, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     this->gui = gui;
+    this->network = new TCPClient("127.0.0.1", 4001);
+    this->network->initiateService();
     ui->setupUi(this);
     ui->Stack->setCurrentIndex(0);
     ui->ErrorLogin->setVisible(false);
@@ -45,11 +48,13 @@ void        MainWindow::LoginButton()
         QByteArray password = this->hash->hash(ui->PasswordLogInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
 
-        if (this->gui->askLogin(ui->UsernameLogInput->text().toUtf8().constData(), passwordHash.toUtf8().constData()))
-            ui->Stack->setCurrentIndex(2);
-        else
-            ui->ErrorLogin->setVisible(true);
+        this->gui->askLogin(ui->UsernameLogInput->text().toUtf8().constData(), passwordHash.toUtf8().constData());
     }
+}
+
+void        MainWindow::Login()
+{
+    ui->Stack->setCurrentIndex(2);
 }
 
 void        MainWindow::RegisterRegisterButton()
@@ -65,13 +70,8 @@ void        MainWindow::RegisterRegisterButton()
         QCryptographicHash* hash;
         QByteArray password = hash->hash(ui->PasswordLogInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
-        if (this->gui->askRegister(ui->UsernameRegisterInput->text().toUtf8().constData(), passwordHash.toUtf8().constData()))
-        {
-            QMessageBox::information(this, "Succes !", "Successfuly registerd, you can now log in.");
-            ui->Stack->setCurrentIndex(0);
-        }
-        else
-            QMessageBox::information(this, "Error", "Something happens, try another Username or later...");
+        this->gui->askRegister(ui->UsernameRegisterInput->text().toUtf8().constData(), passwordHash.toUtf8().constData());
+        QMessageBox::information(this, "Succes", "Sent registering request");
     }
 }
 
@@ -87,25 +87,25 @@ void        MainWindow::CancelRegisterButton(){
 void        MainWindow::LogoutButton()
 {
     if (!inCall)
-    {
-        this->gui->logout();
-        ui->Stack->setCurrentIndex(0);
-    }
+        this->gui->askLogout();
+}
+
+void        MainWindow::Logout()
+{
+    ui->Stack->setCurrentIndex(0);
 }
 
 void    MainWindow::AddContactButton()
 {
+  unsigned char data[500] = "kappa;mdp";
+  Protocol::BabelPacket *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::SIGN_IN, data, 9);
+  this->network->sendBabelPacket(*newPacket);
     if (!inCall)
     {
         if (ui->AddContactButton->text().isEmpty())
             QMessageBox::information(this, "Error", "No contact name to add");
         else
-        {
-            if (this->gui->AddContact(ui->AddContactButton->text().toUtf8().constData()))
-                    QMessageBox::information(this, "Succes", "Contact added to list");
-            else
-                    QMessageBox::information(this, "Error", "No such contact in database");
-        }
+            this->gui->AddContact(ui->AddContactButton->text().toUtf8().constData());
     }
 }
 
@@ -130,15 +130,30 @@ void        MainWindow::UpdateContactList(std::vector<std::pair<std::string, boo
     }
 }
 
+void    MainWindow::updateContact(std::pair<std::string, bool> contact)
+{
+    MyContactListItem *item;
+    item = ui->ContactList->findItems(contact->first, Qt::MatchExactly);
+
+    if (contact->second)
+      {
+         item->setIcon(QIcon("ressources/online.png"));
+         item->setOnline(true);
+      }
+    else
+      {
+         item->setIcon(QIcon("ressources/offline.png"));
+         item->setOnline(false);
+      }
+}
+
 void        MainWindow::callButton()
 {
-    if (gui->call(ui->ContactNameLabel->text().toUtf8().constData()))
-    {
-        ui->CallButton->setDisabled(true);
-        ui->EndCallButton->setDisabled(false);
-        ui->callStatus->setText("Calling...");
-        this->inCall = true;
-    }
+    gui->call(ui->ContactNameLabel->text().toUtf8().constData());
+    ui->CallButton->setDisabled(true);
+    ui->EndCallButton->setDisabled(false);
+    ui->callStatus->setText("Calling...");
+    this->inCall = true;
 }
 
 void    MainWindow::endCallButton()
@@ -189,4 +204,19 @@ void    MainWindow::setInCall(bool inCall)
 void    MainWindow::newError(const std::string &error)
 {
     QMessageBox::information(this, "Error", error.c_str());
+}
+
+bool    MainWindow::incommingCall(const std::__cxx11::string &userName)
+{
+     QMessageBox::StandardButton reply;
+
+     reply = QMessageBox::question(this, "Incomming Call", "Accept call from" + userName + " ?",
+                                    QMessageBox::Yes|QMessageBox::No);
+     if (reply == QMessageBox::Yes)
+     {
+         this->setIncall(true);
+         return true;
+     }
+     else
+         return false;
 }

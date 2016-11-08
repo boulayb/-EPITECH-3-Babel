@@ -24,6 +24,10 @@ public:
     void        UpdateContactList(std::vector<std::pair<std::string, bool>> contactList);
     void        setInCall(bool inCall);
     void        newError(const std::string &error);
+    void        Login();
+    void        Logout();
+    bool        incommingCall(const std::string &userName);
+    void        updateContact(std::pair<std::string, bool> contact);
 
 private:
     Ui::MainWindow      *ui;
