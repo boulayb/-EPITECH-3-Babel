@@ -1,9 +1,11 @@
 #include <iostream>
 #include <cstring>
 #include "TCPClient.hpp"
+#include "client.hpp"
 
-TCPClient::TCPClient(const std::string &hostname, unsigned short port, QObject *parent) : hostName(hostname), port(port), QObject(parent)
+TCPClient::TCPClient(Client *babel , const std::string &hostname, unsigned short port, QObject *parent) : QObject(parent), client(babel),  hostName(hostname), port(port)
 {
+
   this->tcpSocket = new QTcpSocket(this);
   connect(this->tcpSocket, SIGNAL(readyRead()),this, SLOT(readMessage()));
   connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
@@ -72,5 +74,6 @@ void TCPClient::readMessage()
   char *packetData = new char[packet->dataLength + 1];
   this->tcpSocket->read(packetData, packet->dataLength);
   std::memcpy(fullPacket, packetData, packet->dataLength);
+  client->readBabelPacket(*fullPacket);
   //send to protocol
 }

@@ -8,11 +8,12 @@
 #include <QIODevice>
 #include "INetwork.hpp"
 
+class Client;
 
 class TCPClient : public  QObject, public INetwork
 {
 public:
-  TCPClient(std::string const &hostname, unsigned short port, QObject *parent = 0);
+  TCPClient(Client *, std::string const &hostname, unsigned short port, QObject *parent = 0);
   ~TCPClient();
   bool initiateService();
   void shutDown();
@@ -23,6 +24,7 @@ private slots:
   void readMessage();
 
 private:
+  Client *client;
   std::string hostName;
   unsigned short port;
   QTcpSocket *tcpSocket;

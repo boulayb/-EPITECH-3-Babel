@@ -5,7 +5,7 @@
 
 Client::Client()
 {
-    this->tcpClient = new TCPClient("127.0.0.1", 4001);
+    this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
 }
 
 Client::~Client()
