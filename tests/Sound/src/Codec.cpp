@@ -1,5 +1,4 @@
 #include <iostream>
-#include "opus.h"
 #include "SoundProperties.hh"
 #include "Codec.hh"
 

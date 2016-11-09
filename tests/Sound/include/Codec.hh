@@ -1,6 +1,8 @@
 #ifndef _CODEC_HH_
 # define _CODEC_HH_
 
+# include "opus.h"
+# include "SoundProperties.hh"
 # include "ACodec.hh"
 
 class			Codec : public ACodec

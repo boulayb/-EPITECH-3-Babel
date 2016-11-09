@@ -1,7 +1,12 @@
 #ifndef _SOUNDCONTROLER_HH_
 # define _SOUNDCONTROLER_HH_
 
+# include "opus.h"
+# include "Codec.hh"
+# include "portaudio.h"
+# include "SoundProperties.hh"
 # include "ASoundControler.hh"
+
 
 class			SoundControler : public ASoundControler
 {

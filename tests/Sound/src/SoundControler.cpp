@@ -1,8 +1,4 @@
 #include <iostream>
-#include "opus.h"
-#include "portaudio.h"
-#include "SoundProperties.hh"
-#include "Codec.hh"
 #include "SoundControler.hh"
 
 SoundControler::SoundControler() : inputStream(NULL), outputStream(NULL), paError(paNoError), isRunning(false)
