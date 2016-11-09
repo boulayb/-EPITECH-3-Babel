@@ -55,7 +55,7 @@ private:
   const std::string ONLINE_STATUS = "online";
   const std::string OFFLINE_STATUS = "offline";
   const std::string ENDSEPARATOR = ";" ;
-  const std::string SEPARATOR = ";" ;
+  const std::string SEPARATOR = ":" ;
 };
 
 #endif // TASKMANAGER_HPP

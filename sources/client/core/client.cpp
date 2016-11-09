@@ -69,9 +69,9 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
   std::cout << "Add list" << std::endl;
   while (data.size() > 1)
     {
-      name = data.substr(0, data.find(";"));
+      name = data.substr(0, data.find(":"));
       std::cout << "data: " << data << std::endl;
-      data = data.substr(data.find(";") + 1);
+      data = data.substr(data.find(":") + 1);
       std::cout << "data: " << data << std::endl;
       status = data.substr(0, data.find(";"));
       data = data.substr(data.find(";"));
