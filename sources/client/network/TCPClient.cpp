@@ -97,6 +97,7 @@ void TCPClient::readMessage()
   char *packetData = new char[packet->dataLength];
   this->tcpSocket.read(packetData, packet->dataLength);
   std::memcpy(fullPacket->data, packetData, packet->dataLength);
+  fullPacket->data[static_cast<int>(packet->dataLength)] = '\0';
   client->readBabelPacket(*fullPacket);
   std::cout << this->tcpSocket.isOpen() << std::endl;
   //send to protocol
