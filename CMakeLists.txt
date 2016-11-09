@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.4)
 project(cpp_babel)
 
+option(BUILD_CLIENT "Build Client" ON)
+option(BUILD_SERVER "Build Server" ON)
+
 ## AUTOMOC for QT UI Files
-set (CMAKE_AUTOMOC ON)
-set (CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CLIENT_NAME "clientBabel")
 set(SERVER_NAME "serverBabel")
@@ -22,8 +25,8 @@ set(CLIENT_SOURCE_FILES
   ${CLIENT_SRCDIR}gui/mainwindow.cpp
   ${CLIENT_SRCDIR}gui/mycontactlistitem.cpp
   ${CLIENT_SRCDIR}network/TCPClient.cpp
-		${CLIENT_SRCDIR}network/UDPClient.cpp
-		${CLIENT_SRCDIR}sound/Codec.cpp
+  ${CLIENT_SRCDIR}network/UDPClient.cpp
+  ${CLIENT_SRCDIR}sound/Codec.cpp
   ${CLIENT_SRCDIR}sound/SoundControler.cpp
   ${CLIENT_SRCDIR}protocol/Protocol.cpp)
 
@@ -75,7 +78,13 @@ elseif(UNIX)
 endif()
 
 include_directories(${INC_DIR})
-add_executable(${CLIENT_NAME} ${CLIENT_SOURCE_FILES})
-add_executable(${SERVER_NAME} ${SERVER_SOURCE_FILES})
-target_link_libraries(${CLIENT_NAME} ${CLIENT_LIBS_LINK})
-target_link_libraries(${SERVER_NAME} ${SERVER_LIBS_LINK})
+
+if(BUILD_CLIENT)
+  add_executable(${CLIENT_NAME} ${CLIENT_SOURCE_FILES})
+  target_link_libraries(${CLIENT_NAME} ${CLIENT_LIBS_LINK})
+endif()
+
+if(BUILD_SERVER)
+  add_executable(${SERVER_NAME} ${SERVER_SOURCE_FILES})
+  target_link_libraries(${SERVER_NAME} ${SERVER_LIBS_LINK})
+endif()
