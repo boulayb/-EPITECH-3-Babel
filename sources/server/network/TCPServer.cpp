@@ -52,6 +52,18 @@ void TCPServer::handle_accept(Session *newSession, const boost::system::error_co
   this->startAccept();
 }
 
+std::string TCPServer::getIpById(unsigned int id) const
+{
+  for (Session *user : this->users)
+  {
+    if (user->getUserId() == id)
+    {
+      return user->getSocket().remote_endpoint().address().to_string();
+    }
+  }
+  return std::string("");
+}
+
 void TCPServer::startAccept()
 {
   Session* newSession = new Session(this->ioService);

@@ -12,6 +12,7 @@ public:
   bool initiateService();
   void shutDown();
   bool sendBabelPacket(Protocol::BabelPacket &, unsigned int);
+  std::string getIpById(unsigned int id) const;
 private:
   void handle_accept(Session* new_session,
       const boost::system::error_code& error);

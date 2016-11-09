@@ -123,9 +123,8 @@ void Session::writeToClient(const Protocol::BabelPacket &packet)
                                 ));
   std::cout << "writing " << (int)packet.code << std::endl;
 }
-/*
+
 const boost::asio::ip::tcp::socket& Session::getSocket() const
 {
   return this->socket;
 }
-*/

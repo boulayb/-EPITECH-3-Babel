@@ -16,7 +16,7 @@ public:
   boost::asio::ip::tcp::socket &getSocket();
   unsigned int getUserId() const;
   void writeToClient(Protocol::BabelPacket const&);
-  //const boost::asio::ip::tcp::socket& getSocket() const;
+  const boost::asio::ip::tcp::socket& getSocket() const;
 
   boost::asio::ip::tcp::socket socket;
 private:
@@ -29,7 +29,6 @@ private:
   void handleWrited(const boost::system::error_code &error, size_t bytes_transferred);
 
 
-  //boost::asio::ip::tcp::socket socket;
   unsigned char buffer[sizeof(Protocol::BabelPacket)];
   unsigned char *packetData;
   Protocol::BabelPacket *currentPacket;
