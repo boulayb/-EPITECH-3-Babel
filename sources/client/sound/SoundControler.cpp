@@ -1,4 +1,8 @@
 #include <iostream>
+#include "opus.h"
+#include "portaudio.h"
+#include "SoundProperties.hh"
+#include "Codec.hh"
 #include "SoundControler.hh"
 
 SoundControler::SoundControler() : inputStream(NULL), outputStream(NULL), paError(paNoError), isRunning(false)
@@ -9,11 +13,7 @@ SoundControler::SoundControler() : inputStream(NULL), outputStream(NULL), paErro
     this->encPack.size = 0;    
     this->decPack.size = 0;    
     this->initInputParam();
-    this->openInputStream();
-    this->startInputStream();
     this->initOutputParam();
-    this->openOutputStream();
-    this->startOutputStream();
 }
 
 SoundControler::~SoundControler()
@@ -113,6 +113,7 @@ void			SoundControler::openOutputStream()
 
 void			SoundControler::startInputStream()
 {
+    this->openInputStream();
     this->paError = Pa_StartStream(this->inputStream);
     this->isRunning = true;
     this->checkPaError();
@@ -120,6 +121,7 @@ void			SoundControler::startInputStream()
 
 void			SoundControler::startOutputStream()
 {
+    this->openOutputStream();
     this->paError = Pa_StartStream(this->outputStream);
     this->checkPaError();
 }
