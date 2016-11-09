@@ -20,6 +20,7 @@ void       Client::startGUI()
 
 void       Client::readBabelPacket(Protocol::BabelPacket const &packet)
 {
+  std::cout << (int)packet.code << " = code" << std::endl;
   (this->*(this->readFunctions[packet.code]))(packet);
 }
 
@@ -56,6 +57,7 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
   std::string name = "";
   std::string status = "";
 
+  std::cout << "Add list" << std::endl;
   while ((name = data.substr(0, data.find(":"))) != "")
     {
       status = data.substr(0, data.find(";"));
@@ -64,7 +66,7 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
       else
 	contactList.push_back(std::pair<std::string, bool>(name,false));
     }
-  //this->gui->updateContactList(contactList);
+  this->gui->UpdateContactList(contactList);
 }
 
 void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
@@ -80,7 +82,7 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
 	contactStatus = std::make_pair(name, true);
       else
 	contactStatus = std::make_pair(name, false);
-      //this->gui->updateContactStatus(contactStatus);
+      this->gui->UpdateContact(contactStatus);
     }
 }
 
@@ -101,7 +103,9 @@ void       Client::callDeclined(Protocol::BabelPacket const &packet)
 
 void       Client::contactAdded(Protocol::BabelPacket const &packet)
 {
-  //this->gui->contactAdded();
+  Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
+  this->tcpClient->sendBabelPacket(*newPacket);
+  std::cout << "packet send" << std::endl;
 }
 
 void       Client::contactDeleted(Protocol::BabelPacket const &packet)

@@ -101,7 +101,7 @@ void    MainWindow::AddContactButton()
         if (ui->AddContactButton->text().isEmpty())
             QMessageBox::information(this, "Error", "No contact name to add");
         else
-            this->gui->AddContact(ui->AddContactButton->text().toUtf8().constData());
+            this->gui->AddContact(ui->AddContactInput->text().toUtf8().constData());
     }
 }
 

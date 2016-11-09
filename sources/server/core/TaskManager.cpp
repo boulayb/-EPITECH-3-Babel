@@ -71,10 +71,12 @@ void TaskManager::signOutTask(Task const &task)
 void TaskManager::getContactTask(Task const &task)
 {
   std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
-  const std::vector<std::string> &friendList = this->database.getFriendsList(dataSplited[LOGIN_INDEX]);
+  std::string user = this->database.getLoginById(task.clientID);
+  const std::vector<std::string> &friendList = this->database.getFriendsList(user);
   std::string data;
   for (std::string friendStr : friendList)
   {
+    std::cout << "each friend: " << friendStr << std::endl;
     data += friendStr;
     data += SEPARATOR;
     if (this->database.getId(friendStr) == -1)
@@ -83,8 +85,9 @@ void TaskManager::getContactTask(Task const &task)
       data += ONLINE_STATUS;
     data += ENDSEPARATOR;
   }
+  std::cout << "data: " << data << std::endl;
   unsigned char *basicData = Protocol::Protocol::stringToPointer(data);
-  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, basicData, data.size());
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST_SUCCESS, basicData, data.size());
   this->network->sendBabelPacket(*packet, task.clientID);
 }
 
@@ -120,9 +123,18 @@ void TaskManager::addContactTask(Task const &task)
 {
   std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
   std::string currentUser = this->database.getLoginById(task.clientID);
+  std::cout << "dataSplited: " << dataSplited[LOGIN_INDEX] << std::endl;
+  std::cout << "pack data: " << task.packet->data << std::endl;
   Protocol::BabelPacket::Code errorCode = this->database.addFriend(currentUser, dataSplited[LOGIN_INDEX]);
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(errorCode, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
+  //Protocol::BabelPacket *contact = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
+
+  /*  Task *newTask = new Task;
+  newTask->packet = contact;
+  newTask->clientID = task.clientID;
+  this->getContactTask(*newTask);
+  */
 }
 
 void TaskManager::updateContactStatusTask(int userID) const
