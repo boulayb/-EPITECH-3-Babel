@@ -96,9 +96,9 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
     {
       std::string status = data.substr(0, data.find(";"));
       if (status == "1")
-	contactStatus = std::make_pair(name, true);
+        contactStatus = std::make_pair(name, false);
       else
-	contactStatus = std::make_pair(name, false);
+        contactStatus = std::make_pair(name, true);
       this->gui->UpdateContact(contactStatus);
     }
 }
