@@ -29,31 +29,12 @@ public:
 
     SoundControler& operator=(SoundControler const&);
 
-private:
-    bool		checkPaError();
-    void		initInputParam();
-    void		initOutputParam();
-    void		openInputStream();
-    void		openOutputStream();
+public:
     void		startInputStream();
     void		startOutputStream();
     void		stopInputStream();
     void		stopOutputStream();
-
-    static int		recordCallback(const void *inputBuffer,
-				       void *outputBuffer,
-				       unsigned long framesPerBuffer,
-				       const PaStreamCallbackTimeInfo* timeInfo,
-				       PaStreamCallbackFlags statusFlags,
-				       void *userData);
-    static int		playCallback(const void *inputBuffer,
-				     void *outputBuffer,
-				     unsigned long framesPerBuffer,
-				     const PaStreamCallbackTimeInfo* timeInfo,
-				     PaStreamCallbackFlags statusFlags,
-				     void *userData);
     
-public:
     void		setDecPack(DecPack const &pack);
     const DecPack	&getDecPack();
 
@@ -64,6 +45,26 @@ public:
     void		testAudio();
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+private:
+    bool		checkPaError();
+    void		initInputParam();
+    void		initOutputParam();
+    void		openInputStream();
+    void		openOutputStream();
+
+    static int		recordCallback(const void *inputBuffer,
+				       void *outputBuffer,
+				       unsigned long framesPerBuffer,
+				       const PaStreamCallbackTimeInfo* timeInfo,
+				       PaStreamCallbackFlags statusFlags,
+				       void *userData);
+
+    static int		playCallback(const void *inputBuffer,
+				     void *outputBuffer,
+				     unsigned long framesPerBuffer,
+				     const PaStreamCallbackTimeInfo* timeInfo,
+				     PaStreamCallbackFlags statusFlags,
+				     void *userData);    
 };
 
 #endif // _SOUNDCONTROLER_HH_
