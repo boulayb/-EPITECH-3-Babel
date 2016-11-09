@@ -93,8 +93,10 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
 
   if ((name = data.substr(0, data.find(":"))) != "")
     {
-      std::string status = data.substr(0, data.find(";"));
-      if (status == "1")
+      std::cout << "DATA : " << data << std::endl;
+      data = data.substr(data.find(":") + 1);
+      std::cout << "STATUS : " << data << std::endl;
+      if (data == "online")
 	contactStatus = std::make_pair(name, true);
       else
 	contactStatus = std::make_pair(name, false);

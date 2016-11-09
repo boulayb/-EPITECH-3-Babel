@@ -43,7 +43,7 @@ void TaskManager::signInTask(Task const &task)
   }
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(returnCode, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
-  this->updateContactStatusTask(task.clientID);
+  this->updateContactStatusTask(task.clientID, ONLINE_STATUS);
 }
 
 void TaskManager::signUpTask(Task const &task)
@@ -62,7 +62,7 @@ void TaskManager::signOutTask(Task const &task)
   this->database.setId(login, -1);
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::SIGN_OUT_SUCCESS, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
-  this->updateContactStatusTask(task.clientID);
+  this->updateContactStatusTask(task.clientID, OFFLINE_STATUS);
 //  this->network->disconnectUser(task.clientID);
 }
 
@@ -138,11 +138,11 @@ void TaskManager::connectionLostTask(Task const &task)
   {
     return;
   }
-  updateContactStatusTask(task.clientID);
+  updateContactStatusTask(task.clientID, OFFLINE_STATUS);
   this->database.setId(currentUser, -1);
 }
 
-void TaskManager::updateContactStatusTask(int userID) const
+void TaskManager::updateContactStatusTask(int userID, std::string const &status) const
 {
   std::string currentUser = "";
 
@@ -161,14 +161,15 @@ void TaskManager::updateContactStatusTask(int userID) const
   {
     if ((friendId = this->database.getId(friendStr)) != -1)
     {
-      std::string msg = currentUser + SEPARATOR + ONLINE_STATUS;
+      std::string msg = "";
+      msg = currentUser + SEPARATOR + status;
+      std::cout << "msg : " << msg << std::endl;
       unsigned char *basicData = Protocol::Protocol::stringToPointer(msg);
       Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::
                                                                        Code::UPDATE_CONTACT_STATUS, basicData, msg.size());
       this->network->sendBabelPacket(*packet, static_cast<unsigned  int>(friendId));
     }
   }
-
 }
 
 std::vector<std::string> &TaskManager::splitDataByDelimiter(char delimiter, unsigned char *data, int size)
