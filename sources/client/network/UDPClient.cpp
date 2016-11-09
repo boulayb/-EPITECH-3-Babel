@@ -2,11 +2,10 @@
 #include "UDPClient.hpp"
 
 
-UDPClient::UDPClient(const std::string &hostname, unsigned short port, QObject *parent) : hostName(hostname.c_str()), port(port), QObject(parent)
+UDPClient::UDPClient(Client *client, const std::string &hostname, unsigned short port, QObject *parent) : QObject(parent), babel(client), hostName(hostname.c_str()), port(port)
 {
-  this->udpSocket = new QUdpSocket(this);
-  connect(this->udpSocket, SIGNAL(readyRead()),this, SLOT(readMessage()));
-//  connect(this->udpSocket, static_cast<QAbstractSocketErrorSignal>(&QAbstractSocket::error);
+  connect(&this->udpSocket, SIGNAL(readyRead()),this, SLOT(readMessage()));
+  connect(&this->udpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 }
 
 UDPClient::~UDPClient()
@@ -16,33 +15,53 @@ UDPClient::~UDPClient()
 
 bool UDPClient::initiateService()
 {
-  this->udpSocket->bind();
+  this->udpSocket.bind();
   return true;
+}
+
+void UDPClient::displayError(QAbstractSocket::SocketError socketError)
+{
+  std::cout << "wtf" << std::endl;
+  switch (socketError) {
+    case QAbstractSocket::RemoteHostClosedError:
+      std::cout << "1" << std::endl;
+      break;
+    case QAbstractSocket::HostNotFoundError:
+      std::cout << "2" << std::endl;
+      break;
+    case QAbstractSocket::ConnectionRefusedError:
+      std::cout << "3" << std::endl;
+
+      break;
+    default:
+      std::cout << "4" << std::endl;
+  }
 }
 
 bool UDPClient::sendBabelPacket(Protocol::BabelPacket &packet)
 {
-  std::string *data = Protocol::extractData(packet);
+  QString qHostname(this->hostName.c_str());
+  std::string *data = Protocol::Protocol::extractData(packet);
   std::cout << sizeof(Protocol::BabelPacket) + packet.dataLength << std::endl;
-  QHostAddress addr(this->hostName);
-  this->udpSocket->writeDatagram(data->c_str(), packet.dataLength, addr, this->port);
+  QHostAddress addr(qHostname);
+  this->udpSocket.writeDatagram(data->c_str(), packet.dataLength, addr, this->port);
   return true;
 }
 
 void UDPClient::shutDown()
 {
-  this->udpSocket->abort();
+  this->udpSocket.abort();
 }
 
 
 void UDPClient::readMessage()
 {
   QByteArray buffer;
-  buffer.resize(this->udpSocket->pendingDatagramSize());
+  buffer.resize(this->udpSocket.pendingDatagramSize());
   QHostAddress sender;
   quint16 senderPort;
 
-  this->udpSocket->readDatagram(buffer.data(), buffer.size(),
+  this->udpSocket.readDatagram(buffer.data(), buffer.size(),
                        &sender, &senderPort);
 
   qDebug() << "Message from: " << sender.toString();

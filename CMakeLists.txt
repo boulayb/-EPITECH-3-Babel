@@ -22,7 +22,8 @@ set(CLIENT_SOURCE_FILES
   ${CLIENT_SRCDIR}gui/mainwindow.cpp
   ${CLIENT_SRCDIR}gui/mycontactlistitem.cpp
   ${CLIENT_SRCDIR}network/TCPClient.cpp
-  ${CLIENT_SRCDIR}sound/Codec.cpp
+		${CLIENT_SRCDIR}network/UDPClient.cpp
+		${CLIENT_SRCDIR}sound/Codec.cpp
   ${CLIENT_SRCDIR}sound/SoundControler.cpp
   ${CLIENT_SRCDIR}protocol/Protocol.cpp)
 
@@ -48,8 +49,8 @@ set(Boost_ALL_DYN_LINK ON)
 
 ## QT MOC precompilation
 set(UI_FILE ${CLIENT_SRCDIR}gui/mainwindow.ui)
-set(MOC_CPP ${CLIENT_SRCDIR}gui/mainwindow.cpp ${CLIENT_SRCDIR}network/TCPClient.cpp)
-set(MOC_INC includes/mainwindow.h includes/TCPClient.hpp)
+set(MOC_CPP ${CLIENT_SRCDIR}gui/mainwindow.cpp ${CLIENT_SRCDIR}network/TCPClient.cpp ${CLIENT_SRCDIR}network/UDPClient.cpp)
+set(MOC_INC includes/mainwindow.h includes/TCPClient.hpp includes/UDPClient.hpp)
 QT4_WRAP_CPP(MOC_SRC ${MOC_INC} ${MOC_CPP})
 QT4_WRAP_UI(UI_SRC ${UI_FILE})
 list(APPEND CLIENT_SOURCE_FILES ${UI_SRC} ${MOC_SRC})

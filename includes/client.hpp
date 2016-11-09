@@ -6,6 +6,7 @@
 # include "INetwork.hpp"
 # include "Protocol.hpp"
 #include "TCPClient.hpp"
+#include "SoundControler.hh"
 
 class Gui;
 
@@ -13,7 +14,9 @@ class Client
 {
 private:
   INetwork  *tcpClient;
+  INetwork  *udpClient;
   Gui       *gui;
+  SoundControler  soundControler;
 
   typedef void (Client::*fptr)(Protocol::BabelPacket const &);
   std::map<Protocol::BabelPacket::Code, fptr>      readFunctions =

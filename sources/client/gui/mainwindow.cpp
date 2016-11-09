@@ -23,10 +23,6 @@ MainWindow::MainWindow(Gui *gui, QWidget *parent) : QMainWindow(parent), ui(new 
     connect(ui->ContactList, SIGNAL (itemSelectionChanged()), this, SLOT (selectContact()));
     connect(ui->RemoveContactButton, SIGNAL (released()), this, SLOT (removeContactButton()));
 
-    std::vector<std::pair<std::string, bool>> lol;
-    lol.push_back(std::make_pair("Alexis Poulet", true));
-    lol.push_back(std::make_pair<std::string, bool>("Sinoujite", false));
-    this->UpdateContactList(lol);
     this->inCall = false;
 }
 

@@ -66,7 +66,6 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
   std::string name = "";
   std::string status = "";
 
-  std::cout << "Add list" << std::endl;
   while (data.size() > 1)
     {
       name = data.substr(0, data.find(":"));
@@ -78,10 +77,6 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
       else
 	contactList.push_back(std::pair<std::string, bool>(name,false));
     }
-  for (std::pair<std::string, bool> each: contactList)
-    {
-      std::cout << "name: " << each.first << ", status: " << each.second << std::endl;
-    }
   this->gui->UpdateContactList(contactList);
 }
 
@@ -92,14 +87,13 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
   std::string name = "";
 
   if ((name = data.substr(0, data.find(":"))) != "")
-    {
       std::cout << "DATA : " << data << std::endl;
       data = data.substr(data.find(":") + 1);
       std::cout << "STATUS : " << data << std::endl;
       if (data == "online")
 	contactStatus = std::make_pair(name, true);
       else
-	contactStatus = std::make_pair(name, false);
+        contactStatus = std::make_pair(name, false);
       this->gui->UpdateContact(contactStatus);
     }
 }
