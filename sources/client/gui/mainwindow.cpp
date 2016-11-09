@@ -70,7 +70,7 @@ void        MainWindow::RegisterRegisterButton()
         QByteArray password = this->hash->hash(ui->PasswordRegisterFirstInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
         this->gui->askRegister(ui->UsernameRegisterInput->text().toUtf8().constData(), ui->PasswordRegisterFirstInput->text().toUtf8().constData());
-        QMessageBox::information(this, "Succes", "Sent registering request");
+        //QMessageBox::information(this, "Succes", "Sent registering request");
     }
 }
 
@@ -89,9 +89,14 @@ void        MainWindow::LogoutButton()
         this->gui->askLogout();
 }
 
-void        MainWindow::Logout()
+void        MainWindow::setLoginView()
 {
     ui->Stack->setCurrentIndex(0);
+}
+
+void        MainWindow::affInfoMessage(std::string const & msg)
+{
+  QMessageBox::information(this, "Info", msg.c_str());
 }
 
 void    MainWindow::AddContactButton()

@@ -38,12 +38,21 @@ unsigned int Session::getUserId() const
   return this->userID;
 }
 
+void Session::connectionLost()
+{
+  Protocol::BabelPacket *babelPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::INVALID_REQUEST,
+                                                                        nullptr, 0);
+  this->server->addTask(*babelPacket, this->userID);
+}
+
 void Session::handleReadData(const boost::system::error_code &error, size_t bytes_transferred)
 {
   (void)bytes_transferred;
   if (error)
   {
     std::cerr << "Error happened during the packet transmission : " << error.message() <<std::endl;
+    connectionLost();
+    return;
   }
   else
   {
@@ -61,6 +70,7 @@ void Session::handleRead(const boost::system::error_code &error, size_t bytes_tr
   if (error)
   {
     std::cerr << "Error happened during the packet transmission : " << error.message() <<std::endl;
+    connectionLost();
     return;
   }
   Protocol::BabelPacket *packet;
@@ -99,6 +109,8 @@ void Session::handleWrited(const boost::system::error_code &error, size_t bytes_
   if (error)
   {
     std::cerr << "Error happened during the packet transmission : " << error.message() <<std::endl;
+    connectionLost();
+    return;
   }
 }
 

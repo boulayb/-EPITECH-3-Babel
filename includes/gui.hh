@@ -25,9 +25,9 @@ public:
 
     void    UpdateContactList(std::vector<std::pair<std::string, bool>>);
     void    UpdateContact(std::pair<std::string, bool>);
-    void    Logout();
+    void    setLoginView();
     void    Login();
-
+    void    affInfoMessage(std::string const &);
     void    incommingCall(const std::string &userName);
     void    endCall();
     void    answerCall();

@@ -20,7 +20,7 @@ private:
     {
       {Protocol::BabelPacket::Code::HAND_SHAKE, &Client::handshake},
       {Protocol::BabelPacket::Code::SIGN_IN_SUCCESS, &Client::login},
-      {Protocol::BabelPacket::Code::SIGN_UP_SUCCESS, &Client::login},
+      {Protocol::BabelPacket::Code::SIGN_UP_SUCCESS, &Client::registerResponse},
       {Protocol::BabelPacket::Code::SIGN_OUT_SUCCESS, &Client::logout},
       {Protocol::BabelPacket::Code::CONTACT_LIST_SUCCESS, &Client::updateContactList},
       {Protocol::BabelPacket::Code::UPDATE_CONTACT_STATUS, &Client::updateContactStatus},
@@ -44,6 +44,7 @@ private:
 
   // Server Success Replies
   void       login(Protocol::BabelPacket const &packet);
+  void       registerResponse(Protocol::BabelPacket const &packet);
   void       logout(Protocol::BabelPacket const &packet);
   void       updateContactList(Protocol::BabelPacket const &packet);
   void       updateContactStatus(Protocol::BabelPacket const &packet);

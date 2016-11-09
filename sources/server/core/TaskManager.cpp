@@ -43,6 +43,7 @@ void TaskManager::signInTask(Task const &task)
   }
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(returnCode, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
+  this->updateContactStatusTask(task.clientID);
 }
 
 void TaskManager::signUpTask(Task const &task)
@@ -125,13 +126,29 @@ void TaskManager::addContactTask(Task const &task)
   this->network->sendBabelPacket(*packet, task.clientID);
 }
 
-void TaskManager::updateContactStatusTask(int userID) const
+void TaskManager::connectionLostTask(Task const &task)
 {
   std::string currentUser;
+  try
+  {
+    currentUser =  this->database.getLoginById(task.clientID);
+  }
+  catch (std::exception)
+  {
+    return;
+  }
+  updateContactStatusTask(task.clientID);
+  this->database.setId(currentUser, -1);
+}
+
+void TaskManager::updateContactStatusTask(int userID) const
+{
+  std::string currentUser = "";
 
   try
   {
-    currentUser = this->database.getLoginById(userID);
+    currentUser =  this->database.getLoginById(userID);
+    std::cout << "current user is " << currentUser <<" " << "id " << userID <<std::endl;
   }
   catch (std::exception)
   {
@@ -153,7 +170,7 @@ void TaskManager::updateContactStatusTask(int userID) const
 
 }
 
-std::vector<std::__cxx11::string> &TaskManager::splitDataByDelimiter(char delimiter, unsigned char *data, int size)
+std::vector<std::string> &TaskManager::splitDataByDelimiter(char delimiter, unsigned char *data, int size)
 {
   std::vector<std::string> *dataSplited = new std::vector<std::string>;
   int nbrWords = 0;

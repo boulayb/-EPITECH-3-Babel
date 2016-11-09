@@ -20,6 +20,7 @@ public:
 
   boost::asio::ip::tcp::socket socket;
 private:
+  void connectionLost();
   void handleRead(const boost::system::error_code& error,
       size_t bytes_transferred);
   void handleReadData(const boost::system::error_code& error,
