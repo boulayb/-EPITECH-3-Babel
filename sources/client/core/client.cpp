@@ -3,9 +3,8 @@
 #include "client.hpp"
 #include "gui.hh"
 
-Client::Client(Gui *)
+Client::Client(Gui *gui) : gui(gui)
 {
-  this->gui = gui;
   this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
   this->tcpClient->initiateService();
 }

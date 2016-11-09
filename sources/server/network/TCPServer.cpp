@@ -45,9 +45,9 @@ bool TCPServer::disconnectUser(unsigned int id)
     if ((*it)->getUserId() == id)
     {
       this->server->getTaskManager().updateContactStatusTask(id);
-      (*it)->socket.close();
-      this->users.erase(it);
-      delete *it;
+//      (*it)->socket.close();
+  //    this->users.erase(it);
+    //  delete *it;
       return true;
     }
   }
