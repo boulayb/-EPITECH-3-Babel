@@ -2,6 +2,10 @@
 # define _SOUNDCONTROLER_HH_
 
 # include "ASoundControler.hh"
+#include "portaudio.h"
+#include "opus.h"
+#include "SoundProperties.hh"
+#include "Codec.hh"
 
 class			SoundControler : public ASoundControler
 {

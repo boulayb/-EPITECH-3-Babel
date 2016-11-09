@@ -21,3 +21,14 @@ unsigned char                 *Protocol::Protocol::stringToPointer(std::string c
   basicData[data.size()] = '\0';
   return basicData;
 }
+
+std::string *Protocol::Protocol::extractData(BabelPacket const &packet)
+{
+  unsigned size = packet.dataLength;
+  std::string *data = new std::string;
+  for (unsigned i = 0; i < size; ++i)
+  {
+    data += packet.data[i];
+  }
+  return data;
+}
