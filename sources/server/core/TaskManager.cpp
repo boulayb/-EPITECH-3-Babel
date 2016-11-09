@@ -43,7 +43,15 @@ void TaskManager::signInTask(Task const &task)
   }
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(returnCode, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
-  std::string login = this->database.getLoginById(task.clientID);
+  std::string login;
+  try
+  {
+    login = this->database.getLoginById(task.clientID);
+  }
+  catch (std::exception)
+  {
+    return;
+  }
   this->updateContactStatusTask(login, ONLINE_STATUS);
 }
 

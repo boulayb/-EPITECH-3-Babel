@@ -138,6 +138,14 @@ void       Client::errorEncountered(Protocol::BabelPacket const &packet)
   {
     this->gui->affInfoMessage("User already exist");
   }
+  else if (packet.code == Protocol::BabelPacket::Code::USER_NOT_FOUND)
+  {
+    this->gui->affInfoMessage("User not found");
+  }
+  else if (packet.code == Protocol::BabelPacket::Code::SIGN_IN_FAILED)
+  {
+    this->gui->affInfoMessage("User not found, or incorrect password");
+  }
     //this->gui->errorEncountered(error);
 }
 

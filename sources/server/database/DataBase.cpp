@@ -84,7 +84,7 @@ int DataBase::getId(std::string const &login) const
 
 Protocol::BabelPacket::Code DataBase::addFriend(std::string const &login, std::string const &newFriend)
 {
-  if (this->_map[login].getLogin() != login)
+  if (this->_map[newFriend].getLogin() != newFriend)
     return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
   for (std::vector<std::string>::iterator it = this->_map[login].getFriends().begin(); it != this->_map[login].getFriends().end(); ++it)
   {
