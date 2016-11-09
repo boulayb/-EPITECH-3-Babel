@@ -43,7 +43,8 @@ void TaskManager::signInTask(Task const &task)
   }
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(returnCode, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
-  this->updateContactStatusTask(task.clientID, ONLINE_STATUS);
+  std::string login = this->database.getLoginById(task.clientID);
+  this->updateContactStatusTask(login, ONLINE_STATUS);
 }
 
 void TaskManager::signUpTask(Task const &task)
@@ -62,7 +63,7 @@ void TaskManager::signOutTask(Task const &task)
   this->database.setId(login, -1);
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::SIGN_OUT_SUCCESS, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
-  this->updateContactStatusTask(task.clientID, OFFLINE_STATUS);
+  this->updateContactStatusTask(login, OFFLINE_STATUS);
 //  this->network->disconnectUser(task.clientID);
 }
 
@@ -138,32 +139,19 @@ void TaskManager::connectionLostTask(Task const &task)
   {
     return;
   }
-  updateContactStatusTask(task.clientID, OFFLINE_STATUS);
+  updateContactStatusTask(currentUser, OFFLINE_STATUS);
   this->database.setId(currentUser, -1);
 }
 
-void TaskManager::updateContactStatusTask(int userID, std::string const &status) const
+void TaskManager::updateContactStatusTask(std::string const &login, std::string const &status) const
 {
-  std::string currentUser = "";
-
-  try
-  {
-    currentUser =  this->database.getLoginById(userID);
-    std::cout << "current user is " << currentUser <<" " << "id " << userID <<std::endl;
-  }
-  catch (std::exception)
-  {
-    return;
-  }
-  const std::vector<std::string> &friendList = this->database.getFriendsList(currentUser);
+  const std::vector<std::string> &friendList = this->database.getFriendsList(login);
   int friendId = 0;
   for (std::string friendStr : friendList)
   {
     if ((friendId = this->database.getId(friendStr)) != -1)
     {
-      std::string msg = "";
-      msg = currentUser + SEPARATOR + status;
-      std::cout << "msg : " << msg << std::endl;
+      std::string msg = login + SEPARATOR + status;
       unsigned char *basicData = Protocol::Protocol::stringToPointer(msg);
       Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::
                                                                        Code::UPDATE_CONTACT_STATUS, basicData, msg.size());

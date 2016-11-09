@@ -18,7 +18,7 @@ public:
   ~TaskManager();
   typedef void (TaskManager::*taskFunction)(Task const &);
   void executeTask(Task const &task);
-  void updateContactStatusTask(int userId, std::string const &) const;
+  void updateContactStatusTask(std::string const &, std::string const &) const;
 private:
 
   void handShakeTask(Task const &);

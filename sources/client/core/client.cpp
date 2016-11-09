@@ -87,6 +87,7 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
   std::string name = "";
 
   if ((name = data.substr(0, data.find(":"))) != "")
+    {
       std::cout << "DATA : " << data << std::endl;
       data = data.substr(data.find(":") + 1);
       std::cout << "STATUS : " << data << std::endl;
