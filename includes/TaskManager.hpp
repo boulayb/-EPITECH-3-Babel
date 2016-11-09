@@ -19,11 +19,11 @@ public:
   typedef void (TaskManager::*taskFunction)(Task const &);
   void executeTask(Task const &task);
   void updateContactStatusTask(int userId) const;
-
 private:
 
   void handShakeTask(Task const &);
   void signInTask(Task const &);
+  void connectionLostTask(Task const &task);
   void signUpTask(Task const &);
   void signOutTask(Task const &);
   void getContactTask(Task const &);
@@ -36,6 +36,7 @@ private:
      {Protocol::BabelPacket::Code::HAND_SHAKE, &TaskManager::handShakeTask},
      {Protocol::BabelPacket::Code::SIGN_IN, &TaskManager::signInTask},
      {Protocol::BabelPacket::Code::SIGN_UP, &TaskManager::signUpTask},
+     {Protocol::BabelPacket::Code::INVALID_REQUEST, &TaskManager::connectionLostTask},
      {Protocol::BabelPacket::Code::SIGN_OUT, &TaskManager::signOutTask},
      {Protocol::BabelPacket::Code::CONTACT_LIST, &TaskManager::getContactTask},
      {Protocol::BabelPacket::Code::CALL, &TaskManager::callTask},

@@ -24,6 +24,12 @@ void       Client::readBabelPacket(Protocol::BabelPacket const &packet)
   (this->*(this->readFunctions[packet.code]))(packet);
 }
 
+void       Client::registerResponse(Protocol::BabelPacket const &packet)
+{
+  this->gui->setLoginView();
+  this->gui->affInfoMessage("Register success");
+}
+
 void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user, std::string const &passwd)
 {
   unsigned char *data = Protocol::Protocol::stringToPointer(user + ':' + passwd);
@@ -47,7 +53,7 @@ void       Client::login(Protocol::BabelPacket const &packet)
 
 void       Client::logout(Protocol::BabelPacket const &packet)
 {
-  this->gui->Logout();
+  this->gui->setLoginView();
 }
 
 void       Client::updateContactList(Protocol::BabelPacket const &packet)
@@ -88,7 +94,7 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
 
 void       Client::incomingCall(Protocol::BabelPacket const &packet)
 {
-  //this->gui->incomingCall();
+//  this->gui->
 }
 
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
@@ -115,6 +121,13 @@ void       Client::contactDeleted(Protocol::BabelPacket const &packet)
 
 void       Client::errorEncountered(Protocol::BabelPacket const &packet)
 {
-  std::string error(const_cast<char *>(reinterpret_cast<const char *>(packet.data)));
-  //this->gui->errorEncountered(error);
+  if (packet.code == Protocol::BabelPacket::Code::USER_ALREADY_SIGNED_IN)
+  {
+    this->gui->affInfoMessage("User already signed in");
+  }
+  else if (packet.code == Protocol::BabelPacket::Code::USER_ALREADY_EXIST)
+  {
+    this->gui->affInfoMessage("User already exist");
+  }
+    //this->gui->errorEncountered(error);
 }

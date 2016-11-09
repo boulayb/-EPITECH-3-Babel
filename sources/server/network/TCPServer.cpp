@@ -37,31 +37,12 @@ bool TCPServer::sendBabelPacket(Protocol::BabelPacket &packet, unsigned int id)
   return false;
 }
 
-bool TCPServer::disconnectUser(unsigned int id)
-{
-
-  for (auto it = this->users.begin(); it != this->users.end(); ++it)
-  {
-    if ((*it)->getUserId() == id)
-    {
-      this->server->getTaskManager().updateContactStatusTask(id);
-//      (*it)->socket.close();
-  //    this->users.erase(it);
-    //  delete *it;
-      return true;
-    }
-  }
-  return false;
-}
-
-
 void TCPServer::handle_accept(Session *newSession, const boost::system::error_code &error)
 {
   if (!error)
   {
     std::cout << "Accepting new user ! " << std::endl;
-    this->server->getTaskManager().updateContactStatusTask(this->maxUserId++);
-    newSession->start(server, this->maxUserId);
+    newSession->start(server, this->maxUserId++);
     this->users.push_back(newSession);
   }
   else

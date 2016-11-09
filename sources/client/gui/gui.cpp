@@ -56,9 +56,9 @@ void    Gui::Login()
     this->mainWindow->Login();
 }
 
-void    Gui::Logout()
+void    Gui::setLoginView()
 {
-    this->mainWindow->Logout();
+    this->mainWindow->setLoginView();
 }
 
 void    Gui::UpdateContactList(std::vector<std::pair<std::string, bool>>    contactList)
@@ -66,7 +66,7 @@ void    Gui::UpdateContactList(std::vector<std::pair<std::string, bool>>    cont
     this->mainWindow->UpdateContactList(contactList);
 }
 
-void    Gui::UpdateContact(std::pair<std::__cxx11::string, bool>    contact)
+void    Gui::UpdateContact(std::pair<std::string, bool>    contact)
 {
     this->mainWindow->updateContact(contact);
 }
@@ -78,6 +78,11 @@ void    Gui::incommingCall(const std::string &userName)
     else
         client->sendBabelPacket(Protocol::BabelPacket::Code::CALL_DECLINED);
 
+}
+
+void    Gui::affInfoMessage(std::string const & msg)
+{
+  this->mainWindow->affInfoMessage(msg);
 }
 
 void    Gui::endCall()

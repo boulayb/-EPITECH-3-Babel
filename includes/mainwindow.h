@@ -25,9 +25,10 @@ public:
     void        setInCall(bool inCall);
     void        newError(const std::string &error);
     void        Login();
-    void        Logout();
+    void        setLoginView();
     bool        incommingCall(const std::string &userName);
     void        updateContact(std::pair<std::string, bool> contact);
+    void        affInfoMessage(std::string const & msg);
 
 private:
     Ui::MainWindow      *ui;
