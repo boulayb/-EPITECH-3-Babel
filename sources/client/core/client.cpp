@@ -157,4 +157,3 @@ void       Client::errorEncountered(Protocol::BabelPacket const &packet)
   }
     //this->gui->errorEncountered(error);
 }
-
