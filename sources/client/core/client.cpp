@@ -64,13 +64,24 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
   std::string status = "";
 
   std::cout << "Add list" << std::endl;
-  while ((name = data.substr(0, data.find(":"))) != "")
+  while (data.size() > 1)
     {
+      name = data.substr(0, data.find(";"));
+      std::cout << "data: " << data << std::endl;
+      data = data.substr(data.find(";") + 1);
+      std::cout << "data: " << data << std::endl;
       status = data.substr(0, data.find(";"));
+      data = data.substr(data.find(";"));
+      std::cout << "data: " << data << std::endl;
+      std::cout << "+1" << std::endl;
       if (status == "1")
 	contactList.push_back(std::pair<std::string, bool>(name,true));
       else
 	contactList.push_back(std::pair<std::string, bool>(name,false));
+    }
+  for (std::pair<std::string, bool> each: contactList)
+    {
+      std::cout << "name: " << each.first << ", status: " << each.second << std::endl;
     }
   this->gui->UpdateContactList(contactList);
 }
@@ -131,3 +142,4 @@ void       Client::errorEncountered(Protocol::BabelPacket const &packet)
   }
     //this->gui->errorEncountered(error);
 }
+

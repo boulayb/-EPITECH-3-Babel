@@ -89,14 +89,14 @@ void TCPClient::readMessage()
   char buffer[sizeof(Protocol::BabelPacket)];
   this->tcpSocket.read(buffer, sizeof(Protocol::BabelPacket));
   Protocol::BabelPacket *packet = reinterpret_cast<Protocol::BabelPacket *>(buffer);
-  std::cout << "Receiving packet of size" << packet->dataLength << " " << (int) packet->code << std::endl;
+  std::cout << "Receiving packet of size" << packet->dataLength << " with code " << (int) packet->code << std::endl;
 
   Protocol::BabelPacket *fullPacket = reinterpret_cast<Protocol::BabelPacket *>(
-          new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
+          new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength]);
   std::memcpy(fullPacket, packet, sizeof(Protocol::BabelPacket));
-  char *packetData = new char[packet->dataLength + 1];
+  char *packetData = new char[packet->dataLength];
   this->tcpSocket.read(packetData, packet->dataLength);
-  std::memcpy(fullPacket, packetData, packet->dataLength);
+  std::memcpy(fullPacket->data, packetData, packet->dataLength);
   client->readBabelPacket(*fullPacket);
   std::cout << this->tcpSocket.isOpen() << std::endl;
   //send to protocol
