@@ -49,6 +49,9 @@ void       Client::login(Protocol::BabelPacket const &packet)
 {
   std::cout << "login" << std::endl;
   this->gui->Login();
+  Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
+  this->tcpClient->sendBabelPacket(*newPacket);
+  std::cout << "packet send" << std::endl;
 }
 
 void       Client::logout(Protocol::BabelPacket const &packet)
@@ -66,15 +69,11 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
   std::cout << "Add list" << std::endl;
   while (data.size() > 1)
     {
-      name = data.substr(0, data.find(";"));
-      std::cout << "data: " << data << std::endl;
-      data = data.substr(data.find(";") + 1);
-      std::cout << "data: " << data << std::endl;
+      name = data.substr(0, data.find(":"));
+      data = data.substr(data.find(":") + 1);
       status = data.substr(0, data.find(";"));
       data = data.substr(data.find(";"));
-      std::cout << "data: " << data << std::endl;
-      std::cout << "+1" << std::endl;
-      if (status == "1")
+      if (status == "online")
 	contactList.push_back(std::pair<std::string, bool>(name,true));
       else
 	contactList.push_back(std::pair<std::string, bool>(name,false));
@@ -127,7 +126,9 @@ void       Client::contactAdded(Protocol::BabelPacket const &packet)
 
 void       Client::contactDeleted(Protocol::BabelPacket const &packet)
 {
-  //this->gui->contactDeleted();
+  Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
+  this->tcpClient->sendBabelPacket(*newPacket);
+  std::cout << "packet send" << std::endl;
 }
 
 void       Client::errorEncountered(Protocol::BabelPacket const &packet)
