@@ -66,7 +66,7 @@ void    Gui::UpdateContactList(std::vector<std::pair<std::string, bool>>    cont
     this->mainWindow->UpdateContactList(contactList);
 }
 
-void    Gui::UpdateContact(std::pair<std::string, bool>    contact)
+void    Gui::UpdateContact(const std::pair<std::string, bool>    &contact)
 {
     this->mainWindow->updateContact(contact);
 }

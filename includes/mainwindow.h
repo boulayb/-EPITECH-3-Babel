@@ -27,7 +27,7 @@ public:
     void        Login();
     void        setLoginView();
     bool        incommingCall(const std::string &userName);
-    void        updateContact(std::pair<std::string, bool> contact);
+    void        updateContact(const std::pair<std::string, bool> &contact);
     void        affInfoMessage(std::string const & msg);
 
 private:

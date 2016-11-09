@@ -24,7 +24,7 @@ public:
     void    newError(const std::string &error);
 
     void    UpdateContactList(std::vector<std::pair<std::string, bool>>);
-    void    UpdateContact(std::pair<std::string, bool>);
+    void    UpdateContact(const std::pair<std::string, bool> &contact);
     void    setLoginView();
     void    Login();
     void    affInfoMessage(std::string const &);
