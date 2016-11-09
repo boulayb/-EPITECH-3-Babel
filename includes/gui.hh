@@ -15,12 +15,12 @@ public:
 
     void    start();
     void    setClient(Client *client);
-    void    AddContact(std::string contactName);
-    void    askRegister(std::string username, std::string password);
-    void    askLogin(std::string username, std::string password);
+    void    AddContact(const std::string &contactName);
+    void    askRegister(const std::string &username, const std::string &password);
+    void    askLogin(const std::string &username, const std::string &password);
     void    askLogout();
-    void    call(std::string contactName);
-    void    removeContact(std::string contacName);
+    void    call(const std::string &contactName);
+    void    removeContact(const std::string &contacName);
     void    newError(const std::string &error);
 
     void    UpdateContactList(std::vector<std::pair<std::string, bool>>);

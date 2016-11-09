@@ -15,17 +15,17 @@ void   Gui::setClient(Client *client)
   this->client = client;
 }
 
-void    Gui::AddContact(std::string contactName)
+void    Gui::AddContact(const std::string &contactName)
 {
     client->sendBabelPacket(Protocol::BabelPacket::Code::ADD_CONTACT, contactName);
 }
 
-void    Gui::askRegister(std::string username, std::string password)
+void    Gui::askRegister(const std::string &username, const std::string &password)
 {
     client->sendBabelPacket(Protocol::BabelPacket::Code::SIGN_UP, username, password);
 }
 
-void    Gui::askLogin(std::string username, std::string password)
+void    Gui::askLogin(const std::string &username, const std::string &password)
 {
     client->sendBabelPacket(Protocol::BabelPacket::Code::SIGN_IN, username, password);
 }
@@ -35,12 +35,12 @@ void    Gui::askLogout()
     client->sendBabelPacket(Protocol::BabelPacket::Code::SIGN_OUT);
 }
 
-void    Gui::call(std::string    contactName)
+void    Gui::call(const std::string &contactName)
 {
     client->sendBabelPacket(Protocol::BabelPacket::Code::CALL, contactName);
 }
 
-void    Gui::removeContact(std::string contactName)
+void    Gui::removeContact(const std::string &contactName)
 {
     client->sendBabelPacket(Protocol::BabelPacket::Code::DEL_CONTACT, contactName);
 }
