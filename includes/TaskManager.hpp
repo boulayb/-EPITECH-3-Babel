@@ -30,6 +30,9 @@ private:
   void callTask(Task const &);
   void delContactTask(Task const &);
   void addContactTask(Task const &);
+  void callAcceptedTask(Task const &);
+  void callDeclinedTask(Task const &);
+
 
   std::map<Protocol::BabelPacket::Code, taskFunction> actions =
    {
@@ -41,8 +44,10 @@ private:
      {Protocol::BabelPacket::Code::CONTACT_LIST, &TaskManager::getContactTask},
      {Protocol::BabelPacket::Code::CALL, &TaskManager::callTask},
      {Protocol::BabelPacket::Code::DEL_CONTACT, &TaskManager::delContactTask},
-     {Protocol::BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask}
-  };
+     {Protocol::BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask},
+     {Protocol::BabelPacket::Code::CALL_ACCEPTED, &TaskManager::callAcceptedTask},
+     {Protocol::BabelPacket::Code::CALL_DECLINED, &TaskManager::callDeclinedTask}
+   };
 
   std::vector<std::string> &splitDataByDelimiter(char delimiter, unsigned char *data, int size);
   DataBase database;

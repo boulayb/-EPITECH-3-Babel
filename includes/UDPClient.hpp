@@ -6,10 +6,10 @@
 #include <QtNetwork/QUdpSocket>
 #include <QDebug>
 #include <QIODevice>
-#include "INetwork.hpp"
+#include "ANetwork.hpp"
 #include "client.hpp"
 
-class UDPClient : public  QObject, public INetwork
+class UDPClient : public  QObject, public ANetwork
 {
   Q_OBJECT
 
@@ -23,9 +23,6 @@ private slots:
   void displayError(QAbstractSocket::SocketError socketError);
   void readMessage();
 private:
-  Client *babel;
-  std::string hostName;
-  short port;
   QUdpSocket udpSocket;
 };
 

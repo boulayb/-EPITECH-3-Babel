@@ -151,6 +151,17 @@ void TaskManager::connectionLostTask(Task const &task)
   this->database.setId(currentUser, -1);
 }
 
+void TaskManager::callAcceptedTask(Task const &task)
+{
+  (void)task;
+}
+
+void TaskManager::callDeclinedTask(Task const &task)
+{
+  (void)task;
+}
+
+
 void TaskManager::updateContactStatusTask(std::string const &login, std::string const &status) const
 {
   const std::vector<std::string> &friendList = this->database.getFriendsList(login);

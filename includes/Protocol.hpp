@@ -4,8 +4,6 @@
 # define MAGIC_NUMBER   0xDEAD
 # include <string>
 
-# include <string>
-
 namespace Protocol
 {
   struct          BabelPacket
@@ -59,7 +57,7 @@ namespace Protocol
   public:
         static struct BabelPacket *createPacket(BabelPacket::Code code, unsigned char *data, unsigned int const &length);
         static unsigned char      *stringToPointer(std::string const &);
-				static std::string *extractData(BabelPacket const &packet);
+				static std::string &extractData(BabelPacket const &packet);
   };
 
 }

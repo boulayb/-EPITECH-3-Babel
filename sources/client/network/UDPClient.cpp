@@ -2,7 +2,7 @@
 #include "UDPClient.hpp"
 
 
-UDPClient::UDPClient(Client *client, const std::string &hostname, unsigned short port, QObject *parent) : QObject(parent), babel(client), hostName(hostname.c_str()), port(port)
+UDPClient::UDPClient(Client *client, const std::string &hostname, unsigned short port, QObject *parent) : QObject(parent), ANetwork(client, hostname, port)
 {
   connect(&this->udpSocket, SIGNAL(readyRead()),this, SLOT(readMessage()));
   connect(&this->udpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
@@ -41,10 +41,10 @@ void UDPClient::displayError(QAbstractSocket::SocketError socketError)
 bool UDPClient::sendBabelPacket(Protocol::BabelPacket &packet)
 {
   QString qHostname(this->hostName.c_str());
-  std::string *data = Protocol::Protocol::extractData(packet);
+  std::string data = Protocol::Protocol::extractData(packet);
   std::cout << sizeof(Protocol::BabelPacket) + packet.dataLength << std::endl;
   QHostAddress addr(qHostname);
-  this->udpSocket.writeDatagram(data->c_str(), packet.dataLength, addr, this->port);
+  this->udpSocket.writeDatagram(data.c_str(), packet.dataLength, addr, this->port);
   return true;
 }
 

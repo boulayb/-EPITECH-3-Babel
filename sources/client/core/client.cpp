@@ -42,7 +42,8 @@ void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::
 
 void       Client::handshake(Protocol::BabelPacket const &packet)
 {
-  (void)packet;
+  std::string &hostName = Protocol::Protocol::extractData(packet);
+  this->udpClient->setHostname(hostName);
   Protocol::BabelPacket   *handshakeSuccess = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE_SUCCESS, nullptr, 0);
   this->tcpClient->sendBabelPacket(*handshakeSuccess);
 }

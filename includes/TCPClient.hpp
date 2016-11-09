@@ -6,14 +6,13 @@
 #include <QtNetwork/QTcpSocket>
 #include <QDebug>
 #include <QIODevice>
-#include "INetwork.hpp"
+#include "ANetwork.hpp"
 
 class Client;
 
-class TCPClient : public  QObject, public INetwork
+class TCPClient : public  QObject, public ANetwork
 {
   Q_OBJECT
-
 public:
   TCPClient(Client *, std::string const &hostname, unsigned short port, QObject *parent = 0);
   ~TCPClient();
@@ -28,9 +27,6 @@ private slots:
   void writeMessage(qint64 bytes);
   void displayError(QAbstractSocket::SocketError socketError);
 private:
-  Client *client;
-  std::string hostName;
-  unsigned short port;
   QTcpSocket tcpSocket;
   bool is_connected;
 };

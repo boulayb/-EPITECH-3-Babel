@@ -3,6 +3,8 @@
 
 #include "Protocol.hpp"
 
+class Client;
+
 class INetwork
 {
 public:
@@ -10,6 +12,9 @@ public:
   virtual bool      initiateService() = 0;
   virtual void      shutDown() = 0;
   virtual bool      sendBabelPacket(Protocol::BabelPacket &) = 0;
+  virtual void      setHostname(std::string const &) = 0;
+  virtual void      setPort(short) = 0;
+  virtual void      setClient(Client *) = 0;
 };
 
 #endif // INETWORK_HPP

@@ -4,7 +4,8 @@
 #include "client.hpp"
 #include <QApplication>
 
-TCPClient::TCPClient(Client *babel , const std::string &hostname, unsigned short port, QObject *parent) : QObject(parent), client(babel),  hostName(hostname), port(port), is_connected(false)
+TCPClient::TCPClient(Client *babel , const std::string &hostname, unsigned short port, QObject *parent) :
+        QObject(parent), ANetwork(babel, hostname, port), is_connected(false)
 {
 }
 

@@ -20,7 +20,10 @@ void Session::start(Server *server, unsigned int userId)
 {
   this->server = server;
   this->userID = userId;
-  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE, nullptr, 0);
+  std::string remoteHost = this->socket.remote_endpoint().address().to_string();
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE,
+                                                                   Protocol::Protocol::stringToPointer(remoteHost),
+                                                                   remoteHost.size());
   this->writeToClient(*packet);
   this->socket.async_read_some(boost::asio::buffer(this->buffer, sizeof(Protocol::BabelPacket)),
       boost::bind(&Session::handleRead, this,
