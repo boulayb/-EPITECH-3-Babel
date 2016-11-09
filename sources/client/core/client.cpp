@@ -5,7 +5,7 @@
 
 Client::Client(Gui *gui) : gui(gui)
 {
-  this->tcpClient = new TCPClient(this, "192.168.43.141", 4002);
+  this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
   this->tcpClient->initiateService();
 }
 
