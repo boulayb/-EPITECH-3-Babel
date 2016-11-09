@@ -1,11 +1,20 @@
 #ifndef TCPCLIENT_HHP
 #define TCPCLIENT_HHP
 
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#endif
+
 #include <QObject>
 #include <QtNetwork/QAbstractSocket>
 #include <QtNetwork/QTcpSocket>
 #include <QDebug>
 #include <QIODevice>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #include "INetwork.hpp"
 
 class Client;

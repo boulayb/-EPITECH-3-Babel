@@ -1,11 +1,20 @@
 #ifndef UDPCLIENT_H
 #define UDPCLIENT_H
 
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#endif
+
 #include <QObject>
 #include <QtNetwork/QAbstractSocket>
 #include <QtNetwork/QUdpSocket>
 #include <QDebug>
 #include <QIODevice>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #include "INetwork.hpp"
 #include "client.hpp"
 

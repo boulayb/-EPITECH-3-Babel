@@ -1,11 +1,20 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#endif
+
 #include <QMainWindow>
 #include <QPushButton>
 #include <QCryptographicHash>
 #include <QMessageBox>
 #include <QListWidget>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 
 namespace Ui {
 class MainWindow;

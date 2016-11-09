@@ -1,8 +1,17 @@
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#endif
+
+#include <QListWidget>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "gui.hh"
 #include <iostream>
-#include <QListWidget>
 #include "mycontactlistitem.h"
 #include "Protocol.hpp"
 
@@ -207,7 +216,7 @@ void    MainWindow::newError(const std::string &error)
     QMessageBox::information(this, "Error", error.c_str());
 }
 
-bool    MainWindow::incommingCall(const std::__cxx11::string &userName)
+bool    MainWindow::incommingCall(const std::string &userName)
 {
      QMessageBox::StandardButton reply;
      (void) userName;
