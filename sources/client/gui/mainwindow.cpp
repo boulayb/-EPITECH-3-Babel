@@ -186,7 +186,7 @@ void    MainWindow::selectContact()
 
 void    MainWindow::removeContactButton()
 {
-    if (!inCall)
+    if (!inCall && ui->ContactList->count() > 0)
     {
         std::string contact = ui->ContactList->currentItem()->text().toUtf8().constData();
         ui->ContactNameLabel->setText(QString("No contact selected"));
