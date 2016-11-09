@@ -21,7 +21,7 @@ bool TCPClient::initiateService()
   connect(&this->tcpSocket, SIGNAL(connected()), this, SLOT(connectReady()));
   connect(&this->tcpSocket, SIGNAL(disconnected()), this, SLOT(disconnectedReady()));
   this->tcpSocket.connectToHost(this->hostName.c_str(), this->port);
-  this->tcpSocket.waitForConnected(5000);
+  return this->tcpSocket.waitForConnected(5000);
 }
 
 void TCPClient::connectReady()
@@ -31,6 +31,7 @@ void TCPClient::connectReady()
 
 void TCPClient::writeMessage(qint64 bytes)
 {
+  (void)bytes;
   std::cout << "writted ! " << std::endl;
 }
 

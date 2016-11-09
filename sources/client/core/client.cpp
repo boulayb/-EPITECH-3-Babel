@@ -26,6 +26,7 @@ void       Client::readBabelPacket(Protocol::BabelPacket const &packet)
 
 void       Client::registerResponse(Protocol::BabelPacket const &packet)
 {
+  (void)packet;
   this->gui->setLoginView();
   this->gui->affInfoMessage("Register success");
 }
@@ -41,12 +42,14 @@ void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::
 
 void       Client::handshake(Protocol::BabelPacket const &packet)
 {
+  (void)packet;
   Protocol::BabelPacket   *handshakeSuccess = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE_SUCCESS, nullptr, 0);
   this->tcpClient->sendBabelPacket(*handshakeSuccess);
 }
 
 void       Client::login(Protocol::BabelPacket const &packet)
 {
+  (void)packet;
   std::cout << "login" << std::endl;
   this->gui->Login();
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
@@ -56,6 +59,7 @@ void       Client::login(Protocol::BabelPacket const &packet)
 
 void       Client::logout(Protocol::BabelPacket const &packet)
 {
+  (void)packet;
   this->gui->setLoginView();
 }
 
@@ -73,9 +77,9 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
       status = data.substr(0, data.find(";"));
       data = data.substr(data.find(";"));
       if (status == "online")
-	contactList.push_back(std::pair<std::string, bool>(name,true));
+        contactList.push_back(std::pair<std::string, bool>(name,true));
       else
-	contactList.push_back(std::pair<std::string, bool>(name,false));
+        contactList.push_back(std::pair<std::string, bool>(name,false));
     }
   this->gui->UpdateContactList(contactList);
 }
@@ -92,7 +96,7 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
       data = data.substr(data.find(":") + 1);
       std::cout << "STATUS : " << data << std::endl;
       if (data == "online")
-	contactStatus = std::make_pair(name, true);
+        contactStatus = std::make_pair(name, true);
       else
         contactStatus = std::make_pair(name, false);
       this->gui->UpdateContact(contactStatus);
@@ -101,21 +105,25 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
 
 void       Client::incomingCall(Protocol::BabelPacket const &packet)
 {
+  (void)packet;
 //  this->gui->
 }
 
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
 {
+  (void)packet;
   //this->gui->callAccepted();
 }
 
 void       Client::callDeclined(Protocol::BabelPacket const &packet)
 {
+  (void)packet;
   //this->gui->callDeclined();
 }
 
 void       Client::contactAdded(Protocol::BabelPacket const &packet)
 {
+  (void)packet;
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
   this->tcpClient->sendBabelPacket(*newPacket);
   std::cout << "packet send" << std::endl;
@@ -123,6 +131,7 @@ void       Client::contactAdded(Protocol::BabelPacket const &packet)
 
 void       Client::contactDeleted(Protocol::BabelPacket const &packet)
 {
+  (void)packet;
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
   this->tcpClient->sendBabelPacket(*newPacket);
   std::cout << "packet send" << std::endl;
