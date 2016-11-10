@@ -71,12 +71,12 @@ void    Gui::UpdateContact(const std::pair<std::string, bool>    &contact)
     this->mainWindow->updateContact(contact);
 }
 
-void    Gui::incommingCall(const std::string &userName)
+void    Gui::incommingCall(const std::string &userName, const std::string &ip, const std::string &port)
 {
     if (mainWindow->incommingCall(userName))
-        client->sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED);
+      client->acceptCall(userName, ip, port);
     else
-        client->sendBabelPacket(Protocol::BabelPacket::Code::CALL_DECLINED);
+      client->sendBabelPacket(Protocol::BabelPacket::Code::CALL_DECLINED, userName);
 
 }
 

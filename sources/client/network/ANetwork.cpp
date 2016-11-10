@@ -29,3 +29,13 @@ void      ANetwork::setClient(Client *client)
 {
   this->client = client;
 }
+
+std::string const&   ANetwork::getHostname() const
+{
+  return this->hostName;
+}
+
+short const&         ANetwork::getPort() const
+{
+  return this->port;
+}

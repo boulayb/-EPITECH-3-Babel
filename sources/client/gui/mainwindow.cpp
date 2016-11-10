@@ -219,7 +219,7 @@ void    MainWindow::newError(const std::string &error)
 bool    MainWindow::incommingCall(const std::string &userName)
 {
      QMessageBox::StandardButton reply;
-     (void) userName;
+     (void)userName;
      reply = QMessageBox::question(this, "Incomming Call", "Accept call from ?",
                                     QMessageBox::Yes|QMessageBox::No);
      if (reply == QMessageBox::Yes)

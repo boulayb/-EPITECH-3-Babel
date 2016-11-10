@@ -21,7 +21,7 @@ unsigned char                 *Protocol::Protocol::stringToPointer(std::string c
   basicData[data.size()] = '\0';
   return basicData;
 }
-#include <iostream>
+
 std::string &Protocol::Protocol::extractData(BabelPacket const &packet)
 {
   unsigned size = packet.dataLength;

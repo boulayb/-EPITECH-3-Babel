@@ -37,7 +37,7 @@ public:
     void    setLoginView();
     void    Login();
     void    affInfoMessage(std::string const &);
-    void    incommingCall(const std::string &userName);
+    void    incommingCall(const std::string &userName, const std::string &ip, const std::string &port);
     void    endCall();
     void    answerCall();
 

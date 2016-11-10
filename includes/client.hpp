@@ -67,6 +67,8 @@ private:
   void       startGUI();
   void       readBabelPacket(Protocol::BabelPacket const &packet);
   void       sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user = "", std::string const &passwd = "");
+  void       sendCallPacket(std::string const &user = "");
+  void       acceptCall(std::string const &user, std::string const &ip, std::string const &port);
 };
 
 #endif /* !CLIENT_HPP_ */
