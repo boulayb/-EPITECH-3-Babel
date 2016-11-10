@@ -1,7 +1,16 @@
 #ifndef GUI_HH
 #define GUI_HH
 
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#endif
+
 #include <QApplication>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #include "mainwindow.h"
 #include "client.hpp"
 

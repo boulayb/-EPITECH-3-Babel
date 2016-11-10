@@ -6,6 +6,7 @@
 # include "INetwork.hpp"
 # include "Protocol.hpp"
 #include "TCPClient.hpp"
+#include "UDPClient.hpp"
 #include "SoundControler.hh"
 
 class Gui;

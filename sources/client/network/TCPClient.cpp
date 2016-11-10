@@ -1,8 +1,17 @@
+#ifdef _MSC_VER
+#pragma warning(push, 0)
+#endif
+
+#include <QApplication>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #include <iostream>
 #include <cstring>
 #include "TCPClient.hpp"
 #include "client.hpp"
-#include <QApplication>
 
 TCPClient::TCPClient(Client *babel , const std::string &hostname, unsigned short port, QObject *parent) :
         QObject(parent), ANetwork(babel, hostname, port), is_connected(false)

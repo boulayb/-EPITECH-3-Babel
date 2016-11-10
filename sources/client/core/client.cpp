@@ -7,6 +7,8 @@ Client::Client(Gui *gui) : gui(gui)
 {
   this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
   this->tcpClient->initiateService();
+  this->udpClient = new UDPClient(this, "127.0.0.1", 4001);
+  this->udpClient->initiateService();
 }
 
 Client::~Client()
