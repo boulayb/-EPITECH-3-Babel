@@ -46,13 +46,16 @@ Protocol::BabelPacket::Code DataBase::registerUser(std::string const &login, std
 
 Protocol::BabelPacket::Code DataBase::login(std::string const &login, std::string const &password)
 {
-  if (this->_map[login].getLogin() != login)
-    return (Protocol::BabelPacket::Code::SIGN_IN_FAILED);
-  if (this->_map[login].getPassword() != password)
-    return (Protocol::BabelPacket::Code::SIGN_IN_FAILED);
-  if (this->_map[login].getId() != -1)
-    return (Protocol::BabelPacket::Code::USER_ALREADY_SIGNED_IN);
-  return (Protocol::BabelPacket::Code::SIGN_IN_SUCCESS);
+  if (this->_map.count(login) > 0)
+  {
+    if (this->_map[login].getLogin() == login && this->_map[login].getPassword() == password)
+    {
+      if (this->_map[login].getId() != -1)
+        return (Protocol::BabelPacket::Code::USER_ALREADY_SIGNED_IN);
+      return (Protocol::BabelPacket::Code::SIGN_IN_SUCCESS);
+    }
+  }
+  return (Protocol::BabelPacket::Code::SIGN_IN_FAILED);
 }
 
 std::string const &DataBase::getLoginById(int id) const
@@ -65,6 +68,7 @@ std::string const &DataBase::getLoginById(int id) const
       return *login;
     }
   }
+  std::cout << "login not found, id : " << id << std::endl;
   throw std::exception();
 }
 
@@ -88,12 +92,12 @@ Protocol::BabelPacket::Code DataBase::addFriend(std::string const &login, std::s
     return (Protocol::BabelPacket::Code::USER_ALREADY_FRIEND);
   if (this->_map[login].getLogin() != login)
     return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
-  if (this->_map[newFriend].getLogin() != newFriend)
+  if (this->_map.count(newFriend) == 0)
     return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
   for (std::vector<std::string>::iterator it = this->_map[login].getFriends().begin(); it != this->_map[login].getFriends().end(); ++it)
   {
-      if (newFriend == *it)
-          return (Protocol::BabelPacket::Code::USER_ALREADY_FRIEND);
+    if (newFriend == *it)
+        return (Protocol::BabelPacket::Code::USER_ALREADY_FRIEND);
   }
   this->_map[login].getFriends().push_back(newFriend);
   this->writeMap();
@@ -134,7 +138,7 @@ const std::vector<std::string> &DataBase::getFriendsList(std::string const &logi
 bool DataBase::checkIfUserExist(std::string const &login)
 {
   std::map<std::string, User>::const_iterator it = this->_map.find(login);
-  return it!=this->_map.end();
+  return it != this->_map.end();
 }
 
 bool DataBase::checkUserInfo(std::string const &login, std::string const &password)

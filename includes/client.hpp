@@ -3,11 +3,13 @@
 
 # include <map>
 # include <vector>
+# include <thread>
+# include <chrono>
 # include "INetwork.hpp"
 # include "Protocol.hpp"
-#include "TCPClient.hpp"
-#include "UDPClient.hpp"
-#include "SoundControler.hh"
+# include "TCPClient.hpp"
+# include "UDPClient.hpp"
+# include "SoundControler.hh"
 
 class Gui;
 
@@ -18,6 +20,7 @@ private:
   INetwork  *udpClient;
   Gui       *gui;
   SoundControler  soundControler;
+  bool      inCall;
 
   typedef void (Client::*fptr)(Protocol::BabelPacket const &);
   std::map<Protocol::BabelPacket::Code, fptr>      readFunctions =
@@ -57,10 +60,12 @@ private:
   void       callDeclined(Protocol::BabelPacket const &packet);
   void       contactAdded(Protocol::BabelPacket const &packet);
   void       contactDeleted(Protocol::BabelPacket const &packet);
-
+  void       inCallThread();
   // Server Error Replies
   void       errorEncountered(Protocol::BabelPacket const &packet);
-
+  std::thread spawn() {
+    return std::thread( [this] { this->inCallThread(); } );
+  }
  public:
   Client(Gui *);
   ~Client();

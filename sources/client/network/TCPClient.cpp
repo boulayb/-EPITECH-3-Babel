@@ -96,20 +96,24 @@ void TCPClient::displayError(QAbstractSocket::SocketError socketError)
 
 void TCPClient::readMessage()
 {
+
   std::cout << "read message tcp server" << std::endl;
   char buffer[sizeof(Protocol::BabelPacket)];
-  this->tcpSocket.read(buffer, sizeof(Protocol::BabelPacket));
-  Protocol::BabelPacket *packet = reinterpret_cast<Protocol::BabelPacket *>(buffer);
-  std::cout << "Receiving packet of size" << packet->dataLength << " with code " << (int) packet->code << std::endl;
+  qint64 ret;
+  while ((ret = this->tcpSocket.read(buffer, sizeof(Protocol::BabelPacket))) > 0)
+  {
+    std::cout << "ret :" << ret << std::endl;
+    Protocol::BabelPacket *packet = reinterpret_cast<Protocol::BabelPacket *>(buffer);
+    std::cout << "Receiving packet of size" << packet->dataLength << " with code " << (int) packet->code << std::endl;
 
-  Protocol::BabelPacket *fullPacket = reinterpret_cast<Protocol::BabelPacket *>(
-          new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength]);
-  std::memcpy(fullPacket, packet, sizeof(Protocol::BabelPacket));
-  char *packetData = new char[packet->dataLength];
-  this->tcpSocket.read(packetData, packet->dataLength);
-  std::memcpy(fullPacket->data, packetData, packet->dataLength);
-  fullPacket->data[static_cast<int>(packet->dataLength)] = '\0';
-  client->readBabelPacket(*fullPacket);
-  std::cout << this->tcpSocket.isOpen() << std::endl;
-  //send to protocol
+    Protocol::BabelPacket *fullPacket = reinterpret_cast<Protocol::BabelPacket *>(
+            new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength]);
+    std::memcpy(fullPacket, packet, sizeof(Protocol::BabelPacket));
+    char *packetData = new char[packet->dataLength];
+    this->tcpSocket.read(packetData, packet->dataLength);
+    std::memcpy(fullPacket->data, packetData, packet->dataLength);
+    fullPacket->data[static_cast<int>(packet->dataLength)] = '\0';
+    client->readBabelPacket(*fullPacket);
+    std::cout << "end" << std::endl;
+  }
 }

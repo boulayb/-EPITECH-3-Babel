@@ -74,7 +74,7 @@ if(WIN32)
 elseif(UNIX)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g3")
 	link_directories("libs/linux/")
-	set(CLIENT_LIBS_LINK ${CLIENT_LIBS_LINK} portaudio)
+	set(CLIENT_LIBS_LINK ${CLIENT_LIBS_LINK} portaudio pthread)
 	set(SERVER_LIBS_LINK ${SERVER_LIBS_LINK} pthread)
 endif()
 

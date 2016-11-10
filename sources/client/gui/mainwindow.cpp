@@ -141,11 +141,16 @@ void        MainWindow::UpdateContactList(std::vector<std::pair<std::string, boo
 
 void    MainWindow::updateContact(const std::pair<std::string, bool> &contact)
 {
-    MyContactListItem *item;
+    MyContactListItem *item = nullptr;
     item = static_cast<MyContactListItem *>(ui->ContactList->findItems(contact.first.c_str(), Qt::MatchExactly).at(0));
-
+    if (item == nullptr)
+    {
+        //May be create contact here ? Don't know ...
+        return;
+    }
     if (contact.second)
       {
+
          item->setIcon(QIcon("ressources/online.png"));
          item->setOnline(true);
       }

@@ -3,7 +3,7 @@
 #include "client.hpp"
 #include "gui.hh"
 
-Client::Client(Gui *gui) : gui(gui)
+Client::Client(Gui *gui) : gui(gui), inCall(false)
 {
   this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
   this->tcpClient->initiateService();
@@ -105,7 +105,8 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
       name = data.substr(0, data.find(":"));
       data = data.substr(data.find(":") + 1);
       status = data.substr(0, data.find(";"));
-      data = data.substr(data.find(";"));
+      data = data.substr(data.find(";") + 1);
+      std::cout << "update contact : " << name << std::endl;
       if (status == "online")
         contactList.push_back(std::pair<std::string, bool>(name,true));
       else
@@ -129,7 +130,9 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
         contactStatus = std::make_pair(name, true);
       else
         contactStatus = std::make_pair(name, false);
+      std::cout << "nice" << std::endl;
       this->gui->UpdateContact(contactStatus);
+      std::cout << "updated" << std::endl;
     }
 }
 
@@ -151,10 +154,25 @@ void       Client::acceptCall(std::string const &user, std::string const &ip, st
   this->udpClient->setPort(std::stoi(port));
 }
 
+void       Client::inCallThread()
+{
+  while (this->inCall)
+  {
+    std::cout << "in call " << std::endl;
+//    pack = this->soundControler.getEncPack();
+  //  this->udpClient->send(pack);
+    //this->queue.pop();
+    std::this_thread::sleep_for (std::chrono::milliseconds(1000));
+  }
+}
+
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
 {
   (void)packet;
   std::cout << "ACCEPTED !!!!!!!!!!" << std::endl;
+  this->soundControler.startInputStream();
+  this->inCall = true;
+  this->spawn();
   //this->gui->callAccepted();
 }
 
