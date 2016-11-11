@@ -8,7 +8,7 @@ Client::Client(Gui *gui) : gui(gui), inCall(false)
   this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
   this->tcpClient->initiateService();
   this->udpClient = new UDPClient(this, "127.0.0.1", 4004);
-  this->udpClient->initiateService();
+//  this->udpClient->initiateService();
 }
 
 Client::~Client()
@@ -45,13 +45,13 @@ void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::
   if (user != "")
     {
       if (passwd != "")
-	{
-	  data = Protocol::Protocol::stringToPointer(user + ':' + passwd);
-	}
-      else
-	{
-	  data = Protocol::Protocol::stringToPointer(user);
-	}
+      {
+        data = Protocol::Protocol::stringToPointer(user + ':' + passwd);
+      }
+          else
+      {
+        data = Protocol::Protocol::stringToPointer(user);
+      }
     }
   unsigned int length = strlen(reinterpret_cast<char *>(data));
   Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(code, data, length);
@@ -150,17 +150,24 @@ void       Client::incomingCall(Protocol::BabelPacket const &packet)
 void       Client::acceptCall(std::string const &user, std::string const &ip, std::string const &port)
 {
   sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, user);
+  std::cout << ip << " " << port << std::endl;
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
+  this->soundControler.startInputStream();
+  std::cout << "start input" << std::endl;
+  this->inCall = true;
+  this->udpClient->initiateService();
+  this->udpThread = this->spawn();
+  this->udpThread.detach();
 }
 
 void       Client::inCallThread()
 {
   while (this->inCall)
   {
-    std::cout << "in call " << std::endl;
-//    pack = this->soundControler.getEncPack();
-  //  this->udpClient->send(pack);
+    EncPack pack= this->soundControler.getEncPack();
+    Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_DATA, &pack.data[0], pack.size);
+    this->udpClient->sendBabelPacket(*packet);
     //this->queue.pop();
     std::this_thread::sleep_for (std::chrono::milliseconds(1000));
   }
@@ -170,10 +177,13 @@ void       Client::callAccepted(Protocol::BabelPacket const &packet)
 {
   (void)packet;
   std::cout << "ACCEPTED !!!!!!!!!!" << std::endl;
+  this->udpClient->setHostname("127.0.0.1");
   this->soundControler.startInputStream();
   this->inCall = true;
-  this->spawn();
-  //this->gui->callAccepted();
+  this->udpClient->initiateService();
+  this->udpThread = this->spawn();
+  this->udpThread.detach();
+  this->gui->callAccepted();
 }
 
 void       Client::callDeclined(Protocol::BabelPacket const &packet)

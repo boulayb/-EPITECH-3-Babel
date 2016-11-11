@@ -80,6 +80,11 @@ void    Gui::incommingCall(const std::string &userName, const std::string &ip, c
 
 }
 
+void    Gui::callAccepted()
+{
+  this->mainWindow->setInCall(true);
+}
+
 void    Gui::affInfoMessage(std::string const & msg)
 {
   this->mainWindow->affInfoMessage(msg);

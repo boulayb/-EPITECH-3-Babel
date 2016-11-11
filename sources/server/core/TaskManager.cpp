@@ -198,14 +198,17 @@ void TaskManager::updateContactStatusTask(std::string const &login, std::string 
   int friendId = 0;
   for (std::string friendStr : friendList)
   {
-    std::cout << "friend : " << friendStr << std::endl;
-    if ((friendId = this->database.getId(friendStr)) != -1)
+    if (friendStr != login)
     {
-      std::string msg = login + SEPARATOR + status;
-      unsigned char *basicData = Protocol::Protocol::stringToPointer(msg);
-      Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::
-                                                                       Code::UPDATE_CONTACT_STATUS, basicData, msg.size());
-      this->network->sendBabelPacket(*packet, static_cast<unsigned  int>(friendId));
+      std::cout << "friend : " << friendStr << std::endl;
+      if ((friendId = this->database.getId(friendStr)) != -1) {
+        std::string msg = login + SEPARATOR + status;
+        unsigned char *basicData = Protocol::Protocol::stringToPointer(msg);
+        Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::
+                                                                         Code::UPDATE_CONTACT_STATUS, basicData,
+                                                                         msg.size());
+        this->network->sendBabelPacket(*packet, static_cast<unsigned int>(friendId));
+      }
     }
   }
 }

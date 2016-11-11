@@ -50,9 +50,9 @@ bool			SoundControler::checkPaError()
 	    std::cerr << "error number : " << this->paError << std::endl;
 	    std::cerr << "error message : " << Pa_GetErrorText(this->paError) << std::endl;
 	    if (this->inputStream)
-		Pa_CloseStream(this->inputStream);
+    		Pa_CloseStream(this->inputStream);
 	    if (this->outputStream)
-		Pa_CloseStream(this->outputStream);
+		    Pa_CloseStream(this->outputStream);
 	    Pa_Terminate();
 	    return (true);
 	}

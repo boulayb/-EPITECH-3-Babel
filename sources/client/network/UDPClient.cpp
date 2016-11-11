@@ -15,7 +15,8 @@ UDPClient::~UDPClient()
 
 bool UDPClient::initiateService()
 {
-  this->udpSocket.bind();
+  std::cout << "binding ! " << this->hostName << " "<< this->port << std::endl;
+  this->udpSocket.bind(QHostAddress::Any, this->port, QUdpSocket::ReuseAddressHint);
   return true;
 }
 
@@ -44,7 +45,10 @@ bool UDPClient::sendBabelPacket(Protocol::BabelPacket &packet)
   std::string data = Protocol::Protocol::extractData(packet);
   std::cout << sizeof(Protocol::BabelPacket) + packet.dataLength << std::endl;
   QHostAddress addr(qHostname);
-  this->udpSocket.writeDatagram(data.c_str(), packet.dataLength, addr, this->port);
+  std::cout << "writing to " << this->hostName << " " << this->port << std::endl;
+  int ret = this->udpSocket.writeDatagram(data.c_str(), packet.dataLength, addr, this->port);
+  std::cout << "write ret:"  << ret << std::endl;
+  std::cout << this->udpSocket.pendingDatagramSize() << std::endl;
   return true;
 }
 

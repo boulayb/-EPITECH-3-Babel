@@ -40,7 +40,7 @@ public:
     void    incommingCall(const std::string &userName, const std::string &ip, const std::string &port);
     void    endCall();
     void    answerCall();
-
+    void    callAccepted();
 
 
 private:

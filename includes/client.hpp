@@ -21,6 +21,7 @@ private:
   Gui       *gui;
   SoundControler  soundControler;
   bool      inCall;
+  std::thread udpThread;
 
   typedef void (Client::*fptr)(Protocol::BabelPacket const &);
   std::map<Protocol::BabelPacket::Code, fptr>      readFunctions =
