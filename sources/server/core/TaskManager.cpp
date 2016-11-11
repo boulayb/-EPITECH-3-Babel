@@ -23,6 +23,11 @@ void TaskManager::executeTask(Task const &task)
       (this->*(it->second))(task);
       return;
     }
+    else
+    {
+      Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::INVALID_REQUEST, nullptr, 0);
+      this->network->sendBabelPacket(*packet, task.clientID);
+    }
   }
 }
 
