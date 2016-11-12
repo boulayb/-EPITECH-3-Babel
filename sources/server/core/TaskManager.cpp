@@ -199,6 +199,10 @@ void TaskManager::callDeclinedTask(Task const &task)
   this->network->sendBabelPacket(*packet, userID);
 }
 
+void TaskManager::handShakeSuccess(Task const &task)
+{
+  (void)task;
+}
 
 void TaskManager::updateContactStatusTask(std::string const &login, std::string const &status) const
 {

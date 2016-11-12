@@ -32,7 +32,7 @@ private:
   void addContactTask(Task const &);
   void callAcceptedTask(Task const &);
   void callDeclinedTask(Task const &);
-
+  void handShakeSuccess(Task const &);
 
   std::map<Protocol::BabelPacket::Code, taskFunction> actions =
    {
@@ -46,6 +46,7 @@ private:
      {Protocol::BabelPacket::Code::DEL_CONTACT, &TaskManager::delContactTask},
      {Protocol::BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask},
      {Protocol::BabelPacket::Code::CALL_ACCEPTED, &TaskManager::callAcceptedTask},
+     {Protocol::BabelPacket::Code::HAND_SHAKE_SUCCESS, &TaskManager::handShakeSuccess},
      {Protocol::BabelPacket::Code::CALL_DECLINED, &TaskManager::callDeclinedTask}
    };
 
