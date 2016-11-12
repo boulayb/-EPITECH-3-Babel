@@ -154,6 +154,7 @@ void       Client::acceptCall(std::string const &user, std::string const &ip, st
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
   this->soundControler.startInputStream();
+  this->soundControler.startOutputStream();
   std::cout << "start input" << std::endl;
   this->inCall = true;
   this->udpClient->initiateService();
@@ -179,6 +180,7 @@ void       Client::callAccepted(Protocol::BabelPacket const &packet)
   std::cout << "ACCEPTED !!!!!!!!!!" << std::endl;
   this->udpClient->setHostname("127.0.0.1");
   this->soundControler.startInputStream();
+  this->soundControler.startOutputStream();
   this->inCall = true;
   this->udpClient->initiateService();
   this->udpThread = this->spawn();
@@ -207,6 +209,11 @@ void       Client::contactDeleted(Protocol::BabelPacket const &packet)
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
   this->tcpClient->sendBabelPacket(*newPacket);
   std::cout << "packet send" << std::endl;
+}
+
+void       Client::callPacket(Protocol::BabelPacket const &packet)
+{
+
 }
 
 void       Client::errorEncountered(Protocol::BabelPacket const &packet)
