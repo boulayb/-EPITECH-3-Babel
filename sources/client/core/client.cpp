@@ -5,7 +5,8 @@
 
 Client::Client(Gui *gui) : gui(gui), inCall(false)
 {
-  this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
+  std::pair <std::string, int> netWorkInfo = this->gui->getNetworkInfo();
+  this->tcpClient = new TCPClient(this, netWorkInfo.first, netWorkInfo.second);
   this->tcpClient->initiateService();
   this->udpClient = new UDPClient(this, "127.0.0.1", 4004);
   this->hostname = "127.0.0.1";
@@ -62,7 +63,8 @@ void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::
     }
   unsigned int length = strlen(reinterpret_cast<char *>(data));
   Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(code, data, length);
-  this->tcpClient->sendBabelPacket(*packet);
+  if (this->tcpClient->sendBabelPacket(*packet) == false)
+    this->gui->affInfoMessage("Server is not responding ...");
   std::cout << "packet send" << std::endl;
 }
 
@@ -72,7 +74,8 @@ void       Client::sendCallPacket(std::string const &user)
   unsigned char *data = Protocol::Protocol::stringToPointer(callData);
   unsigned int length = strlen(reinterpret_cast<char *>(data));
   Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL, data, length);
-  this->tcpClient->sendBabelPacket(*packet);
+  if (this->tcpClient->sendBabelPacket(*packet) == false)
+    this->gui->affInfoMessage("Server is not responding ...");
   std::cout << "packet send" << std::endl;
 }
 
@@ -81,7 +84,8 @@ void       Client::handshake(Protocol::BabelPacket const &packet)
   std::string &hostName = Protocol::Protocol::extractData(packet);
   this->udpClient->setHostname(hostName);
   Protocol::BabelPacket   *handshakeSuccess = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE_SUCCESS, nullptr, 0);
-  this->tcpClient->sendBabelPacket(*handshakeSuccess);
+  if (this->tcpClient->sendBabelPacket(*handshakeSuccess) == false)
+    this->gui->affInfoMessage("Server is not responding ...");
 }
 
 void       Client::login(Protocol::BabelPacket const &packet)
@@ -90,7 +94,8 @@ void       Client::login(Protocol::BabelPacket const &packet)
   std::cout << "login" << std::endl;
   this->gui->Login();
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
-  this->tcpClient->sendBabelPacket(*newPacket);
+  if (this->tcpClient->sendBabelPacket(*newPacket) == false)
+    this->gui->affInfoMessage("Server is not responding ...");
   std::cout << "packet send" << std::endl;
 }
 
@@ -214,16 +219,16 @@ void       Client::contactAdded(Protocol::BabelPacket const &packet)
 {
   (void)packet;
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
-  this->tcpClient->sendBabelPacket(*newPacket);
-  std::cout << "packet send" << std::endl;
+  if (this->tcpClient->sendBabelPacket(*newPacket) == false)
+    this->gui->affInfoMessage("Server is not responding ...");
 }
 
 void       Client::contactDeleted(Protocol::BabelPacket const &packet)
 {
   (void)packet;
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
-  this->tcpClient->sendBabelPacket(*newPacket);
-  std::cout << "packet send" << std::endl;
+  if (this->tcpClient->sendBabelPacket(*newPacket) == false)
+    this->gui->affInfoMessage("Server is not responding ...");
 }
 
 void       Client::callPacket(Protocol::BabelPacket const &packet)

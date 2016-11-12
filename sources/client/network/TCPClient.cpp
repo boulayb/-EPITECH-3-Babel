@@ -56,15 +56,12 @@ bool TCPClient::sendBabelPacket(Protocol::BabelPacket &packet)
   if(this->tcpSocket.state() == QAbstractSocket::ConnectedState && is_connected)
   {
     std::cout << "writing ... size : " << sizeof(Protocol::BabelPacket) + packet.dataLength<<std::endl;
-    int ret = this->tcpSocket.write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
-    std::cout << ret << std::endl;
+    this->tcpSocket.write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
     this->tcpSocket.flush();
-    QApplication::processEvents();
     return true;
   }
   else
   {
-    std::cout << "socket close" << std::endl;
     return false;
   }
 }

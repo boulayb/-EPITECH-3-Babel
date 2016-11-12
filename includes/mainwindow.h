@@ -38,13 +38,13 @@ public:
     bool        incommingCall(const std::string &userName);
     void        updateContact(const std::pair<std::string, bool> &contact);
     void        affInfoMessage(std::string const & msg);
-
+    void        askNetworkInfo();
+    const std::pair<std::string, int> &getNetworkInfo() const;
 private:
-    Ui::MainWindow      *ui;
-    QCryptographicHash  *hash;
     Gui                 *gui;
+    Ui::MainWindow      *ui;
     bool                inCall;
-
+    std::pair<std::string, int> netWorkInfo;
 private slots:
     void    LoginButton();
     void    RegisterButton();
