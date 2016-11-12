@@ -44,7 +44,7 @@ set(SERVER_SOURCE_FILES
 
 ## libs needed
 find_package(Qt4 4.4.3 REQUIRED QtCore QtGui QtNetwork)
-find_package(Boost 1.47 COMPONENTS system serialization REQUIRED)
+find_package(Boost COMPONENTS system serialization REQUIRED)
 
 ## make sure that boost is dyn linked
 set(Boost_USE_STATIC_LIBS OFF CACHE BOOL "use static libraries from Boost")
@@ -60,9 +60,6 @@ QT4_WRAP_CPP(MOC_SRC ${MOC_INC} ${MOC_CPP})
 QT4_WRAP_UI(UI_SRC ${UI_FILE})
 list(APPEND CLIENT_SOURCE_FILES ${UI_SRC} ${MOC_SRC})
 
-set(CLIENT_LIBS_LINK Qt4::QtCore Qt4::QtGui Qt4::QtNetwork opus)
-set(SERVER_LIBS_LINK ${Boost_LIBRARIES})
-
 if(WIN32)
 	set(Boost_NO_SYSTEM_PATHS true)
 	set(BOOST_ROOT "C:\\boost\\")
@@ -71,15 +68,18 @@ if(WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W1")
 	link_directories("libs/windows/")
 	set(INC_DIR ${INC_DIR} "C:\\boost\\include\\boost-1_62\\")
-	set(CLIENT_LIBS_LINK ${CLIENT_LIBS_LINK} portaudio_x86)
+	set(CLIENT_LIBS_LINK portaudio_x86)
 elseif(UNIX)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g3")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 	link_directories("libs/linux/")
-	set(CLIENT_LIBS_LINK ${CLIENT_LIBS_LINK} portaudio pthread)
-	set(SERVER_LIBS_LINK ${SERVER_LIBS_LINK} pthread)
+	set(BOOST_LIBRARYDIR "./libs/linux/")
+	set(CLIENT_LIBS_LINK portaudio pthread)
+	set(SERVER_LIBS_LINK pthread)
 endif()
 
 include_directories(${INC_DIR})
+set(CLIENT_LIBS_LINK ${CLIENT_LIBS_LINK} Qt4::QtCore Qt4::QtGui Qt4::QtNetwork opus)
+set(SERVER_LIBS_LINK ${SERVER_LIBS_LINK} ${Boost_LIBRARIES})
 
 if(BUILD_CLIENT)
   add_executable(${CLIENT_NAME} ${CLIENT_SOURCE_FILES})
