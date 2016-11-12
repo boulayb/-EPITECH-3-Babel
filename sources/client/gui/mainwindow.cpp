@@ -49,7 +49,7 @@ void        MainWindow::LoginButton()
         QByteArray password = QCryptographicHash::hash(ui->PasswordLogInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
 
-        this->gui->askLogin(ui->UsernameLogInput->text().toUtf8().constData(), passwordHash.toStdString());
+        this->gui->askLogin(ui->UsernameLogInput->text().toUtf8().constData(), passwordHash.toUtf8().constData());
         this->ui->LoginLabel->setText(ui->UsernameLogInput->text());
     }
 }
@@ -112,7 +112,7 @@ void        MainWindow::RegisterRegisterButton()
         QByteArray password = QCryptographicHash::hash(ui->PasswordRegisterFirstInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
 
-        this->gui->askRegister(ui->UsernameRegisterInput->text().toUtf8().constData(), passwordHash.toStdString());
+        this->gui->askRegister(ui->UsernameRegisterInput->text().toUtf8().constData(), passwordHash.toUtf8().constData());
     }
 }
 
