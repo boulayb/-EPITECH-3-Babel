@@ -23,6 +23,10 @@ private:
   bool      inCall;
   std::thread udpThread;
 
+protected:
+  std::string hostname;
+  short       udpPort;
+
   typedef void (Client::*fptr)(Protocol::BabelPacket const &);
   std::map<Protocol::BabelPacket::Code, fptr>      readFunctions =
     {
@@ -77,6 +81,7 @@ private:
   void       sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user = "", std::string const &passwd = "");
   void       sendCallPacket(std::string const &user = "");
   void       acceptCall(std::string const &user, std::string const &ip, std::string const &port);
+  void       setInCall(bool state);
 };
 
 #endif /* !CLIENT_HPP_ */
