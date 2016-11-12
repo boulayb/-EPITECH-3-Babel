@@ -165,8 +165,8 @@ int			SoundControler::playCallback(const void *,
 	  DecPack	pack = soundControler->getToPlay();
 	  SAMPLE	*tmp = pack.sample.data();
 
-    	    for (int i = 0; i < pack.size; i++)
-    		*outputPtr++ = tmp[i];
+	  for (int i = 0; i < pack.size; i++)
+	      *outputPtr++ = tmp[i];
     	}
     return (paContinue);
 }
