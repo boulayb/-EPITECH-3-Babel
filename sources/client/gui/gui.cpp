@@ -31,6 +31,11 @@ void    Gui::askLogin(const std::string &username, const std::string &password)
     client->sendBabelPacket(Protocol::BabelPacket::Code::SIGN_IN, username, password);
 }
 
+const std::pair<std::string, int> &Gui::getNetworkInfo() const
+{
+  return this->mainWindow->getNetworkInfo();
+}
+
 void    Gui::askLogout()
 {
     client->sendBabelPacket(Protocol::BabelPacket::Code::SIGN_OUT);

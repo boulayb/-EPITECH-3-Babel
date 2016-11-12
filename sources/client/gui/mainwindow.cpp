@@ -3,7 +3,8 @@
 #endif
 
 #include <QListWidget>
-
+#include <QDialogButtonBox>
+#include <QFormLayout>
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
@@ -13,11 +14,9 @@
 #include "gui.hh"
 #include <iostream>
 #include "mycontactlistitem.h"
-#include "Protocol.hpp"
 
-MainWindow::MainWindow(Gui *gui, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(Gui *gui, QWidget *parent) : QMainWindow(parent), gui(gui), ui(new Ui::MainWindow), inCall(false), netWorkInfo("127.0.0.1", 4000)
 {
-    this->gui = gui;
     ui->setupUi(this);
     ui->Stack->setCurrentIndex(0);
     ui->ErrorLogin->setVisible(false);
@@ -32,7 +31,6 @@ MainWindow::MainWindow(Gui *gui, QWidget *parent) : QMainWindow(parent), ui(new 
     connect(ui->ContactList, SIGNAL (itemSelectionChanged()), this, SLOT (selectContact()));
     connect(ui->RemoveContactButton, SIGNAL (released()), this, SLOT (removeContactButton()));
     ui->RemoveContactButton->setDisabled(true);
-    this->inCall = false;
 }
 
 MainWindow::~MainWindow()
@@ -61,6 +59,44 @@ void        MainWindow::Login()
     ui->Stack->setCurrentIndex(2);
 }
 
+void        MainWindow::askNetworkInfo()
+{
+    QDialog dialog(this);
+    QFormLayout form(&dialog);
+
+// Add the lineEdits with their respective labels
+    QList<QLineEdit *> fields;
+    QLineEdit *lineEdit = new QLineEdit(&dialog);
+    lineEdit->setText("127.0.0.1");
+    QString label = QString("Server IP");
+    form.addRow(label, lineEdit);
+    QLineEdit *lineEdit2 = new QLineEdit(&dialog);
+    lineEdit2->setText("4000");
+    QString label2 = QString("Server port");
+    form.addRow(label2, lineEdit2);
+    fields << lineEdit;
+    fields << lineEdit2;
+
+
+// Add some standard buttons (Cancel/Ok) at the bottom of the dialog
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+                               Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
+// Show the dialog as modal
+    if (dialog.exec() == QDialog::Accepted) {
+        this->netWorkInfo.first = fields.takeFirst()->text().toStdString();
+        this->netWorkInfo.second = fields.takeLast()->text().toInt();
+    }
+}
+
+const std::pair<std::string, int> &MainWindow::getNetworkInfo() const
+{
+  return this->netWorkInfo;
+}
+
 void        MainWindow::RegisterRegisterButton()
 {
     if (ui->UsernameRegisterInput->text().isEmpty())
@@ -84,7 +120,8 @@ void        MainWindow::RegisterButton()
     ui->Stack->setCurrentIndex(1);
 }
 
-void        MainWindow::CancelRegisterButton(){
+void        MainWindow::CancelRegisterButton()
+{
     ui->Stack->setCurrentIndex(0);
 }
 

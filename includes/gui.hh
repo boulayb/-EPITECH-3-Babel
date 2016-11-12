@@ -41,6 +41,7 @@ public:
     void    endCall();
     void    answerCall();
     void    callAccepted();
+    const std::pair<std::string, int> &getNetworkInfo() const;
 
 
 private:
