@@ -94,6 +94,7 @@ void    Gui::affInfoMessage(std::string const & msg)
 void    Gui::endCall()
 {
     this->mainWindow->setInCall(false);
+    client->setInCall(false);
 }
 
 void    Gui::start()

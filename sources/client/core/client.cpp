@@ -8,11 +8,18 @@ Client::Client(Gui *gui) : gui(gui), inCall(false)
   this->tcpClient = new TCPClient(this, "127.0.0.1", 4001);
   this->tcpClient->initiateService();
   this->udpClient = new UDPClient(this, "127.0.0.1", 4004);
+  this->hostname = "127.0.0.1";
+  this->udpPort = 4004;
 //  this->udpClient->initiateService();
 }
 
 Client::~Client()
 {
+}
+
+void       Client::setInCall(bool state)
+{
+  this->inCall = state;
 }
 
 void       Client::startGUI()
@@ -61,7 +68,7 @@ void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::
 
 void       Client::sendCallPacket(std::string const &user)
 {
-  std::string callData = user + ":" + this->udpClient->getHostname() + ":" + std::to_string(this->udpClient->getPort());
+  std::string callData = user + ":" + this->hostname + ":" + std::to_string(this->udpPort);
   unsigned char *data = Protocol::Protocol::stringToPointer(callData);
   unsigned int length = strlen(reinterpret_cast<char *>(data));
   Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL, data, length);
@@ -149,7 +156,8 @@ void       Client::incomingCall(Protocol::BabelPacket const &packet)
 
 void       Client::acceptCall(std::string const &user, std::string const &ip, std::string const &port)
 {
-  sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, user);
+  std::string data = user + ":" + this->hostname + ":" + std::to_string(this->udpPort);
+  sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, data);
   std::cout << ip << " " << port << std::endl;
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
@@ -176,9 +184,16 @@ void       Client::inCallThread()
 
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
 {
-  (void)packet;
   std::cout << "ACCEPTED !!!!!!!!!!" << std::endl;
-  this->udpClient->setHostname("127.0.0.1");
+  std::string data(const_cast<char *>(reinterpret_cast<const char*>(packet.data)));
+  data = data.substr(data.find(':') + 1);
+  std::string ip = data.substr(0, data.find(':'));
+  std::string port = data.substr(data.find(':') + 1);
+
+  std::cout << "ip " << ip << ", port " << port << std::endl;
+
+  this->udpClient->setHostname(ip);
+  this->udpClient->setPort(std::stoi(port));
   this->soundControler.startInputStream();
   this->soundControler.startOutputStream();
   this->inCall = true;

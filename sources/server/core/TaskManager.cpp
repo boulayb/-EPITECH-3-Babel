@@ -182,15 +182,17 @@ void TaskManager::connectionLostTask(Task const &task)
 
 void TaskManager::callAcceptedTask(Task const &task)
 {
-  std::string user(const_cast<char*>(reinterpret_cast<const char*>(task.packet->data)));
+  std::string data(const_cast<char*>(reinterpret_cast<const char*>(task.packet->data)));
+  std::string user = data.substr(0, data.find(':'));
   int userID = this->database.getId(user);
-  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, nullptr, 0);
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, task.packet->data, task.packet->dataLength);
   this->network->sendBabelPacket(*packet, userID);
 }
 
 void TaskManager::callDeclinedTask(Task const &task)
 {
-  std::string user(const_cast<char*>(reinterpret_cast<const char*>(task.packet->data)));
+  std::string data(const_cast<char*>(reinterpret_cast<const char*>(task.packet->data)));
+  std::string user = data.substr(0, data.find(':'));
   int userID = this->database.getId(user);
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_DECLINED, nullptr, 0);
   this->network->sendBabelPacket(*packet, userID);
