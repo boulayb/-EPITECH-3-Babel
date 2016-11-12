@@ -29,6 +29,7 @@ set(CLIENT_SOURCE_FILES
   ${CLIENT_SRCDIR}network/UDPClient.cpp
   ${CLIENT_SRCDIR}sound/Codec.cpp
   ${CLIENT_SRCDIR}sound/SoundControler.cpp
+  ${CLIENT_SRCDIR}sound/PackBuilder.cpp
   ${CLIENT_SRCDIR}protocol/Protocol.cpp)
 
 set(SERVER_SOURCE_FILES
