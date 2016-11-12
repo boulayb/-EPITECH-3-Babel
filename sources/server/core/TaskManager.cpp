@@ -163,6 +163,7 @@ void TaskManager::addContactTask(Task const &task)
   Protocol::BabelPacket::Code errorCode = this->database.addFriend(currentUser, dataSplited[LOGIN_INDEX]);
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(errorCode, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
+  this->updateContactStatusTask(currentUser, ONLINE_STATUS);
 }
 
 void TaskManager::connectionLostTask(Task const &task)

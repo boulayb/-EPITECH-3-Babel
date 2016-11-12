@@ -112,5 +112,6 @@ void TCPClient::readMessage()
     fullPacket->data[static_cast<int>(packet->dataLength)] = '\0';
     client->readBabelPacket(*fullPacket);
     std::cout << "end" << std::endl;
+    buffer[0] = '\0';
   }
 }

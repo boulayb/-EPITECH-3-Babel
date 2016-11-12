@@ -166,9 +166,8 @@ void       Client::acceptCall(std::string const &user, std::string const &ip, st
   std::cout << ip << " " << port << std::endl;
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
-  (this->packBuilder.getSoundControler()).startInputStream();
-  (this->packBuilder.getSoundControler()).startOutputStream();
-  std::cout << "start input" << std::endl;
+  this->packBuilder.getSoundControler().startInputStream();
+  this->packBuilder.getSoundControler().startOutputStream();
   this->inCall = true;
   this->udpClient->initiateService();
   this->udpThread = this->spawn();
@@ -180,10 +179,14 @@ void       Client::inCallThread()
   while (this->inCall)
   {
     EncPack pack = this->packBuilder.getEncoded();
-    Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_DATA, &pack.data[0], pack.size);
-    this->udpClient->sendBabelPacket(*packet);
+    std::cout << pack.size << std::endl;
+    if (pack.size > 0) {
+      Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_DATA,
+                                                                       &pack.data[0], pack.size);
+      this->udpClient->sendBabelPacket(*packet);
+    }
     //this->queue.pop();
-    std::this_thread::sleep_for (std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for (std::chrono::milliseconds(10));
   }
 }
 
@@ -199,8 +202,8 @@ void       Client::callAccepted(Protocol::BabelPacket const &packet)
 
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
-  (this->packBuilder.getSoundControler()).startInputStream();
-  (this->packBuilder.getSoundControler()).startOutputStream();
+  this->packBuilder.getSoundControler().startInputStream();
+  this->packBuilder.getSoundControler().startOutputStream();
   this->inCall = true;
   this->udpClient->initiateService();
   this->udpThread = this->spawn();
@@ -236,7 +239,7 @@ void       Client::callPacket(Protocol::BabelPacket const &packet)
   EncPack pack;
   std::string data = Protocol::Protocol::extractData(packet);
   std::vector<unsigned char> v(data.begin(), data.end());
-  pack.size = pack.size;
+  pack.size = packet.dataLength;
   pack.data = v;
   this->packBuilder.setEncoded(pack);
 }

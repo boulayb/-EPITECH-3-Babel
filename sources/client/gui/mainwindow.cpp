@@ -90,6 +90,8 @@ void        MainWindow::askNetworkInfo()
         this->netWorkInfo.first = fields.takeFirst()->text().toStdString();
         this->netWorkInfo.second = fields.takeLast()->text().toInt();
     }
+    else
+        exit(0);
 }
 
 const std::pair<std::string, int> &MainWindow::getNetworkInfo() const
@@ -213,6 +215,7 @@ void    MainWindow::endCallButton()
     ui->EndCallButton->setDisabled(true);
     ui->callStatus->setText("");
     this->inCall = false;
+    this->gui->endCall();
 }
 
 void    MainWindow::selectContact()
