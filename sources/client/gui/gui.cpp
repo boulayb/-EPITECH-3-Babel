@@ -7,6 +7,7 @@ Gui::Gui(int ac, char **av) : app(ac, av)
 {
     MainWindow *w = new MainWindow(this);
     this->mainWindow = w;
+    this->mainWindow->askNetworkInfo();
     w->show();
 }
 
