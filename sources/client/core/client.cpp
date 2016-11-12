@@ -49,20 +49,22 @@ void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::
     }
 
   unsigned char *data;
-
+  std::string completeString = user + ':' + passwd;
+  unsigned long size = 0;
   if (user != "")
     {
       if (passwd != "")
       {
-        data = Protocol::Protocol::stringToPointer(user + ':' + passwd);
+        data = Protocol::Protocol::stringToPointer(completeString);
+        size = completeString.length();
       }
-          else
+      else
       {
         data = Protocol::Protocol::stringToPointer(user);
+        size = user.length();
       }
     }
-  unsigned int length = strlen(reinterpret_cast<char *>(data));
-  Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(code, data, length);
+  Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(code, data, size);
   if (this->tcpClient->sendBabelPacket(*packet) == false)
     this->gui->affInfoMessage("Server is not responding ...");
   std::cout << "packet send" << std::endl;

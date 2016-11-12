@@ -57,7 +57,7 @@ bool TCPClient::sendBabelPacket(Protocol::BabelPacket &packet)
   {
     std::cout << "writing ... size : " << sizeof(Protocol::BabelPacket) + packet.dataLength<<std::endl;
     this->tcpSocket.write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
-    this->tcpSocket.flush();
+ //   this->tcpSocket.flush();
     return true;
   }
   else
