@@ -166,8 +166,8 @@ void       Client::acceptCall(std::string const &user, std::string const &ip, st
   std::cout << ip << " " << port << std::endl;
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
-  this->soundControler.startInputStream();
-  this->soundControler.startOutputStream();
+  (this->packBuilder.getSoundControler()).startInputStream();
+  (this->packBuilder.getSoundControler()).startOutputStream();
   std::cout << "start input" << std::endl;
   this->inCall = true;
   this->udpClient->initiateService();
@@ -179,7 +179,7 @@ void       Client::inCallThread()
 {
   while (this->inCall)
   {
-    EncPack pack= this->soundControler.getEncPack();
+    EncPack pack = this->packBuilder.getEncoded();
     Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_DATA, &pack.data[0], pack.size);
     this->udpClient->sendBabelPacket(*packet);
     //this->queue.pop();
@@ -199,8 +199,8 @@ void       Client::callAccepted(Protocol::BabelPacket const &packet)
 
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
-  this->soundControler.startInputStream();
-  this->soundControler.startOutputStream();
+  (this->packBuilder.getSoundControler()).startInputStream();
+  (this->packBuilder.getSoundControler()).startOutputStream();
   this->inCall = true;
   this->udpClient->initiateService();
   this->udpThread = this->spawn();
