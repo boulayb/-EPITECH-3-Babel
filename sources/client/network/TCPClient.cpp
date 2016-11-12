@@ -109,7 +109,7 @@ void TCPClient::readMessage()
     char *packetData = new char[packet->dataLength];
     this->tcpSocket.read(packetData, packet->dataLength);
     std::memcpy(fullPacket->data, packetData, packet->dataLength);
-    fullPacket->data[static_cast<int>(packet->dataLength)] = '\0';
+    fullPacket->data[static_cast<int>(packet->dataLength) - 1] = '\0';
     client->readBabelPacket(*fullPacket);
     std::cout << "end" << std::endl;
     buffer[0] = '\0';
