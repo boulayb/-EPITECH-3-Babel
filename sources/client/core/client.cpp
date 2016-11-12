@@ -233,7 +233,12 @@ void       Client::contactDeleted(Protocol::BabelPacket const &packet)
 
 void       Client::callPacket(Protocol::BabelPacket const &packet)
 {
-
+  EncPack pack;
+  std::string data = Protocol::Protocol::extractData(packet);
+  std::vector<unsigned char> v(data.begin(), data.end());
+  pack.size = pack.size;
+  pack.data = v;
+  this->packBuilder.setEncoded(pack);
 }
 
 void       Client::errorEncountered(Protocol::BabelPacket const &packet)
