@@ -6,8 +6,8 @@ SoundControler::SoundControler() : inputStream(NULL), outputStream(NULL), paErro
     this->paError = Pa_Initialize();
     if (this->checkPaError())
         std::cerr << "Error: can't initialize portaudio." << std::endl;
-    this->encPack.size = 0;    
-    this->decPack.size = 0;    
+    this->toPlay.size = 0;
+    this->recorded.size = 0;
     this->initInputParam();
     this->initOutputParam();
 }
@@ -50,9 +50,9 @@ bool			SoundControler::checkPaError()
 	    std::cerr << "error number : " << this->paError << std::endl;
 	    std::cerr << "error message : " << Pa_GetErrorText(this->paError) << std::endl;
 	    if (this->inputStream)
-    		Pa_CloseStream(this->inputStream);
+		Pa_CloseStream(this->inputStream);
 	    if (this->outputStream)
-		    Pa_CloseStream(this->outputStream);
+		Pa_CloseStream(this->outputStream);
 	    Pa_Terminate();
 	    return (true);
 	}
@@ -111,7 +111,6 @@ void			SoundControler::startInputStream()
 {
     this->openInputStream();
     this->paError = Pa_StartStream(this->inputStream);
-    this->isRunning = true;
     this->checkPaError();
 }
 
@@ -136,20 +135,18 @@ void			SoundControler::stopOutputStream()
 }
 
 int			SoundControler::recordCallback(const void *inputBuffer,
-						                   void *,
-                                           unsigned long framesPerBuffer,
-						                   const PaStreamCallbackTimeInfo *,
-                                           PaStreamCallbackFlags,
-						                   void *userData)
+						       void *,
+						       unsigned long framesPerBuffer,
+						       const PaStreamCallbackTimeInfo *,
+						       PaStreamCallbackFlags,
+						       void *userData)
 {
     SoundControler	*soundControler = reinterpret_cast<SoundControler *>(userData);
-    DecPack		decPack;
+    DecPack		pack;
 
-    decPack.size = framesPerBuffer * CHANNEL;
-    decPack.sample.assign(reinterpret_cast<const float *>(inputBuffer), reinterpret_cast<const float *>(inputBuffer) + framesPerBuffer * CHANNEL);
-    soundControler->setDecPack(decPack);
-    soundControler->setEncPack(soundControler->codec.encodePack(decPack));
-    // soundControler->setDecPack(soundControler->codec.decodePack(soundControler->getEncPack()));
+    pack.size = framesPerBuffer * CHANNEL;
+    pack.sample.assign(reinterpret_cast<const float *>(inputBuffer), reinterpret_cast<const float *>(inputBuffer) + framesPerBuffer * CHANNEL);
+    soundControler->setRecorded(pack);
     return (paContinue);
 }
 
@@ -161,45 +158,41 @@ int			SoundControler::playCallback(const void *,
 						     void *userData)
 {
     SoundControler	*soundControler = reinterpret_cast<SoundControler *>(userData);
-    DecPack		decPack = soundControler->getDecPack();
-    // DecPack		decPack = soundControler->codec.decodePack(soundControler->getEncPack());
-    SAMPLE		*tmp = decPack.sample.data();
     SAMPLE		*outputPtr = static_cast<SAMPLE *>(outputBuffer);
 
     if (soundControler->isRunning)
     	{
-    	    for (int i = 0; i < decPack.size; i++)
+	  DecPack	pack = soundControler->getToPlay();
+	  SAMPLE	*tmp = pack.sample.data();
+
+    	    for (int i = 0; i < pack.size; i++)
     		*outputPtr++ = tmp[i];
     	}
     return (paContinue);
 }
 
-void			SoundControler::setDecPack(DecPack const &pack)
+void			SoundControler::setToPlay(DecPack const &pack)
 {
-    this->decPack = pack;
+    this->isRunning = true;
+    this->toPlay = pack;
 }
 
-const DecPack		&SoundControler::getDecPack()
+const DecPack		&SoundControler::getToPlay()
 {   
-    return (this->decPack);
+    return (this->toPlay);
 }
 
-void			SoundControler::setEncPack(EncPack const &pack)
+void			SoundControler::setRecorded(DecPack const &pack)
 {
-    this->encPack = pack;
+    this->recorded = pack;
 }
 
-const EncPack		&SoundControler::getEncPack()
+const DecPack		&SoundControler::getRecorded()
 {
-    return (this->encPack);
+    return (this->recorded);
 }
 
-void			SoundControler::testAudio()
+PaStream		*SoundControler::getInputStream()
 {
-    while ((this->paError = Pa_IsStreamActive(this->inputStream)) == 1)
-    	{
-    	    Pa_Sleep(1);
-    	}
-    this->stopOutputStream();
-    this->stopInputStream();
+    return this->inputStream;
 }

@@ -9,7 +9,7 @@
 # include "Protocol.hpp"
 # include "TCPClient.hpp"
 # include "UDPClient.hpp"
-# include "SoundControler.hh"
+# include "PackBuilder.hh"
 
 class Gui;
 
@@ -19,7 +19,7 @@ private:
   INetwork  *tcpClient;
   INetwork  *udpClient;
   Gui       *gui;
-  SoundControler  soundControler;
+  PackBuilder   packBuilder;
   bool      inCall;
   std::thread udpThread;
 
