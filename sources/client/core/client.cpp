@@ -83,6 +83,9 @@ void       Client::handshake(Protocol::BabelPacket const &packet)
 {
   std::string &hostName = Protocol::Protocol::extractData(packet);
   this->udpClient->setHostname(hostName);
+  this->hostname = hostName;
+  std::cout << "setting hostname " << hostName <<std::endl;
+
   Protocol::BabelPacket   *handshakeSuccess = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE_SUCCESS, nullptr, 0);
   if (this->tcpClient->sendBabelPacket(*handshakeSuccess) == false)
     this->gui->affInfoMessage("Server is not responding ...");
@@ -111,14 +114,15 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
   std::string data(const_cast<char *>(reinterpret_cast<const char *>(packet.data)));
   std::string name = "";
   std::string status = "";
+  std::string save;
 
+  save = data;
   while (data.size() > 1)
     {
       name = data.substr(0, data.find(":"));
       data = data.substr(data.find(":") + 1);
       status = data.substr(0, data.find(";"));
       data = data.substr(data.find(";") + 1);
-      std::cout << "update contact : " << name << std::endl;
       if (status == "online")
         contactList.push_back(std::pair<std::string, bool>(name,true));
       else
@@ -142,9 +146,7 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
         contactStatus = std::make_pair(name, true);
       else
         contactStatus = std::make_pair(name, false);
-      std::cout << "nice" << std::endl;
       this->gui->UpdateContact(contactStatus);
-      std::cout << "updated" << std::endl;
     }
 }
 
@@ -155,7 +157,7 @@ void       Client::incomingCall(Protocol::BabelPacket const &packet)
   data = data.substr(data.find(":") + 1);
   std::string ip = data.substr(0, data.find(":"));
   std::string port = data.substr(data.find(":") + 1);
-  std::cout << "INCOMMINGCALL FROM -> " << user << std::endl;
+  std::cout <<"incomingCall : " << ip <<" "<< port << std::endl;
   this->gui->incommingCall(user, ip, port);
 }
 
@@ -186,13 +188,12 @@ void       Client::inCallThread()
       this->udpClient->sendBabelPacket(*packet);
     }
     //this->queue.pop();
-    std::this_thread::sleep_for (std::chrono::milliseconds(10));
+//    std::this_thread::sleep_for (std::chrono::nanoseconds(1));
   }
 }
 
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
 {
-  std::cout << "ACCEPTED !!!!!!!!!!" << std::endl;
   std::string data(const_cast<char *>(reinterpret_cast<const char*>(packet.data)));
   data = data.substr(data.find(':') + 1);
   std::string ip = data.substr(0, data.find(':'));

@@ -50,7 +50,7 @@ void        MainWindow::LoginButton()
         QString passwordHash(password.toHex());
 
         this->gui->askLogin(ui->UsernameLogInput->text().toUtf8().constData(), passwordHash.toStdString());
-        this->ui->LoginLabel->setText(ui->PasswordLogInput->text());
+        this->ui->LoginLabel->setText(ui->UsernameLogInput->text());
     }
 }
 
@@ -113,7 +113,6 @@ void        MainWindow::RegisterRegisterButton()
         QString passwordHash(password.toHex());
 
         this->gui->askRegister(ui->UsernameRegisterInput->text().toUtf8().constData(), passwordHash.toStdString());
-        //QMessageBox::information(this, "Succes", "Sent registering request");
     }
 }
 
@@ -159,7 +158,8 @@ void        MainWindow::UpdateContactList(std::vector<std::pair<std::string, boo
 {
     ui->ContactList->model()->removeRows(0, ui->ContactList->model()->rowCount());
 
-    for (std::vector<std::pair<std::string, bool>>::iterator it = contactList.begin(); it != contactList.end(); it++){
+    for (std::vector<std::pair<std::string, bool>>::iterator it = contactList.begin(); it != contactList.end(); it++)
+    {
         std::pair<std::string, bool> current = *it;
         MyContactListItem *itm = new MyContactListItem(tr(current.first.c_str()));
         if (current.second)
@@ -264,13 +264,14 @@ void    MainWindow::newError(const std::string &error)
 bool    MainWindow::incommingCall(const std::string &userName)
 {
      QMessageBox::StandardButton reply;
-     (void)userName;
-     reply = QMessageBox::question(this, "Incomming Call", "Accept call from ?",
+     reply = QMessageBox::question(this, "Incoming Call", "Accept call from ?",
                                     QMessageBox::Yes|QMessageBox::No);
      if (reply == QMessageBox::Yes)
      {
-         this->setInCall(true);
-         return true;
+       this->setInCall(true);
+       ui->EndCallButton->setDisabled(false);
+       ui->callStatus->setText("In call with " + QString(userName.c_str()));
+       return true;
      }
      else
          return false;
