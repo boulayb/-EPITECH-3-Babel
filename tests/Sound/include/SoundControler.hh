@@ -1,8 +1,6 @@
 #ifndef _SOUNDCONTROLER_HH_
 # define _SOUNDCONTROLER_HH_
 
-# include "opus.h"
-# include "Codec.hh"
 # include "portaudio.h"
 # include "SoundProperties.hh"
 # include "ASoundControler.hh"
@@ -12,8 +10,6 @@ class			SoundControler : public ASoundControler
 {
 
 private:
-    Codec		codec;
-
     PaStreamParameters  inputParam;
     PaStreamParameters  outputParam;
 
@@ -23,10 +19,14 @@ private:
     PaError             paError;
 
     bool		isRunning;
-    
-    DecPack		decPack;
-    EncPack		encPack;
-    
+
+    DecPack		tmp;
+    SAMPLE		*recordedSamples;
+
+  
+    DecPack		toPlay;
+    DecPack		recorded;
+
 public:
     SoundControler();
     SoundControler(SoundControler const&);
@@ -39,17 +39,17 @@ public:
     void		startOutputStream();
     void		stopInputStream();
     void		stopOutputStream();
-    
-    void		setDecPack(DecPack const &pack);
-    const DecPack	&getDecPack();
 
-    void		setEncPack(EncPack const &pack);
-    const EncPack	&getEncPack();
+    const DecPack	&getRecorded();
+    void		setToPlay(DecPack const &pack);
 
-    // TEMPORARY ~ use this method to test audio in/out
-    void		testAudio();
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // temp
+    PaStream		*getInputStream();
 
+private:
+    void		setRecorded(DecPack const &pack);
+    const DecPack	&getToPlay();
+  
 private:
     bool		checkPaError();
     void		initInputParam();
@@ -69,7 +69,8 @@ private:
 				     unsigned long framesPerBuffer,
 				     const PaStreamCallbackTimeInfo* timeInfo,
 				     PaStreamCallbackFlags statusFlags,
-				     void *userData);    
+				     void *userData);
+
 };
 
 #endif // _SOUNDCONTROLER_HH_

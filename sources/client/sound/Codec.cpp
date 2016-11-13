@@ -50,13 +50,21 @@ int			Codec::initDecoder()
 const EncPack		Codec::encodePack(DecPack const &decPack)
 {
     EncPack		encPack;
-
-    encPack.data.reserve(FRAMES_PER_BUFFER * CHANNEL);
-    encPack.size = opus_encode_float(this->encoder, &decPack.sample[0], FRAMES_PER_BUFFER, &encPack.data[0], decPack.size);
+    
+    encPack.data.resize(FRAMES_PER_BUFFER * CHANNEL);
+    if (decPack.size == 0)
+      {
+	SAMPLE tmp[FRAMES_PER_BUFFER * CHANNEL];
+	for (int i = 0; i < FRAMES_PER_BUFFER * CHANNEL; i++)
+	  tmp[i] = 0;
+	encPack.size = opus_encode_float(this->encoder, tmp, FRAMES_PER_BUFFER, &encPack.data[0], FRAMES_PER_BUFFER * CHANNEL);
+      }
+    else
+      encPack.size = opus_encode_float(this->encoder, &decPack.sample[0], FRAMES_PER_BUFFER, &encPack.data[0], decPack.size);
     if (encPack.size < 0)
-    {
-      std::cerr << "error while encoding" << std::endl;
-    }
+	{
+	  std::cerr << "error while encoding" << std::endl;
+	}
     return (encPack);
 }
 

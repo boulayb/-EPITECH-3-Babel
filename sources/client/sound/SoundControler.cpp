@@ -142,13 +142,54 @@ int			SoundControler::recordCallback(const void *inputBuffer,
 						       void *userData)
 {
     SoundControler	*soundControler = reinterpret_cast<SoundControler *>(userData);
+    const SAMPLE	*rptr = static_cast<const float *>(inputBuffer);
     DecPack		pack;
 
     pack.size = framesPerBuffer * CHANNEL;
-    pack.sample.assign(reinterpret_cast<const float *>(inputBuffer), reinterpret_cast<const float *>(inputBuffer) + framesPerBuffer * CHANNEL);
+    pack.sample.assign(rptr, rptr + framesPerBuffer * CHANNEL);
     soundControler->setRecorded(pack);
     return (paContinue);
 }
+
+// int			SoundControler::recordCallback(const void *inputBuffer,
+// 						       void *,
+// 						       unsigned long framesPerBuffer,
+// 						       const PaStreamCallbackTimeInfo *,
+// 						       PaStreamCallbackFlags,
+// 						       void *userData)
+// {
+//     SoundControler	*soundControler = reinterpret_cast<SoundControler *>(userData);
+//     const SAMPLE	*rptr = static_cast<const float *>(inputBuffer);
+//     SAMPLE		*wptr = &soundControler->recordedSamples[framesPerBuffer * CHANNEL];
+
+//     if (inputBuffer == NULL)
+//       {
+// 	for (int i = 0; i < framesPerBuffer * CHANNEL; i++)
+// 	    {
+// 	        *wptr++ = SAMPLE_SILENCE;
+// 	        if (CHANNEL == 2)
+// 	            *wptr++ = SAMPLE_SILENCE;	      
+//             }
+//       }
+//     else
+//       {
+// 	for (int i = 0; i < framesPerBuffer * CHANNEL; i++)
+// 	    {
+// 	        *wptr++ = *rptr++;
+// 	        if (CHANNEL == 2)
+// 		  *wptr++ = *rptr++;
+//             }
+//       }
+//     soundControler->tmp.size = framesPerBuffer * CHANNEL;
+//     soundControler->tmp.sample.reserve(framesPerBuffer * CHANNEL);
+//     for (int i = 0; i < framesPerBuffer * CHANNEL; i++)
+//       {
+// 	soundControler->tmp.sample.push_back(soundControler->recordedSamples[i]);
+//       }
+//     // soundControler->tmp.sample = soundControler->recordedSamples;
+//     soundControler->setRecorded(soundControler->tmp);
+//     return (paContinue);
+// }
 
 int			SoundControler::playCallback(const void *,
 						     void *outputBuffer,
@@ -166,7 +207,7 @@ int			SoundControler::playCallback(const void *,
 	  SAMPLE	*tmp = pack.sample.data();
 
 	  for (int i = 0; i < pack.size; i++)
-	      *outputPtr++ = tmp[i];
+	    *outputPtr++ = tmp[i];		
     	}
     return (paContinue);
 }

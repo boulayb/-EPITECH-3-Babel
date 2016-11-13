@@ -13,7 +13,7 @@ private:
     OpusDecoder		*decoder;
 
     int			opusError;
-
+  
 public:
     Codec();
     Codec(Codec const&);

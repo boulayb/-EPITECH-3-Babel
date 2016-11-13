@@ -24,6 +24,7 @@ if (UNIX)
     src/main.cpp
     src/SoundControler.cpp
     src/Codec.cpp
+    src/PackBuilder.cpp
     )
 
   target_link_libraries(
