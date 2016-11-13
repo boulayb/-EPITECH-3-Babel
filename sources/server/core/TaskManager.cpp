@@ -183,10 +183,14 @@ void TaskManager::connectionLostTask(Task const &task)
 
 void TaskManager::callAcceptedTask(Task const &task)
 {
-  std::string data(const_cast<char*>(reinterpret_cast<const char*>(task.packet->data)));
-  std::string user = data.substr(0, data.find(':'));
-  int userID = this->database.getId(user);
-  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, task.packet->data, task.packet->dataLength);
+  std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
+  std::string userTo = dataSplited[LOGIN_INDEX];
+  int userID = this->database.getId(userTo);
+  std::string userFrom = database.getLoginById(task.clientID);
+  std::string data = userFrom + SEPARATOR + dataSplited[IP_INDEX] + SEPARATOR + dataSplited[PORT_INDEX];
+  unsigned char *sendData = Protocol::Protocol::stringToPointer(data);
+  std::cout << data << std::endl;
+  Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, sendData, data.size());
   this->network->sendBabelPacket(*packet, userID);
 }
 
@@ -208,6 +212,7 @@ void TaskManager::hangUpTask(Task const &task)
 {
   std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
   int id = this->database.getId(dataSplited[LOGIN_INDEX]);
+  std::cout << "HANGUPD TASK : " << dataSplited[LOGIN_INDEX] << std::endl;
   if (id != -1)
   {
     Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HANG_UP, nullptr, 0);

@@ -49,7 +49,9 @@ void        MainWindow::LoginButton()
         QByteArray password = QCryptographicHash::hash(ui->PasswordLogInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
 
+        std::cout << "Test" << std::endl;
         this->gui->askLogin(ui->UsernameLogInput->text().toUtf8().constData(), passwordHash.toUtf8().constData());
+      std::cout << "Test2" << std::endl;
         this->ui->LoginLabel->setText(ui->UsernameLogInput->text());
     }
 }
@@ -151,7 +153,8 @@ void    MainWindow::AddContactButton()
 
 void        MainWindow::UpdateContactList(std::vector<std::pair<std::string, bool>> contactList)
 {
-    ui->ContactList->model()->removeRows(0, ui->ContactList->model()->rowCount());
+    ui->ContactList->clear();
+//    ui->ContactList->model()->removeRows(0, ui->ContactList->model()->rowCount());
 
     for (std::vector<std::pair<std::string, bool>>::iterator it = contactList.begin(); it != contactList.end(); it++)
     {
