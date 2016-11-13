@@ -19,9 +19,10 @@ private:
     PaError             paError;
 
     bool		isRunning;
-    std::mutex mutex;
+    std::mutex		mutex;
     DecPack		toPlay;
     DecPack		recorded;
+
 public:
     SoundControler();
     SoundControler(SoundControler const&);
@@ -37,9 +38,6 @@ public:
 
     const DecPack	&getRecorded();
     void		setToPlay(DecPack const &pack);
-
-  // temp
-    PaStream		*getInputStream();
 
 private:
     void		setRecorded(DecPack const &pack);
