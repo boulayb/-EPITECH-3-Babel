@@ -42,7 +42,10 @@ namespace Protocol
       CONTACT_ADD_SUCCESS = 207,
       CONTACT_DEL_SUCCESS = 208,
 
-      CALL_DATA = 300,
+      // Info type between clients
+      AUDIO = 301,
+      TEXT = 302,
+      VIDEO = 303
     };
 
     // Infos

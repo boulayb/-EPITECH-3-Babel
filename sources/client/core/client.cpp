@@ -194,7 +194,7 @@ void       Client::inCallThread()
     EncPack pack = this->packBuilder.getEncoded();
     std::cout << pack.size << std::endl;
     if (pack.size > 0) {
-      Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_DATA,
+      Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::AUDIO,
                                                                        &pack.data[0], pack.size);
       this->udpClient->sendBabelPacket(*packet);
     }

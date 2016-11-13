@@ -47,7 +47,7 @@ private:
       {Protocol::BabelPacket::Code::USER_ALREADY_SIGNED_IN, &Client::errorEncountered},
       {Protocol::BabelPacket::Code::NOT_SIGNED_IN, &Client::errorEncountered},
       {Protocol::BabelPacket::Code::USER_ALREADY_FRIEND, &Client::errorEncountered},
-      {Protocol::BabelPacket::Code::CALL_DATA, &Client::callPacket},
+      {Protocol::BabelPacket::Code::AUDIO, &Client::callPacket},
       {Protocol::BabelPacket::Code::HANG_UP, &Client::hangUp},
       {Protocol::BabelPacket::Code::USER_NOT_FRIEND, &Client::errorEncountered}
     };
