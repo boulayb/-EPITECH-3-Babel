@@ -16,11 +16,7 @@ Client::Client(Gui *gui) : gui(gui), inCall(false)
 
 Client::~Client()
 {
-}
-
-void       Client::setInCall(bool state)
-{
-  this->inCall = state;
+  this->inCall = false;
 }
 
 void       Client::startGUI()
@@ -30,7 +26,7 @@ void       Client::startGUI()
 
 void       Client::readBabelPacket(Protocol::BabelPacket const &packet)
 {
-  std::cout << (int)packet.code << " = code" << std::endl;
+//  std::cout << (int)packet.code << " = code" << std::endl;
   (this->*(this->readFunctions[packet.code]))(packet);
 }
 
@@ -107,6 +103,7 @@ void       Client::login(Protocol::BabelPacket const &packet)
 void       Client::logout(Protocol::BabelPacket const &packet)
 {
   (void)packet;
+  this->inCall = false;
   this->gui->setLoginView();
 }
 
@@ -168,18 +165,30 @@ void       Client::acceptCall(std::string const &user, std::string const &ip, st
   std::string data = user + ":" + this->hostname + ":" + std::to_string(this->udpPort);
   sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, data);
   std::cout << ip << " " << port << std::endl;
+  this->callerName = user;
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
-  this->packBuilder.getSoundControler().startInputStream();
-  this->packBuilder.getSoundControler().startOutputStream();
   this->inCall = true;
   this->udpClient->initiateService();
   this->udpThread = this->spawn();
   this->udpThread.detach();
 }
 
+void       Client::hangUp(Protocol::BabelPacket const &packet)
+{
+  (void)packet;
+  this->gui->setContactView();
+//  this->packBuilder.getSoundControler().stopOutputStream();
+  this->inCall = false;
+//  this->udpThread.join();
+}
+
 void       Client::inCallThread()
 {
+//  this->packBuilder = new PackBuilder;
+  this->packBuilder.getSoundControler().startInputStream();
+  this->packBuilder.getSoundControler().startOutputStream();
+
   while (this->inCall)
   {
     EncPack pack = this->packBuilder.getEncoded();
@@ -189,15 +198,18 @@ void       Client::inCallThread()
                                                                        &pack.data[0], pack.size);
       this->udpClient->sendBabelPacket(*packet);
     }
+//    delete this->packBuilder;
     //this->queue.pop();
 //    std::this_thread::sleep_for (std::chrono::nanoseconds(1));
   }
+  this->packBuilder.getSoundControler().stopOutputStream();
+  this->packBuilder.getSoundControler().stopInputStream();
 }
 
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
 {
   std::string data(const_cast<char *>(reinterpret_cast<const char*>(packet.data)));
-  data = data.substr(data.find(':') + 1);
+  this->callerName = data.substr(data.find(':') + 1);
   std::string ip = data.substr(0, data.find(':'));
   std::string port = data.substr(data.find(':') + 1);
 
@@ -205,20 +217,20 @@ void       Client::callAccepted(Protocol::BabelPacket const &packet)
 
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
-  this->packBuilder.getSoundControler().startInputStream();
-  this->packBuilder.getSoundControler().startOutputStream();
+//  this->packBuilder.getSoundControler().startInputStream();
+  //this->packBuilder.getSoundControler().startOutputStream();
   this->inCall = true;
   this->udpClient->initiateService();
   this->udpThread = this->spawn();
   this->udpThread.detach();
-  this->gui->callAccepted();
+  this->gui->callAccepted(this->callerName);
 }
 
 void       Client::callDeclined(Protocol::BabelPacket const &packet)
 {
   (void)packet;
   std::cout << "DECLINED !!!!!!!!!!" << std::endl;
-  this->gui->endCall();
+  this->gui->setContactView();
 }
 
 void       Client::contactAdded(Protocol::BabelPacket const &packet)
@@ -227,6 +239,17 @@ void       Client::contactAdded(Protocol::BabelPacket const &packet)
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
   if (this->tcpClient->sendBabelPacket(*newPacket) == false)
     this->gui->affInfoMessage("Server is not responding ...");
+}
+
+void       Client::endCall()
+{
+  this->inCall = false;
+//  this->packBuilder.getSoundControler().stopOutputStream();
+//  this->udpThread.join();
+  Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket
+          (Protocol::BabelPacket::Code::HANG_UP,
+           Protocol::Protocol::stringToPointer(this->callerName), this->callerName.length());
+  this->tcpClient->sendBabelPacket(*newPacket);
 }
 
 void       Client::contactDeleted(Protocol::BabelPacket const &packet)

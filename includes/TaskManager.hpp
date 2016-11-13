@@ -33,6 +33,7 @@ private:
   void callAcceptedTask(Task const &);
   void callDeclinedTask(Task const &);
   void handShakeSuccess(Task const &);
+  void hangUpTask(Task const &);
 
   std::map<Protocol::BabelPacket::Code, taskFunction> actions =
    {
@@ -47,7 +48,8 @@ private:
      {Protocol::BabelPacket::Code::ADD_CONTACT, &TaskManager::addContactTask},
      {Protocol::BabelPacket::Code::CALL_ACCEPTED, &TaskManager::callAcceptedTask},
      {Protocol::BabelPacket::Code::HAND_SHAKE_SUCCESS, &TaskManager::handShakeSuccess},
-     {Protocol::BabelPacket::Code::CALL_DECLINED, &TaskManager::callDeclinedTask}
+     {Protocol::BabelPacket::Code::CALL_DECLINED, &TaskManager::callDeclinedTask},
+     {Protocol::BabelPacket::Code::HANG_UP, &TaskManager::hangUpTask},
    };
 
   std::vector<std::string> &splitDataByDelimiter(char delimiter, unsigned char *data, int size);

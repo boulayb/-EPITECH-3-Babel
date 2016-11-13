@@ -86,9 +86,9 @@ void    Gui::incommingCall(const std::string &userName, const std::string &ip, c
 
 }
 
-void    Gui::callAccepted()
+void    Gui::callAccepted(std::string const &user)
 {
-  this->mainWindow->setInCall(true);
+  this->mainWindow->setInCallView(user);
 }
 
 void    Gui::affInfoMessage(std::string const & msg)
@@ -96,10 +96,14 @@ void    Gui::affInfoMessage(std::string const & msg)
   this->mainWindow->affInfoMessage(msg);
 }
 
+void    Gui::setContactView()
+{
+  this->mainWindow->setContactView();
+}
+
 void    Gui::endCall()
 {
-    this->mainWindow->setInCall(false);
-    client->setInCall(false);
+  this->client->endCall();
 }
 
 void    Gui::start()

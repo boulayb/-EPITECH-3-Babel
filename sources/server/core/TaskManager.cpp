@@ -204,6 +204,17 @@ void TaskManager::handShakeSuccess(Task const &task)
   (void)task;
 }
 
+void TaskManager::hangUpTask(Task const &task)
+{
+  std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
+  int id = this->database.getId(dataSplited[LOGIN_INDEX]);
+  if (id != -1)
+  {
+    Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HANG_UP, nullptr, 0);
+    this->network->sendBabelPacket(*packet, id);
+  }
+}
+
 void TaskManager::updateContactStatusTask(std::string const &login, std::string const &status) const
 {
   const std::vector<std::string> &friendList = this->database.getFriendsList(login);
@@ -224,6 +235,7 @@ void TaskManager::updateContactStatusTask(std::string const &login, std::string 
     }
   }
 }
+
 
 std::vector<std::string> &TaskManager::splitDataByDelimiter(char delimiter, unsigned char *data, int size)
 {

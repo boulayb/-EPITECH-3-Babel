@@ -21,6 +21,7 @@ namespace Protocol
       DEL_CONTACT = 107,
       UPDATE_CONTACT_STATUS = 108,
       PING = 109,
+      HANG_UP = 110,
       // Errors
       INVALID_REQUEST = 1,
       USER_NOT_FOUND = 2,

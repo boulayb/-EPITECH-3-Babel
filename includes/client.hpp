@@ -22,10 +22,9 @@ private:
   PackBuilder   packBuilder;
   bool      inCall;
   std::thread udpThread;
-
-protected:
   std::string hostname;
   short       udpPort;
+  std::string callerName;
 
   typedef void (Client::*fptr)(Protocol::BabelPacket const &);
   std::map<Protocol::BabelPacket::Code, fptr>      readFunctions =
@@ -49,6 +48,7 @@ protected:
       {Protocol::BabelPacket::Code::NOT_SIGNED_IN, &Client::errorEncountered},
       {Protocol::BabelPacket::Code::USER_ALREADY_FRIEND, &Client::errorEncountered},
       {Protocol::BabelPacket::Code::CALL_DATA, &Client::callPacket},
+      {Protocol::BabelPacket::Code::HANG_UP, &Client::hangUp},
       {Protocol::BabelPacket::Code::USER_NOT_FRIEND, &Client::errorEncountered}
     };
 
@@ -67,6 +67,7 @@ protected:
   void       contactAdded(Protocol::BabelPacket const &packet);
   void       contactDeleted(Protocol::BabelPacket const &packet);
   void       callPacket(Protocol::BabelPacket const &packet);
+  void       hangUp(Protocol::BabelPacket const &packet);
   void       inCallThread();
   // Server Error Replies
   void       errorEncountered(Protocol::BabelPacket const &packet);
@@ -81,7 +82,7 @@ protected:
   void       sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user = "", std::string const &passwd = "");
   void       sendCallPacket(std::string const &user = "");
   void       acceptCall(std::string const &user, std::string const &ip, std::string const &port);
-  void       setInCall(bool state);
+  void       endCall();
 };
 
 #endif /* !CLIENT_HPP_ */

@@ -40,8 +40,10 @@ public:
     void    incommingCall(const std::string &userName, const std::string &ip, const std::string &port);
     void    endCall();
     void    answerCall();
-    void    callAccepted();
-    const std::pair<std::string, int> &getNetworkInfo() const;
+    void    callAccepted(std::string const &user);
+    void    setContactView();
+
+  const std::pair<std::string, int> &getNetworkInfo() const;
 
 
 private:

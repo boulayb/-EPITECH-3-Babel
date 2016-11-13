@@ -15,7 +15,7 @@
 #include <iostream>
 #include "mycontactlistitem.h"
 
-MainWindow::MainWindow(Gui *gui, QWidget *parent) : QMainWindow(parent), gui(gui), ui(new Ui::MainWindow), inCall(false), netWorkInfo("127.0.0.1", 4000)
+MainWindow::MainWindow(Gui *gui, QWidget *parent) : QMainWindow(parent), gui(gui), ui(new Ui::MainWindow), netWorkInfo("127.0.0.1", 4000)
 {
     ui->setupUi(this);
     ui->Stack->setCurrentIndex(0);
@@ -128,8 +128,7 @@ void        MainWindow::CancelRegisterButton()
 
 void        MainWindow::LogoutButton()
 {
-    if (!inCall)
-        this->gui->askLogout();
+    this->gui->askLogout();
 }
 
 void        MainWindow::setLoginView()
@@ -144,14 +143,10 @@ void        MainWindow::affInfoMessage(std::string const & msg)
 
 void    MainWindow::AddContactButton()
 {
-    if (!inCall)
-    {
-        if (ui->AddContactInput->text().isEmpty())
-            QMessageBox::information(this, "Error", "No contact name to add");
-        else
-            this->gui->AddContact(ui->AddContactInput->text().toUtf8().constData());
-    }
-
+    if (ui->AddContactInput->text().isEmpty())
+        QMessageBox::information(this, "Error", "No contact name to add");
+    else
+        this->gui->AddContact(ui->AddContactInput->text().toUtf8().constData());
 }
 
 void        MainWindow::UpdateContactList(std::vector<std::pair<std::string, bool>> contactList)
@@ -203,44 +198,35 @@ void    MainWindow::updateContact(const std::pair<std::string, bool> &contact)
 void        MainWindow::callButton()
 {
     gui->call(ui->ContactNameLabel->text().toUtf8().constData());
-    ui->CallButton->setDisabled(true);
-    ui->EndCallButton->setDisabled(false);
-    ui->callStatus->setText("Calling...");
-    this->inCall = true;
+    this->setInCallView("Calling...");
 }
 
 void    MainWindow::endCallButton()
 {
-    ui->CallButton->setDisabled(false);
-    ui->EndCallButton->setDisabled(true);
-    ui->callStatus->setText("");
-    this->inCall = false;
+    this->setContactView();
     this->gui->endCall();
 }
 
 void    MainWindow::selectContact()
 {
-    if (!inCall)
-    {
-        QString contact = ui->ContactList->currentItem()->text();
+    QString contact = ui->ContactList->currentItem()->text();
 
-        if (static_cast<MyContactListItem *>(ui->ContactList->currentItem())->getOnline())
-        {
-            ui->ContactNameLabel->setText(contact);
-            ui->CallButton->setDisabled(false);
-        }
-        else
-        {
-            ui->ContactNameLabel->setText(contact + " (Offline)");
-            ui->CallButton->setDisabled(true);
-        }
-        ui->RemoveContactButton->setDisabled(false);
+    if (static_cast<MyContactListItem *>(ui->ContactList->currentItem())->getOnline())
+    {
+        ui->ContactNameLabel->setText(contact);
+        ui->CallButton->setDisabled(false);
     }
+    else
+    {
+        ui->ContactNameLabel->setText(contact + " (Offline)");
+        ui->CallButton->setDisabled(true);
+    }
+    ui->RemoveContactButton->setDisabled(false);
 }
 
 void    MainWindow::removeContactButton()
 {
-    if (!inCall && ui->ContactList->count() > 0 && ui->ContactList->currentItem())
+    if (ui->ContactList->count() > 0 && ui->ContactList->currentItem())
     {
         std::string contact = ui->ContactList->currentItem()->text().toUtf8().constData();
         ui->ContactNameLabel->setText(QString("No contact selected"));
@@ -251,9 +237,24 @@ void    MainWindow::removeContactButton()
     }
 }
 
-void    MainWindow::setInCall(bool inCall)
+void        MainWindow::setContactView()
 {
-    this->inCall = inCall;
+    ui->ContactList->setDisabled(false);
+    ui->EndCallButton->setDisabled(true);
+    ui->LogoutButton->setDisabled(false);
+    ui->RemoveContactButton->setDisabled(false);
+    ui->CallButton->setDisabled(false);
+    ui->callStatus->setText("");
+}
+
+void    MainWindow::setInCallView(std::string const &name)
+{
+    ui->ContactList->setDisabled(true);
+    ui->EndCallButton->setDisabled(false);
+    ui->LogoutButton->setDisabled(true);
+    ui->RemoveContactButton->setDisabled(true);
+    ui->CallButton->setDisabled(true);
+    ui->callStatus->setText(QString(name.c_str()));
 }
 
 void    MainWindow::newError(const std::string &error)
@@ -268,9 +269,8 @@ bool    MainWindow::incommingCall(const std::string &userName)
                                     QMessageBox::Yes|QMessageBox::No);
      if (reply == QMessageBox::Yes)
      {
-       this->setInCall(true);
-       ui->EndCallButton->setDisabled(false);
-       ui->callStatus->setText("In call with " + QString(userName.c_str()));
+       std::string data = "In call with " + userName;
+       this->setInCallView(data);
        return true;
      }
      else
