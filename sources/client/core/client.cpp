@@ -195,7 +195,7 @@ void       Client::inCallThread()
     std::cout << pack.size << std::endl;
     if (pack.size > 0) {
       Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::AUDIO,
-                                                                       &pack.data[0], pack.size);
+                                                                       pack.data->data(), pack.size);
       this->udpClient->sendBabelPacket(*packet);
     }
 //    delete this->packBuilder;
@@ -263,12 +263,16 @@ void       Client::contactDeleted(Protocol::BabelPacket const &packet)
 
 void       Client::callPacket(char * data, int size)
 {
-  EncPack pack;
+  EncPack *pack = new EncPack;
 //  std::string data = Protocol::Protocol::extractData(packet);
-  std::vector<unsigned char> v;
-  std::copy(data, data + size, std::back_inserter(v));
-  pack.size = size;
-  pack.data = v;
+  std::vector<unsigned char> *v = new std::vector<unsigned char>;
+//  std::copy(data, data + size, std::back_inserter(v));
+  for (int i = 0; i < size ; ++i)
+  {
+    v->push_back(data[i]);
+  }
+  pack->size = size;
+  pack->data = v;
   this->packBuilder.setEncoded(pack);
 }
 
