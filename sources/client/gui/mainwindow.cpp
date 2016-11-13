@@ -284,9 +284,10 @@ void    MainWindow::newError(const std::string &error)
 bool    MainWindow::incommingCall(const std::string &userName)
 {
      QMessageBox::StandardButton reply;
-     reply = QMessageBox::question(this, "Incoming Call", "Accept call from ?",
-                                    QMessageBox::Yes|QMessageBox::No);
-     if (reply == QMessageBox::Yes)
+    std::string full = "Accept call from " + userName + " ?";
+    reply = QMessageBox::question(this, "Incoming Call", full.c_str(),
+                                  QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes)
      {
        std::string data = "In call with " + userName;
        this->setInCallView(data);
