@@ -191,7 +191,7 @@ void TaskManager::callAcceptedTask(Task const &task)
 void TaskManager::callDeclinedTask(Task const &task)
 {
   std::string data(const_cast<char*>(reinterpret_cast<const char*>(task.packet->data)));
-  std::string user = data.substr(0, data.find(':'));
+  std::string user = data;
   int userID = this->database.getId(user);
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_DECLINED, nullptr, 0);
   this->network->sendBabelPacket(*packet, userID);
