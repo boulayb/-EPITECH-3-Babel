@@ -54,9 +54,9 @@ const EncPack		Codec::encodePack(DecPack const &decPack)
     encPack.data.reserve(FRAMES_PER_BUFFER * CHANNEL);
     encPack.size = opus_encode_float(this->encoder, &decPack.sample[0], FRAMES_PER_BUFFER, &encPack.data[0], decPack.size);
     if (encPack.size < 0)
-	{
-	    std::cerr << "error while encoding" << std::endl;
-	}
+    {
+      std::cerr << "error while encoding" << std::endl;
+    }
     return (encPack);
 }
 

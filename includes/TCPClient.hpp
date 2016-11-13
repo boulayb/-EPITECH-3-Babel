@@ -30,13 +30,9 @@ public:
   private:
 private slots:
   void readMessage();
-  void connectReady();
-  void disconnectedReady();
-  void writeMessage(qint64 bytes);
   void displayError(QAbstractSocket::SocketError socketError);
 private:
   QTcpSocket tcpSocket;
-  bool is_connected;
 };
 
 #endif // TCPCLIENT_HHP

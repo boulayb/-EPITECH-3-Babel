@@ -10,7 +10,7 @@ void    MyContactListItem::setOnline(bool online)
     this->online = online;
 }
 
-bool    MyContactListItem::getOnline()
+bool    MyContactListItem::getOnline() const
 {
     return (this->online);
 }

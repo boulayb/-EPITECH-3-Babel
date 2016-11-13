@@ -27,8 +27,7 @@ public:
     int getId(std::string const &login) const;
     std::string const &getLoginById(int id) const;
 private:
-    bool checkIfUserExist(std::string const& login);
-    bool checkUserInfo(std::string const& login, std::string const& password);
+    bool checkIfUserExist(std::string const& login) const;
     bool addNewUser(std::string const& login, std::string const& password);
     bool writeMap();
     std::map<std::string, User> _map;

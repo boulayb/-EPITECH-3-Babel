@@ -17,7 +17,7 @@ class MyContactListItem : public QListWidgetItem
 public:
     MyContactListItem(const QString &);
     void    setOnline(bool);
-    bool    getOnline();
+    bool    getOnline() const;
 
 private:
     bool    online;

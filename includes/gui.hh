@@ -32,7 +32,7 @@ public:
     void    removeContact(const std::string &contacName);
     void    newError(const std::string &error);
 
-    void    UpdateContactList(std::vector<std::pair<std::string, bool>>);
+    void    UpdateContactList(std::vector<std::pair<std::string, bool>> &);
     void    UpdateContact(const std::pair<std::string, bool> &contact);
     void    setLoginView();
     void    Login();

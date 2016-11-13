@@ -135,15 +135,10 @@ const std::vector<std::string> &DataBase::getFriendsList(std::string const &logi
   throw std::exception();
 }
 
-bool DataBase::checkIfUserExist(std::string const &login)
+bool DataBase::checkIfUserExist(std::string const &login) const
 {
   std::map<std::string, User>::const_iterator it = this->_map.find(login);
   return it != this->_map.end();
-}
-
-bool DataBase::checkUserInfo(std::string const &login, std::string const &password)
-{
-  return (this->_map[login].getPassword() == password);
 }
 
 bool DataBase::addNewUser(std::string const &login, std::string const &password)

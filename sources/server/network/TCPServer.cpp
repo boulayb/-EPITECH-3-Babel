@@ -19,11 +19,6 @@ bool TCPServer::initiateService()
   return this->ioService.run();
 }
 
-void TCPServer::shutDown()
-{
-
-}
-
 bool TCPServer::sendBabelPacket(Protocol::BabelPacket &packet, unsigned int id)
 {
   for (Session *user : this->users)

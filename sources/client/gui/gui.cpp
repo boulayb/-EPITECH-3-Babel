@@ -67,7 +67,7 @@ void    Gui::setLoginView()
     this->mainWindow->setLoginView();
 }
 
-void    Gui::UpdateContactList(std::vector<std::pair<std::string, bool>>    contactList)
+void    Gui::UpdateContactList(std::vector<std::pair<std::string, bool>>    &contactList)
 {
     this->mainWindow->UpdateContactList(contactList);
 }

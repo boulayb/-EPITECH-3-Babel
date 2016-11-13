@@ -14,7 +14,7 @@
 #include "client.hpp"
 
 TCPClient::TCPClient(Client *babel , const std::string &hostname, unsigned short port, QObject *parent) :
-        QObject(parent), ANetwork(babel, hostname, port), is_connected(false)
+        QObject(parent), ANetwork(babel, hostname, port)
 {
 }
 
@@ -26,34 +26,14 @@ TCPClient::~TCPClient()
 bool TCPClient::initiateService()
 {
   connect(&this->tcpSocket, SIGNAL(readyRead()),this, SLOT(readMessage()));
-  connect(&this->tcpSocket, SIGNAL(bytesWritten(qint64)),this, SLOT(writeMessage(qint64)));
   connect(&this->tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
-  connect(&this->tcpSocket, SIGNAL(connected()), this, SLOT(connectReady()));
-  connect(&this->tcpSocket, SIGNAL(disconnected()), this, SLOT(disconnectedReady()));
   this->tcpSocket.connectToHost(this->hostName.c_str(), this->port);
   return this->tcpSocket.waitForConnected(5000);
 }
 
-void TCPClient::connectReady()
-{
-  this->is_connected = true;
-}
-
-void TCPClient::writeMessage(qint64 bytes)
-{
-  (void)bytes;
-  std::cout << "writted ! " << std::endl;
-}
-
-void TCPClient::disconnectedReady()
-{
-
-}
-
-
 bool TCPClient::sendBabelPacket(Protocol::BabelPacket &packet)
 {
-  if(this->tcpSocket.state() == QAbstractSocket::ConnectedState && is_connected)
+  if(this->tcpSocket.state() == QAbstractSocket::ConnectedState)
   {
     std::cout << "writing ... size : " << sizeof(Protocol::BabelPacket) + packet.dataLength<<std::endl;
     this->tcpSocket.write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
