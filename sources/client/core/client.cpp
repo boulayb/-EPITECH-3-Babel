@@ -11,7 +11,6 @@ Client::Client(Gui *gui) : gui(gui), inCall(false)
   this->udpClient = new UDPClient(this, "127.0.0.1", 4004);
   this->hostname = "127.0.0.1";
   this->udpPort = 4004;
-//  this->udpClient->initiateService();
 }
 
 Client::~Client()
@@ -26,7 +25,6 @@ void       Client::startGUI()
 
 void       Client::readBabelPacket(Protocol::BabelPacket const &packet)
 {
-//  std::cout << (int)packet.code << " = code" << std::endl;
   (this->*(this->readFunctions[packet.code]))(packet);
 }
 
@@ -174,9 +172,7 @@ void       Client::hangUp(Protocol::BabelPacket const &packet)
 {
   (void)packet;
   this->gui->setContactView();
-//  this->packBuilder.getSoundControler().stopOutputStream();
   this->inCall = false;
-//  this->udpThread.join();
 }
 
 void       Client::inCallThread()
@@ -200,9 +196,6 @@ void       Client::inCallThread()
       this->packBuilder->setEncoded(newPack);
     }
     this->mutex.unlock();
-
-    //this->queue.pop();
-//    std::this_thread::sleep_for (std::chrono::nanoseconds(100));
   }
   this->packBuilder->getSoundControler().stopOutputStream();
   this->packBuilder->getSoundControler().stopInputStream();
@@ -219,8 +212,6 @@ void       Client::callAccepted(Protocol::BabelPacket const &packet)
 
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
-//  this->packBuilder.getSoundControler().startInputStream();
-  //this->packBuilder.getSoundControler().startOutputStream();
   this->inCall = true;
   this->udpClient->initiateService();
   this->udpThread = this->spawn();
@@ -292,7 +283,6 @@ void       Client::errorEncountered(Protocol::BabelPacket const &packet)
   {
     this->gui->affInfoMessage("User not found, or incorrect password");
   }
-    //this->gui->errorEncountered(error);
 }
 
 void       Client::ignorPacket(Protocol::BabelPacket const &packet)

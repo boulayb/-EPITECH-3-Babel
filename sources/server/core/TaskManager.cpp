@@ -74,7 +74,6 @@ void TaskManager::signOutTask(Task const &task)
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::SIGN_OUT_SUCCESS, nullptr, 0);
   this->updateContactStatusTask(login, OFFLINE_STATUS);
   this->network->sendBabelPacket(*packet, task.clientID);
-//  this->network->disconnectUser(task.clientID);
 }
 
 void TaskManager::getContactTask(Task const &task)

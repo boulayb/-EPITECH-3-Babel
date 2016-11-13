@@ -152,7 +152,6 @@ void    MainWindow::AddContactButton()
 void        MainWindow::UpdateContactList(std::vector<std::pair<std::string, bool>> contactList)
 {
     ui->ContactList->clear();
-//    ui->ContactList->model()->removeRows(0, ui->ContactList->model()->rowCount());
 
     for (std::vector<std::pair<std::string, bool>>::iterator it = contactList.begin(); it != contactList.end(); it++)
     {
