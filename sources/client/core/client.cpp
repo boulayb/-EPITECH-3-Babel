@@ -146,6 +146,11 @@ void       Client::incomingCall(Protocol::BabelPacket const &packet)
 {
   std::string data = Protocol::Protocol::extractData(packet);
   std::string user = data.substr(0, data.find(":"));
+  if (this->inCall)
+    {
+      sendBabelPacket(Protocol::BabelPacket::Code::CALL_DECLINED, user);
+      return;
+    }
   data = data.substr(data.find(":") + 1);
   std::string ip = data.substr(0, data.find(":"));
   std::string port = data.substr(data.find(":") + 1);
@@ -155,18 +160,14 @@ void       Client::incomingCall(Protocol::BabelPacket const &packet)
 void       Client::acceptCall(std::string const &user, std::string const &ip, std::string const &port)
 {
   std::string data = user + ":" + this->hostname + ":" + std::to_string(this->udpPort);
-  if (!this->inCall) {
-    std::string data = user + ":" + this->hostname + ":" + std::to_string(this->udpPort);
-    sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, data);
-    this->callerName = user;
-    this->udpClient->setHostname(ip);
-    this->udpClient->setPort(std::stoi(port));
-    this->inCall = true;
-    this->udpClient->initiateService();
-    this->udpThread = this->spawn();
-    this->udpThread.detach();
-  }
-  sendBabelPacket(Protocol::BabelPacket::Code::CALL_DECLINED, data);
+  sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, data);
+  this->callerName = user;
+  this->udpClient->setHostname(ip);
+  this->udpClient->setPort(std::stoi(port));
+  this->inCall = true;
+  this->udpClient->initiateService();
+  this->udpThread = this->spawn();
+  this->udpThread.detach();
 }
 
 void       Client::hangUp(Protocol::BabelPacket const &packet)
