@@ -16,13 +16,15 @@ namespace Protocol
       SIGN_UP = 102,
       SIGN_OUT = 103,
       CONTACT_LIST = 104,
-      CALL = 105,
-      ADD_CONTACT = 106,
-      DEL_CONTACT = 107,
-      UPDATE_CONTACT_STATUS = 108,
-      PING = 109,
+      ADD_CONTACT = 105,
+      DEL_CONTACT = 106,
+      UPDATE_CONTACT_STATUS = 107,
+      CALL = 108,
+      VIDEO_CALL = 109,
       HANG_UP = 110,
-      // Errors
+      PING = 111,
+
+	// Errors
       INVALID_REQUEST = 1,
       USER_NOT_FOUND = 2,
       SIGN_IN_FAILED = 3,
