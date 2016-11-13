@@ -49,7 +49,7 @@ private:
       {Protocol::BabelPacket::Code::USER_ALREADY_FRIEND, &Client::errorEncountered},
       {Protocol::BabelPacket::Code::AUDIO, &Client::callPacket},
       {Protocol::BabelPacket::Code::VIDEO, &Client::ignorPacket},
-      {Protocol::BabelPacket::Code::TEXT, &Client::ignorPacket},
+      {Protocol::BabelPacket::Code::TEXT, &Client::readText},
       {Protocol::BabelPacket::Code::HANG_UP, &Client::hangUp},
       {Protocol::BabelPacket::Code::USER_NOT_FRIEND, &Client::errorEncountered}
     };
@@ -71,6 +71,8 @@ private:
   void       callPacket(Protocol::BabelPacket const &packet);
   void       hangUp(Protocol::BabelPacket const &packet);
   void       inCallThread();
+  void       readText(Protocol::BabelPacket const &packet);
+
   // Server Error Replies
   void       errorEncountered(Protocol::BabelPacket const &packet);
   void       ignorPacket(Protocol::BabelPacket const &packet);
@@ -82,7 +84,7 @@ private:
   ~Client();
   void       startGUI();
   void       readBabelPacket(Protocol::BabelPacket const &packet);
-  void       sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user = "", std::string const &passwd = "");
+  void       sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &data1 = "", std::string const &data2 = "");
   void       sendCallPacket(std::string const &user = "");
   void       acceptCall(std::string const &user, std::string const &ip, std::string const &port);
   void       endCall();

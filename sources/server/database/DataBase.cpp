@@ -90,9 +90,7 @@ Protocol::BabelPacket::Code DataBase::addFriend(std::string const &login, std::s
 {
   if (login == newFriend)
     return (Protocol::BabelPacket::Code::USER_ALREADY_FRIEND);
-  if (this->_map[login].getLogin() != login)
-    return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
-  if (this->_map.count(newFriend) == 0)
+  if (this->_map.count(newFriend) == 0 || this->_map[login].getLogin() != login)
     return (Protocol::BabelPacket::Code::USER_NOT_FOUND);
   for (std::vector<std::string>::iterator it = this->_map[login].getFriends().begin(); it != this->_map[login].getFriends().end(); ++it)
   {
@@ -102,6 +100,16 @@ Protocol::BabelPacket::Code DataBase::addFriend(std::string const &login, std::s
   this->_map[login].getFriends().push_back(newFriend);
   this->writeMap();
   return (Protocol::BabelPacket::Code::CONTACT_ADD_SUCCESS);
+}
+
+void DataBase::addText(std::string const &login, std::string const &text)
+{
+  this->_map[login].getTexts().push_back(text);
+}
+
+std::vector<std::string> &DataBase::getTexts(std::string const &login) const
+{
+  return this->_map[login].getTexts();
 }
 
 Protocol::BabelPacket::Code DataBase::deleteFriend(std::string const &login, std::string const &newFriend)

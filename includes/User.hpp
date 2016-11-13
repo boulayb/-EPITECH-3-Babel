@@ -20,7 +20,7 @@ public:
     void serialize(Archive& ar, const unsigned int version)
     {
         (void)version;
-        ar & _login & _password & _friends;
+        ar & _login & _password & _friends & _texts;
     }
     User();
     User(std::string const& login, std::string const& password);
@@ -31,10 +31,13 @@ public:
     void setId(int id);
     const std::vector<std::string> & getFriends() const;
     std::vector<std::string> & getFriends();
+    std::vector<std::string> & getTexts() const;
+
 private:
     std::string _login;
     std::string _password;
     std::vector<std::string> _friends;
+    std::vector<std::string> _texts;
     int _id;
 };
 

@@ -19,7 +19,7 @@ void TaskManager::executeTask(Task const &task)
 
     if (it != this->actions.end())
     {
-      std::cout << "Executing task: " << (int)task.packet->code << "with data: " << task.packet->data << std::endl;
+      std::cout << "Executing task: " << (int)task.packet->code << ", with data: " << task.packet->data << std::endl;
       (this->*(it->second))(task);
       return;
     }
@@ -241,6 +241,35 @@ void TaskManager::updateContactStatusTask(std::string const &login, std::string 
   }
 }
 
+void    TaskManager::transfertTextTask(Task const &task)
+{
+  std::vector<std::string> dataSplited = splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
+  std::string userTo = dataSplited[LOGIN_INDEX];
+  std::string userFrom = this->database.getLoginById(task.clientID);
+  std::string data = userFrom + SEPARATOR + dataSplited[TEXT_INDEX];
+  int friendID;
+  if ((friendID = this->database.getId(userTo)) != -1)
+    {
+      unsigned char *basicData = Protocol::Protocol::stringToPointer(data);
+      Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::TEXT, basicData, data.size());
+      this->network->sendBabelPacket(*packet, static_cast<unsigned int>(friendID));
+    }
+  else
+    this->database.addText(userTo, data);
+}
+
+void      TaskManager::transfertAllTextTask(Task const &task)
+{
+  std::string user = data.getLoginById(task.clientID);
+  std::vector<std::string> texts = database.getTexts();
+  while (texts.size() > 0)
+    {
+      std::string text = texts.pop_back();
+      unsigned char *basicData = Protocol::Protocol::stringToPointer(text);
+      Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::TEXT, basicData, text.size());
+      this->network->sendBabelPacket(*packet, static_cast<unsigned int>(task.clientID));
+    }
+}
 
 std::vector<std::string> &TaskManager::splitDataByDelimiter(char delimiter, unsigned char *data, int size)
 {

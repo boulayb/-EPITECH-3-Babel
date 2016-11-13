@@ -34,6 +34,8 @@ private:
   void callDeclinedTask(Task const &);
   void handShakeSuccess(Task const &);
   void hangUpTask(Task const &);
+  void transfertTextTask(Task const &);
+  void transfertAllTextTask(Task const &);
 
   std::map<Protocol::BabelPacket::Code, taskFunction> actions =
    {
@@ -50,6 +52,8 @@ private:
      {Protocol::BabelPacket::Code::HAND_SHAKE_SUCCESS, &TaskManager::handShakeSuccess},
      {Protocol::BabelPacket::Code::CALL_DECLINED, &TaskManager::callDeclinedTask},
      {Protocol::BabelPacket::Code::HANG_UP, &TaskManager::hangUpTask},
+     {Protocol::BabelPacket::Code::TEXT, &TaskManager::transfertTextTask},
+     {Protocol::BabelPacket::Code::GET_TEXT, &TaskManager::transfertAllTextTask}
    };
 
   std::vector<std::string> &splitDataByDelimiter(char delimiter, unsigned char *data, int size);
@@ -60,6 +64,7 @@ private:
   const int STATUS_INDEX = 1;
   const int IP_INDEX = 1;
   const int PORT_INDEX = 2;
+  const int TEXT_INDEX = 1;
   const std::string ONLINE_STATUS = "online";
   const std::string OFFLINE_STATUS = "offline";
   const std::string ENDSEPARATOR = ";" ;

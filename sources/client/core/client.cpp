@@ -37,27 +37,27 @@ void       Client::registerResponse(Protocol::BabelPacket const &packet)
   this->gui->affInfoMessage("Register success");
 }
 
-void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &user, std::string const &passwd)
+void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::string const &data1, std::string const &data2)
 {
   if (code == Protocol::BabelPacket::Code::CALL)
     {
-      return Client::sendCallPacket(user);
+      return Client::sendCallPacket(data1);
     }
 
   unsigned char *data;
-  std::string completeString = user + ':' + passwd;
+  std::string completeString = data1 + ':' + data2;
   unsigned long size = 0;
-  if (user != "")
+  if (data1 != "")
     {
-      if (passwd != "")
+      if (data2 != "")
       {
         data = Protocol::Protocol::stringToPointer(completeString);
         size = completeString.length();
       }
       else
       {
-        data = Protocol::Protocol::stringToPointer(user);
-        size = user.length();
+        data = Protocol::Protocol::stringToPointer(data1);
+        size = data1.length();
       }
     }
   Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(code, data, size);
@@ -269,6 +269,15 @@ void       Client::callPacket(Protocol::BabelPacket const &packet)
   pack.size = packet.dataLength;
   pack.data = v;
   this->packBuilder.setEncoded(pack);
+}
+
+void       Client::readText(Protocol::BabelPacket const &packet)
+{
+  std::string data(const_cast<char *>(reinterpret_cast<const char *>(packet.data)));
+  std::string user = data.substr(0, data.find(':'));
+  data = data.substr(data.find(':') + 1);
+  std::string text = data.substr(0, data.find(':'));
+  // send information to gui
 }
 
 void       Client::errorEncountered(Protocol::BabelPacket const &packet)
