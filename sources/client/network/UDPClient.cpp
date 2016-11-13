@@ -46,7 +46,7 @@ bool UDPClient::sendBabelPacket(Protocol::BabelPacket &packet)
 //  std::cout << sizeof(Protocol::BabelPacket) + packet.dataLength << std::endl;
   QHostAddress addr(qHostname);
   std::cout << "writing to " << this->hostName << " " << this->port << std::endl;
-  this->udpSocket.writeDatagram((const char *)packet.data, packet.dataLength, addr, this->port);
+  this->udpSocket.writeDatagram((char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength, addr, this->port);
   this->udpSocket.flush();
   return true;
 }
@@ -69,6 +69,6 @@ void UDPClient::readMessage()
     this->udpSocket.readDatagram(buffer.data(), buffer.size(),
                                  &sender, &senderPort);
     Protocol::BabelPacket *packet = reinterpret_cast<Protocol::BabelPacket *>(buffer.data());
-    this->client->callPacket(buffer.data(), buffer.size());
+    this->client->callPacket((char *)packet->data, packet->dataLength);
   }
 }
