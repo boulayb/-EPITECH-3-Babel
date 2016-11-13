@@ -58,7 +58,6 @@ void    Gui::newError(const std::string &error)
 
 void    Gui::Login()
 {
-    std::cout << "login qt" << std::endl;
     this->mainWindow->Login();
 }
 

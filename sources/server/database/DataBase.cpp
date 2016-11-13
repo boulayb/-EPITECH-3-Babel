@@ -68,7 +68,6 @@ std::string const &DataBase::getLoginById(int id) const
       return *login;
     }
   }
-  std::cout << "login not found, id : " << id << std::endl;
   throw std::exception();
 }
 
@@ -124,12 +123,7 @@ Protocol::BabelPacket::Code DataBase::deleteFriend(std::string const &login, std
 
 const std::vector<std::string> &DataBase::getFriendsList(std::string const &login) const
 {
-  std::cout << "login of friends " << login <<std::endl;
   std::map<std::string, User>::const_iterator it = this->_map.find(login);
-  for (auto &it : this->_map)
-  {
-    std::cout << it.first << std::endl;
-  }
   if (it != this->_map.end())
     return (this->_map.at(login).getFriends());
   throw std::exception();

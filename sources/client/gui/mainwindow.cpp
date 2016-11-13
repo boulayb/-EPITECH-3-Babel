@@ -49,9 +49,7 @@ void        MainWindow::LoginButton()
         QByteArray password = QCryptographicHash::hash(ui->PasswordLogInput->text().toUtf8(),QCryptographicHash::Md5);
         QString passwordHash(password.toHex());
 
-        std::cout << "Test" << std::endl;
         this->gui->askLogin(ui->UsernameLogInput->text().toUtf8().constData(), passwordHash.toUtf8().constData());
-      std::cout << "Test2" << std::endl;
         this->ui->LoginLabel->setText(ui->UsernameLogInput->text());
     }
 }

@@ -12,14 +12,13 @@ TaskManager::~TaskManager()
 
 void TaskManager::executeTask(Task const &task)
 {
-  std::cout << task.packet->magicNbr << std::endl;
   if (task.packet->magicNbr == MAGIC_NUMBER)
   {
     auto it = this->actions.find(task.packet->code);
 
     if (it != this->actions.end())
     {
-      std::cout << "Executing task: " << (int)task.packet->code << "with data: " << task.packet->data << std::endl;
+      std::cout << "Executing task with code : " << (int)task.packet->code << "and with data: " << task.packet->data << std::endl;
       (this->*(it->second))(task);
       return;
     }
@@ -53,8 +52,6 @@ void TaskManager::signInTask(Task const &task)
 void TaskManager::signUpTask(Task const &task)
 {
   std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
-  std::cout << dataSplited[LOGIN_INDEX] << " " << std::endl;
-  std::cout << dataSplited[PASSWORD_INDEX] << std::endl;
   Protocol::BabelPacket::Code returnCode = this->database.registerUser(dataSplited[LOGIN_INDEX], dataSplited[PASSWORD_INDEX]);
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(returnCode, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
@@ -158,8 +155,6 @@ void TaskManager::addContactTask(Task const &task)
   {
     return;
   }
-  std::cout << "dataSplited: " << dataSplited[LOGIN_INDEX] << std::endl;
-  std::cout << "pack data: " << task.packet->data << std::endl;
   Protocol::BabelPacket::Code errorCode = this->database.addFriend(currentUser, dataSplited[LOGIN_INDEX]);
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(errorCode, nullptr, 0);
   this->network->sendBabelPacket(*packet, task.clientID);
@@ -189,7 +184,6 @@ void TaskManager::callAcceptedTask(Task const &task)
   std::string userFrom = database.getLoginById(task.clientID);
   std::string data = userFrom + SEPARATOR + dataSplited[IP_INDEX] + SEPARATOR + dataSplited[PORT_INDEX];
   unsigned char *sendData = Protocol::Protocol::stringToPointer(data);
-  std::cout << data << std::endl;
   Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, sendData, data.size());
   this->network->sendBabelPacket(*packet, userID);
 }
@@ -212,7 +206,6 @@ void TaskManager::hangUpTask(Task const &task)
 {
   std::vector<std::string> dataSplited = this->splitDataByDelimiter(':', task.packet->data, task.packet->dataLength);
   int id = this->database.getId(dataSplited[LOGIN_INDEX]);
-  std::cout << "HANGUPD TASK : " << dataSplited[LOGIN_INDEX] << std::endl;
   if (id != -1)
   {
     Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HANG_UP, nullptr, 0);
@@ -228,7 +221,6 @@ void TaskManager::updateContactStatusTask(std::string const &login, std::string 
   {
     if (friendStr != login)
     {
-      std::cout << "friend : " << friendStr << std::endl;
       if ((friendId = this->database.getId(friendStr)) != -1) {
         std::string msg = login + SEPARATOR + status;
         unsigned char *basicData = Protocol::Protocol::stringToPointer(msg);

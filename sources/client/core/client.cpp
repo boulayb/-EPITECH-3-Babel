@@ -63,7 +63,6 @@ void       Client::sendBabelPacket(Protocol::BabelPacket::Code const code, std::
   Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(code, data, size);
   if (this->tcpClient->sendBabelPacket(*packet) == false)
     this->gui->affInfoMessage("Server is not responding ...");
-  std::cout << "packet send" << std::endl;
 }
 
 void       Client::sendCallPacket(std::string const &user)
@@ -74,7 +73,6 @@ void       Client::sendCallPacket(std::string const &user)
   Protocol::BabelPacket   *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CALL, data, length);
   if (this->tcpClient->sendBabelPacket(*packet) == false)
     this->gui->affInfoMessage("Server is not responding ...");
-  std::cout << "packet send" << std::endl;
 }
 
 void       Client::handshake(Protocol::BabelPacket const &packet)
@@ -82,7 +80,6 @@ void       Client::handshake(Protocol::BabelPacket const &packet)
   std::string &hostName = Protocol::Protocol::extractData(packet);
   this->udpClient->setHostname(hostName);
   this->hostname = hostName;
-  std::cout << "setting hostname " << hostName <<std::endl;
 
   Protocol::BabelPacket   *handshakeSuccess = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::HAND_SHAKE_SUCCESS, nullptr, 0);
   if (this->tcpClient->sendBabelPacket(*handshakeSuccess) == false)
@@ -92,12 +89,10 @@ void       Client::handshake(Protocol::BabelPacket const &packet)
 void       Client::login(Protocol::BabelPacket const &packet)
 {
   (void)packet;
-  std::cout << "login" << std::endl;
   this->gui->Login();
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::CONTACT_LIST, nullptr, 0);
   if (this->tcpClient->sendBabelPacket(*newPacket) == false)
     this->gui->affInfoMessage("Server is not responding ...");
-  std::cout << "packet send" << std::endl;
 }
 
 void       Client::logout(Protocol::BabelPacket const &packet)
@@ -138,9 +133,7 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
 
   if ((name = data.substr(0, data.find(":"))) != "")
     {
-      std::cout << "DATA : " << data << std::endl;
       data = data.substr(data.find(":") + 1);
-      std::cout << "STATUS : " << data << std::endl;
       if (data == "1")
         contactStatus = std::make_pair(name, true);
       else
@@ -156,7 +149,6 @@ void       Client::incomingCall(Protocol::BabelPacket const &packet)
   data = data.substr(data.find(":") + 1);
   std::string ip = data.substr(0, data.find(":"));
   std::string port = data.substr(data.find(":") + 1);
-  std::cout <<"incomingCall : " << ip <<" "<< port << std::endl;
   this->gui->incommingCall(user, ip, port);
 }
 
@@ -164,7 +156,6 @@ void       Client::acceptCall(std::string const &user, std::string const &ip, st
 {
   std::string data = user + ":" + this->hostname + ":" + std::to_string(this->udpPort);
   sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, data);
-  std::cout << ip << " " << port << std::endl;
   this->callerName = user;
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
@@ -192,7 +183,6 @@ void       Client::inCallThread()
   while (this->inCall)
   {
     EncPack pack = this->packBuilder->getEncoded();
-    std::cout << pack.size << std::endl;
     if (pack.size > 0) {
       Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::AUDIO,
                                                                        pack.data->data(), pack.size);
@@ -202,13 +192,12 @@ void       Client::inCallThread()
     while (!this->queue.empty()) {
       EncPack *newPack = this->queue.front();
       this->queue.pop();
-      std::cout << "QUEUE SIZE " << this->queue.size() <<std::endl;
       this->packBuilder->setEncoded(newPack);
     }
     this->mutex.unlock();
 
     //this->queue.pop();
-//    std::this_thread::sleep_for (std::chrono::nanoseconds(10));
+//    std::this_thread::sleep_for (std::chrono::nanoseconds(100));
   }
   this->packBuilder->getSoundControler().stopOutputStream();
   this->packBuilder->getSoundControler().stopInputStream();
@@ -222,8 +211,6 @@ void       Client::callAccepted(Protocol::BabelPacket const &packet)
   data = data.substr(data.find(':') + 1);
   std::string ip = data.substr(0, data.find(':'));
   std::string port = data.substr(data.find(':') + 1);
-
-  std::cout << "ip " << ip << ", port " << port << std::endl;
 
   this->udpClient->setHostname(ip);
   this->udpClient->setPort(std::stoi(port));
@@ -239,7 +226,6 @@ void       Client::callAccepted(Protocol::BabelPacket const &packet)
 void       Client::callDeclined(Protocol::BabelPacket const &packet)
 {
   (void)packet;
-  std::cout << "DECLINED !!!!!!!!!!" << std::endl;
   this->gui->setContactView();
 }
 
@@ -254,8 +240,6 @@ void       Client::contactAdded(Protocol::BabelPacket const &packet)
 void       Client::endCall()
 {
   this->inCall = false;
-//  this->packBuilder.getSoundControler().stopOutputStream();
-//  this->udpThread.join();
   Protocol::BabelPacket   *newPacket = Protocol::Protocol::createPacket
           (Protocol::BabelPacket::Code::HANG_UP,
            Protocol::Protocol::stringToPointer(this->callerName), this->callerName.length());
@@ -273,9 +257,7 @@ void       Client::contactDeleted(Protocol::BabelPacket const &packet)
 void       Client::callPacket(char * data, int size)
 {
   EncPack *pack = new EncPack;
-//  std::string data = Protocol::Protocol::extractData(packet);
   std::vector<unsigned char> *v = new std::vector<unsigned char>;
-//  std::copy(data, data + size, std::back_inserter(v));
   for (int i = 0; i < size ; ++i)
   {
     v->push_back(data[i]);

@@ -1,10 +1,10 @@
 #ifndef _SOUNDCONTROLER_HH_
 # define _SOUNDCONTROLER_HH_
 
+# include <mutex>
 # include "portaudio.h"
 # include "SoundProperties.hh"
 # include "ASoundControler.hh"
-
 
 class			SoundControler : public ASoundControler
 {
@@ -19,10 +19,9 @@ private:
     PaError             paError;
 
     bool		isRunning;
-    
+    std::mutex mutex;
     DecPack		toPlay;
     DecPack		recorded;
-
 public:
     SoundControler();
     SoundControler(SoundControler const&);

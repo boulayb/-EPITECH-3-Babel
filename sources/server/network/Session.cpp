@@ -9,7 +9,6 @@ Session::Session(boost::asio::io_service &io_service) : socket(io_service), pack
 
 Session::~Session()
 {
-  std::cout << "close session" << std::endl;
  if (this->currentPacket != nullptr)
    delete this->currentPacket;
  if (this->currentPacket != nullptr)
@@ -82,7 +81,6 @@ void Session::handleRead(const boost::system::error_code &error, size_t bytes_tr
   this->currentPacket = reinterpret_cast<Protocol::BabelPacket *>(
         new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
   std::memcpy(this->currentPacket, packet, sizeof(Protocol::BabelPacket));
-  std::cout << "Receinving packet of size" << bytes_transferred << " and code " << (int)packet->code << std::endl;
   this->packetData = new unsigned char[this->currentPacket->dataLength + 1];
   this->socket.async_read_some(boost::asio::buffer(this->packetData, packet->dataLength),
                                boost::bind(&Session::handleReadData, this,
@@ -124,7 +122,6 @@ void Session::writeToClient(const Protocol::BabelPacket &packet)
                                 boost::asio::placeholders::error,
                                 boost::asio::placeholders::bytes_transferred
                                 ));
-  std::cout << "writing " << (int)packet.code << std::endl;
 }
 
 const boost::asio::ip::tcp::socket& Session::getSocket() const

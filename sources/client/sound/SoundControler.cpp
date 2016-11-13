@@ -200,7 +200,7 @@ int			SoundControler::playCallback(const void *,
 {
     SoundControler	*soundControler = reinterpret_cast<SoundControler *>(userData);
     SAMPLE		*outputPtr = static_cast<SAMPLE *>(outputBuffer);
-
+  soundControler->mutex.lock();
     if (soundControler->isRunning)
     	{
 	  DecPack	pack = soundControler->getToPlay();
@@ -209,13 +209,16 @@ int			SoundControler::playCallback(const void *,
 	  for (int i = 0; i < pack.size; i++)
 	    *outputPtr++ = tmp[i];		
     	}
-    return (paContinue);
+  soundControler->mutex.unlock();
+  return (paContinue);
 }
 
 void			SoundControler::setToPlay(DecPack const &pack)
 {
-    this->isRunning = true;
+  this->mutex.lock();
+  this->isRunning = true;
     this->toPlay = pack;
+  this->mutex.unlock();
 }
 
 const DecPack		&SoundControler::getToPlay()

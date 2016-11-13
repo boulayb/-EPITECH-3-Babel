@@ -36,9 +36,9 @@ void TCPServer::handle_accept(Session *newSession, const boost::system::error_co
 {
   if (!error)
   {
-    std::cout << "Accepting new user ! " << std::endl;
     newSession->start(server, this->maxUserId++);
     this->users.push_back(newSession);
+    std::cout << "Accepting new user : " << newSession->getSocket().remote_endpoint().address().to_string() << std::endl;
   }
   else
   {

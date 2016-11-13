@@ -35,9 +35,7 @@ bool TCPClient::sendBabelPacket(Protocol::BabelPacket &packet)
 {
   if(this->tcpSocket.state() == QAbstractSocket::ConnectedState)
   {
-    std::cout << "writing ... size : " << sizeof(Protocol::BabelPacket) + packet.dataLength<<std::endl;
     this->tcpSocket.write((const char *)&packet, sizeof(Protocol::BabelPacket) + packet.dataLength);
- //   this->tcpSocket.flush();
     return true;
   }
   else
@@ -54,34 +52,29 @@ void TCPClient::shutDown()
 
 void TCPClient::displayError(QAbstractSocket::SocketError socketError)
 {
-  std::cout << "wtf" << std::endl;
     switch (socketError) {
     case QAbstractSocket::RemoteHostClosedError:
-      std::cout << "1" << std::endl;
+      std::cerr << "Error RemoteHostClosedError" << std::endl;
         break;
     case QAbstractSocket::HostNotFoundError:
-      std::cout << "2" << std::endl;
+      std::cerr << "Error HostNotFoundError" << std::endl;
       break;
     case QAbstractSocket::ConnectionRefusedError:
-      std::cout << "3" << std::endl;
+      std::cerr << "Error ConnectionRefusedError" << std::endl;
 
       break;
     default:
-      std::cout << "4" << std::endl;
+      std::cerr << "Unknown bug happened, sorry" << std::endl;
     }
 }
 
 void TCPClient::readMessage()
 {
-
-  std::cout << "read message tcp server" << std::endl;
   char buffer[sizeof(Protocol::BabelPacket)];
   qint64 ret;
   while ((ret = this->tcpSocket.read(buffer, sizeof(Protocol::BabelPacket))) > 0)
   {
     Protocol::BabelPacket *packet = reinterpret_cast<Protocol::BabelPacket *>(buffer);
-    std::cout << "Receiving packet of size" << packet->dataLength << " with code " << (int) packet->code << std::endl;
-
     Protocol::BabelPacket *fullPacket = reinterpret_cast<Protocol::BabelPacket *>(
             new unsigned char[sizeof(Protocol::BabelPacket) + packet->dataLength + 1]);
     std::memcpy(fullPacket, packet, sizeof(Protocol::BabelPacket));
