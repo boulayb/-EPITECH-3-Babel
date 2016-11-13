@@ -122,7 +122,7 @@ void       Client::updateContactList(Protocol::BabelPacket const &packet)
       data = data.substr(data.find(":") + 1);
       status = data.substr(0, data.find(";"));
       data = data.substr(data.find(";") + 1);
-      if (status == "online")
+      if (status == "1")
         contactList.push_back(std::pair<std::string, bool>(name,true));
       else
         contactList.push_back(std::pair<std::string, bool>(name,false));
@@ -141,7 +141,7 @@ void       Client::updateContactStatus(Protocol::BabelPacket const &packet)
       std::cout << "DATA : " << data << std::endl;
       data = data.substr(data.find(":") + 1);
       std::cout << "STATUS : " << data << std::endl;
-      if (data == "online")
+      if (data == "1")
         contactStatus = std::make_pair(name, true);
       else
         contactStatus = std::make_pair(name, false);

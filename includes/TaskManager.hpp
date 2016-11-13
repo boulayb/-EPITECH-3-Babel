@@ -60,8 +60,8 @@ private:
   const int STATUS_INDEX = 1;
   const int IP_INDEX = 1;
   const int PORT_INDEX = 2;
-  const std::string ONLINE_STATUS = "online";
-  const std::string OFFLINE_STATUS = "offline";
+  const std::string ONLINE_STATUS = "1";
+  const std::string OFFLINE_STATUS = "0";
   const std::string ENDSEPARATOR = ";" ;
   const std::string SEPARATOR = ":" ;
 };
