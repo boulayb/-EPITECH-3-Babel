@@ -160,7 +160,7 @@ void       Client::incomingCall(Protocol::BabelPacket const &packet)
 void       Client::acceptCall(std::string const &user, std::string const &ip, std::string const &port)
 {
   std::string data = user + ":" + this->hostname + ":" + std::to_string(this->udpPort);
-  if (this->inCall) {
+  if (!this->inCall) {
     sendBabelPacket(Protocol::BabelPacket::Code::CALL_ACCEPTED, data);
     this->callerName = user;
     this->udpClient->setHostname(ip);
