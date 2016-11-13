@@ -209,7 +209,8 @@ void       Client::inCallThread()
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
 {
   std::string data(const_cast<char *>(reinterpret_cast<const char*>(packet.data)));
-  this->callerName = data.substr(data.find(':') + 1);
+  this->callerName = data.substr(0, data.find(':'));
+  data = data.substr(data.find(':') + 1);
   std::string ip = data.substr(0, data.find(':'));
   std::string port = data.substr(data.find(':') + 1);
 
