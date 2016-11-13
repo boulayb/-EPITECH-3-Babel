@@ -199,18 +199,20 @@ void       Client::inCallThread()
       this->udpClient->sendBabelPacket(*packet);
     }
     this->mutex.lock();
-    if (!this->queue.empty()) {
+    while (!this->queue.empty()) {
       EncPack *newPack = this->queue.front();
       this->queue.pop();
+      std::cout << "QUEUE SIZE " << this->queue.size() <<std::endl;
       this->packBuilder->setEncoded(newPack);
     }
     this->mutex.unlock();
+
     //this->queue.pop();
-//    std::this_thread::sleep_for (std::chrono::nanoseconds(1));
+//    std::this_thread::sleep_for (std::chrono::nanoseconds(10));
   }
-  delete this->packBuilder;
   this->packBuilder->getSoundControler().stopOutputStream();
   this->packBuilder->getSoundControler().stopInputStream();
+  delete this->packBuilder;
 }
 
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
