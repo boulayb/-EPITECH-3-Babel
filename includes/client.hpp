@@ -10,7 +10,8 @@
 # include "TCPClient.hpp"
 # include "UDPClient.hpp"
 # include "PackBuilder.hh"
-
+# include <queue>
+# include <mutex>
 class Gui;
 
 class Client
@@ -19,13 +20,14 @@ private:
   INetwork  *tcpClient;
   INetwork  *udpClient;
   Gui       *gui;
-  PackBuilder   packBuilder;
+  PackBuilder   *packBuilder;
   bool      inCall;
   std::thread udpThread;
   std::string hostname;
   short       udpPort;
   std::string callerName;
-
+  std::queue<EncPack *> queue;
+  std::mutex mutex;
   typedef void (Client::*fptr)(Protocol::BabelPacket const &);
   std::map<Protocol::BabelPacket::Code, fptr>      readFunctions =
     {

@@ -185,25 +185,32 @@ void       Client::hangUp(Protocol::BabelPacket const &packet)
 
 void       Client::inCallThread()
 {
-//  this->packBuilder = new PackBuilder;
-  this->packBuilder.getSoundControler().startInputStream();
-  this->packBuilder.getSoundControler().startOutputStream();
+  this->packBuilder = new PackBuilder;
+  this->packBuilder->getSoundControler().startInputStream();
+  this->packBuilder->getSoundControler().startOutputStream();
 
   while (this->inCall)
   {
-    EncPack pack = this->packBuilder.getEncoded();
+    EncPack pack = this->packBuilder->getEncoded();
     std::cout << pack.size << std::endl;
     if (pack.size > 0) {
       Protocol::BabelPacket *packet = Protocol::Protocol::createPacket(Protocol::BabelPacket::Code::AUDIO,
                                                                        pack.data->data(), pack.size);
       this->udpClient->sendBabelPacket(*packet);
     }
-//    delete this->packBuilder;
+    this->mutex.lock();
+    if (!this->queue.empty()) {
+      EncPack *newPack = this->queue.front();
+      this->queue.pop();
+      this->packBuilder->setEncoded(newPack);
+    }
+    this->mutex.unlock();
     //this->queue.pop();
 //    std::this_thread::sleep_for (std::chrono::nanoseconds(1));
   }
-  this->packBuilder.getSoundControler().stopOutputStream();
-  this->packBuilder.getSoundControler().stopInputStream();
+  delete this->packBuilder;
+  this->packBuilder->getSoundControler().stopOutputStream();
+  this->packBuilder->getSoundControler().stopInputStream();
 }
 
 void       Client::callAccepted(Protocol::BabelPacket const &packet)
@@ -273,7 +280,9 @@ void       Client::callPacket(char * data, int size)
   }
   pack->size = size;
   pack->data = v;
-  this->packBuilder.setEncoded(pack);
+  this->mutex.lock();
+  this->queue.push(pack);
+  this->mutex.unlock();
 }
 
 void       Client::errorEncountered(Protocol::BabelPacket const &packet)
