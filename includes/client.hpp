@@ -47,7 +47,6 @@ private:
       {Protocol::BabelPacket::Code::USER_ALREADY_SIGNED_IN, &Client::errorEncountered},
       {Protocol::BabelPacket::Code::NOT_SIGNED_IN, &Client::errorEncountered},
       {Protocol::BabelPacket::Code::USER_ALREADY_FRIEND, &Client::errorEncountered},
-      {Protocol::BabelPacket::Code::AUDIO, &Client::callPacket},
       {Protocol::BabelPacket::Code::VIDEO, &Client::ignorPacket},
       {Protocol::BabelPacket::Code::TEXT, &Client::ignorPacket},
       {Protocol::BabelPacket::Code::HANG_UP, &Client::hangUp},
@@ -68,7 +67,6 @@ private:
   void       callDeclined(Protocol::BabelPacket const &packet);
   void       contactAdded(Protocol::BabelPacket const &packet);
   void       contactDeleted(Protocol::BabelPacket const &packet);
-  void       callPacket(Protocol::BabelPacket const &packet);
   void       hangUp(Protocol::BabelPacket const &packet);
   void       inCallThread();
   // Server Error Replies
@@ -86,6 +84,7 @@ private:
   void       sendCallPacket(std::string const &user = "");
   void       acceptCall(std::string const &user, std::string const &ip, std::string const &port);
   void       endCall();
+  void       callPacket(char * data, int size);
 };
 
 #endif /* !CLIENT_HPP_ */

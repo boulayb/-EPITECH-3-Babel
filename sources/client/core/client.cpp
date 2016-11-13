@@ -261,12 +261,13 @@ void       Client::contactDeleted(Protocol::BabelPacket const &packet)
     this->gui->affInfoMessage("Server is not responding ...");
 }
 
-void       Client::callPacket(Protocol::BabelPacket const &packet)
+void       Client::callPacket(char * data, int size)
 {
   EncPack pack;
-  std::string data = Protocol::Protocol::extractData(packet);
-  std::vector<unsigned char> v(data.begin(), data.end());
-  pack.size = packet.dataLength;
+//  std::string data = Protocol::Protocol::extractData(packet);
+  std::vector<unsigned char> v;
+  std::copy(data, data + size, std::back_inserter(v));
+  pack.size = size;
   pack.data = v;
   this->packBuilder.setEncoded(pack);
 }
