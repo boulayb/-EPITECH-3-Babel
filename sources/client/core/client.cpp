@@ -291,3 +291,8 @@ void       Client::errorEncountered(Protocol::BabelPacket const &packet)
   }
     //this->gui->errorEncountered(error);
 }
+
+void       Client::ignorPacket(Protocol::BabelPacket const &packet)
+{
+  (void)packet;
+}

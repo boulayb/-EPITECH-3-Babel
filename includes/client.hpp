@@ -48,6 +48,8 @@ private:
       {Protocol::BabelPacket::Code::NOT_SIGNED_IN, &Client::errorEncountered},
       {Protocol::BabelPacket::Code::USER_ALREADY_FRIEND, &Client::errorEncountered},
       {Protocol::BabelPacket::Code::AUDIO, &Client::callPacket},
+      {Protocol::BabelPacket::Code::VIDEO, &Client::ignorPacket},
+      {Protocol::BabelPacket::Code::TEXT, &Client::ignorPacket},
       {Protocol::BabelPacket::Code::HANG_UP, &Client::hangUp},
       {Protocol::BabelPacket::Code::USER_NOT_FRIEND, &Client::errorEncountered}
     };
@@ -71,6 +73,7 @@ private:
   void       inCallThread();
   // Server Error Replies
   void       errorEncountered(Protocol::BabelPacket const &packet);
+  void       ignorPacket(Protocol::BabelPacket const &packet);
   std::thread spawn() {
     return std::thread( [this] { this->inCallThread(); } );
   }
