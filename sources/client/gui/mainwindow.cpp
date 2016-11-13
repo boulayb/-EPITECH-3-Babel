@@ -190,6 +190,11 @@ void    MainWindow::updateContact(const std::pair<std::string, bool> &contact)
 
          item->setIcon(QIcon("ressources/online.png"));
          item->setOnline(true);
+         if (ui->ContactList->currentItem()->text() == contact.first.c_str())
+            {
+                ui->ContactNameLabel->setText(contact.first.c_str());
+                ui->CallButton->setDisabled(false);
+            }
       }
     else
       {
