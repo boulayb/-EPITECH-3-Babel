@@ -10,7 +10,7 @@ public:
     virtual ~APackBuilder() {};
 
     virtual const EncPack		getEncoded() = 0;
-    virtual void			setEncoded(EncPack const &pack) = 0;
+    virtual void			setEncoded(EncPack const *pack) = 0;
 
 };
 

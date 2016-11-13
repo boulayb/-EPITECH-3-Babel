@@ -10,14 +10,17 @@ PackBuilder::~PackBuilder()
 
 }
 
+#include <iostream>
 const EncPack		PackBuilder::getEncoded()
 {
+    std::cout << "ok" << std::endl;
     EncPack		encoded = this->codec.encodePack(this->soundControler.getRecorded());
+    std::cout << "end" << std::endl;
 
     return (encoded);
 }
 
-void			PackBuilder::setEncoded(EncPack const &pack)
+void			PackBuilder::setEncoded(EncPack const *pack)
 {
     DecPack		decoded = this->codec.decodePack(pack);
 

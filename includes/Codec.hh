@@ -22,7 +22,7 @@ public:
     Codec& operator=(Codec const&);
     
     const EncPack	encodePack(DecPack const &);
-    const DecPack	decodePack(EncPack const &);
+    const DecPack	decodePack(EncPack const *);
 
 private:
     int			initEncoder();

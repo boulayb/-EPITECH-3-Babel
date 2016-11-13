@@ -16,7 +16,7 @@ public:
     ~PackBuilder();
 
     const EncPack		getEncoded();
-    void			setEncoded(EncPack const &pack);
+    void			setEncoded(EncPack const *pack);
 
     SoundControler		&getSoundControler();
     Codec			&getCodec();
